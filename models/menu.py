@@ -1,3 +1,4 @@
+app = request.application
 response.title = settings.title
 response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
@@ -8,6 +9,7 @@ response.menu = [
 (T('Modules'),False,None,[
         (T('SMyDP'),URL('front_page','index'),URL('front_page','index')),
         ]),
+(T('Editar'), False, URL('admin', 'default', 'design/%s' % app)),
 #(T('Personal'),URL('default','personal_manage')==URL(),URL('default','personal_manage'),[]),
 #(T('Rol'),URL('default','rol_manage')==URL(),URL('default','rol_manage'),[]),
 #(T('Sustancia'),URL('default','sustancia_manage')==URL(),URL('default','sustancia_manage'),[]),
