@@ -1,0 +1,343 @@
+(dp0
+S'table_sustancia'
+p1
+(lp2
+S'nombre notnull'
+p3
+aS'cas'
+p4
+aS'pureza'
+p5
+aS'estado'
+p6
+aS'control'
+p7
+aS'peligrosidad'
+p8
+asS'page_inventario_manage'
+p9
+S'## Manage inventario\r\n\r\n{{=form}}'
+p10
+sS'table_auth_user'
+p11
+(lp12
+S'username'
+p13
+aS'first_name'
+p14
+aS'last_name'
+p15
+aS'email'
+p16
+aS'password'
+p17
+asS'page_laboratorio_manage'
+p18
+S'## Manage laboratorio\r\n\r\n{{=form}}'
+p19
+sS'table_personal'
+p20
+(lp21
+S'nombre notnull'
+p22
+aS'apellido notnull'
+p23
+aS'correo notnull'
+p24
+aS'correo notnull'
+p25
+aS'cargo notnull'
+p26
+asS'page_sustanciapeligrosa_manage'
+p27
+S'## Manage sustanciapeligrosa\r\n\r\n{{=form}}'
+p28
+sS'tables'
+p29
+(lp30
+S'sustanciapeligrosa'
+p31
+aS'personal'
+p32
+aS'cargo'
+p33
+aS'laboratorio'
+p34
+aS'inventario'
+p35
+aS'solicitud'
+p36
+aS'bitacora'
+p37
+asS'table_solicitudesproceso'
+p38
+(lp39
+S'name'
+p40
+asS'page_solicitudesproceso_manage'
+p41
+S'## Manage solicitudesproceso\n\n{{=form}}'
+p42
+sS'table_rol'
+p43
+(lp44
+S'nombre notnull'
+p45
+aS'permiso notnull'
+p46
+asS'page_index'
+p47
+S'# Welcome to my new app'
+p48
+sS'page_sustancia_manage'
+p49
+S'## Manage sustancia\r\n\r\n{{=form}}'
+p50
+sS'page_error'
+p51
+S'# Error: the document does not exist'
+p52
+sS'params'
+p53
+(lp54
+(S'title'
+p55
+S'Sistema De Desechos'
+p56
+tp57
+a(S'subtitle'
+p58
+S'Equipo'
+p59
+tp60
+a(S'author'
+p61
+S'you'
+p62
+tp63
+a(S'author_email'
+p64
+S'you@example.com'
+p65
+tp66
+a(S'keywords'
+p67
+S''
+p68
+tp69
+a(S'description'
+p70
+g68
+tp71
+a(S'layout_theme'
+p72
+S'Default'
+p73
+tp74
+a(S'database_uri'
+p75
+S'sqlite://storage.sqlite'
+p76
+tp77
+a(S'security_key'
+p78
+S'c8ded005-737a-4eca-8152-5aa04658aa83'
+p79
+tp80
+a(S'email_server'
+p81
+S'localhost'
+p82
+tp83
+a(S'email_sender'
+p84
+S'you@example.com'
+p85
+tp86
+a(S'email_login'
+p87
+g68
+tp88
+a(S'login_method'
+p89
+S'local'
+p90
+tp91
+a(S'login_config'
+p92
+g68
+tp93
+a(S'plugins'
+p94
+(lp95
+tp96
+asS'table_sustanciapeligrosa'
+p97
+(lp98
+S'nombre'
+p99
+aS'cas'
+p100
+aS'pureza'
+p101
+aS'estado'
+p102
+aS'control'
+p103
+aS'peligrosidad'
+p104
+asS'page_rol_manage'
+p105
+S'## Manage rol\r\n\r\n{{=form}}'
+p106
+sS'page_cargo_manage'
+p107
+S'## Manage cargo\r\n\r\n{{=form}}'
+p108
+sS'table_solicitudes'
+p109
+(lp110
+S'espacio_fisico notnull'
+p111
+aS'cantidad_donacion notnull'
+p112
+aS'seccion notnull'
+p113
+aS'solicitante notnull'
+p114
+aS'solicitado notnull'
+p115
+aS'cantidad notnull'
+p116
+aS'estado'
+p117
+asS'table_laboratorio'
+p118
+(lp119
+S'nombre notnull'
+p120
+aS'nombresec'
+p121
+aS'espaciofisico'
+p122
+asS'page_solicitudes_manage'
+p123
+S'## Manage solicitudes\r\n\r\n{{=form}}'
+p124
+sS'table_secciones'
+p125
+(lp126
+S'nombre notnull'
+p127
+aS'sustancia notnull'
+p128
+aS'espacio_fisico notnull'
+p129
+aS'cantidad_uso_interno'
+p130
+aS'cantidad_donacion'
+p131
+asS'page_solicitud_manage'
+p132
+S'## Manage solicitud\r\n\r\n{{=form}}'
+p133
+sS'pages'
+p134
+(lp135
+S'index'
+p136
+aS'error'
+p137
+aS'personal_manage'
+p138
+aS'rol_manage'
+p139
+aS'sustancia_manage'
+p140
+aS'secciones_manage'
+p141
+aS'laboratorio_manage'
+p142
+aS'bitacora_manage'
+p143
+aS'solicitudes_manage'
+p144
+aS'sustanciapeligrosa_manage'
+p145
+aS'cargo_manage'
+p146
+aS'inventario_manage'
+p147
+aS'solicitud_manage'
+p148
+asS'table_solicitud'
+p149
+(lp150
+S'sustancia'
+p151
+aS'espaciofisico'
+p152
+aS'seccion'
+p153
+aS'responsable'
+p154
+aS'solicitador'
+p155
+aS'cantidadsolicitada'
+p156
+aS'estado'
+p157
+asS'name'
+p158
+S'SistemaDesechos'
+p159
+sS'page_personal_manage'
+p160
+S'## Manage personal\r\n\r\n{{=form}}'
+p161
+sS'page_secciones_manage'
+p162
+S'## Manage secciones\r\n\r\n{{=form}}'
+p163
+sS'table_inventario'
+p164
+(lp165
+S'sustancia'
+p166
+aS'espaciofisico'
+p167
+aS'seccion'
+p168
+aS'responsable'
+p169
+aS'cantidadonacion'
+p170
+aS'cantidadusointerno'
+p171
+asS'table_bitacora'
+p172
+(lp173
+S'sustancia notnull'
+p174
+aS'proceso notnull'
+p175
+aS'ingreso notnull'
+p176
+aS'consumo notnull'
+p177
+aS'cantidad notnull'
+p178
+aS'fecha notnull'
+p179
+asS'page_bitacora_manage'
+p180
+S'## Manage bitacora\r\n\r\n{{=form}}'
+p181
+sS'table_cargo'
+p182
+(lp183
+S'nombre'
+p184
+aS'permiso'
+p185
+as.
