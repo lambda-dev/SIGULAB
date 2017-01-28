@@ -1,0 +1,708 @@
+(dp1
+S'output'
+p2
+S'<class \'gluon.contrib.pg8000.ProgrammingError\'> (\'ERROR\', \'42804\', \'column "f_pureza__tmp" is of type integer but expression is of type character varying\')'
+p3
+sS'layer'
+p4
+S'/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/models/db_wizard.py'
+p5
+sS'code'
+p6
+S"### we prepend t_ to tablenames and f_ to fieldnames for disambiguity\n\n\n########################################\ndb.define_table('t_cargo',\n    Field('f_nombreCar','string',label=T('Nombre')),\n    Field('f_permiso','string',label=T('Permiso')),\n    format='%(f_nombreCar)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))\n\n########################################\ndb.define_table('t_inventario',\n    Field('f_sustancia', type='string',\n          label=T('Sustancia')),\n    Field('f_espaciofisico', type='string',\n          label=T('Espaciofisico')),\n    Field('f_seccion', type='string',\n          label=T('Seccion')),\n    Field('f_responsable', type='string',\n          label=T('Responsable')),\n    Field('f_cantidadonacion', type='string',\n          label=T('Cantidadonacion')),\n    Field('f_cantidadusointerno', type='string',\n          label=T('Cantidadusointerno')),\n    format='%(f_sustancia)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_inventario_archive',db.t_inventario,Field('current_record','reference t_inventario',readable=False,writable=False))\n\n########################################\ndb.define_table('t_bitacora',\n    Field('f_sustancia', type='string', notnull=True,\n          label=T('SustanciaBita')),\n    Field('f_proceso', type='string', notnull=True,\n          label=T('Proceso')),\n    Field('f_ingreso', type='string', notnull=True,\n          label=T('Ingreso')),\n    Field('f_consumo', type='string', notnull=True,\n          label=T('Consumo')),\n    Field('f_cantidad', type='string', notnull=True,\n          label=T('CantidadBita')),\n    Field('f_fecha', type='string', notnull=True,\n          label=T('Fecha')),\n    format='%(f_sustanciaBita)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))\n\n########################################\ndb.define_table('t_personal',\n    Field('f_nombre', type='string', notnull=True,\n          label=T('NombrePer')),\n    Field('f_apellido', type='string', notnull=True,\n          label=T('Apellido')),\n    Field('f_correo', type='string', notnull=True,\n          label=T('Correo')),\n    Field('f_cargo', type='reference t_cargo', notnull=True,\n          label=T('Cargo')),\n    format='%(f_nombre)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_personal_archive',db.t_personal,Field('current_record','reference t_personal',readable=False,writable=False))\n\n########################################\ndb.define_table('t_laboratorio',\n    Field('f_nombre', type='string', notnull=True,\n          label=T('Nombre')),\n    Field('f_nombresec', type='string',\n          label=T('Nombresec')),\n    Field('f_espaciofisico', type='string',\n          label=T('Espaciofisico')),\n    format='%(f_nombre)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))\n\n########################################\ndb.define_table('t_sustanciapeligrosa',\n    Field('f_nombre', 'string',\n          label=T('Nombre')),\n    Field('f_cas', 'string',\n          label=T('Cas')),\n    Field('f_pureza', 'integer',requires=IS_INT_IN_RANGE(0, 100),\n          label=T('Pureza')),\n    Field('f_estado', type='string',\n          label=T('Estado')),\n    Field('f_control', 'string',\n          label=T('Control')),\n    Field('f_peligrosidad', 'string',\n          label=T('Peligrosidad')),\n    format='%(f_nombre)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_sustanciapeligrosa_archive',db.t_sustanciapeligrosa,Field('current_record','reference t_sustanciapeligrosa',readable=False,writable=False))\n\n########################################\ndb.define_table('t_solicitud',\n    Field('f_sustancia', type='string',\n          label=T('Sustancia')),\n    Field('f_espaciofisico', type='string',\n          label=T('Espaciofisico')),\n    Field('f_seccion', type='string',\n          label=T('Seccion')),\n    Field('f_responsable', type='string',\n          label=T('Responsable')),\n    Field('f_solicitador', type='string',\n          label=T('Solicitador')),\n    Field('f_cantidadsolicitada', type='string',\n          label=T('Cantidadsolicitada')),\n    Field('f_estado', type='string',\n          label=T('Estado')),\n    format='%(f_sustancia)s',\n    migrate=settings.migrate)\n\ndb.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))\n"
+p7
+sS'snapshot'
+p8
+(dp9
+S'exception'
+p10
+(dp11
+S'__module__'
+p12
+S"'gluon.contrib.pg8000'"
+p13
+sS'__getslice__'
+p14
+S"<method-wrapper '__getslice__' of ProgrammingError object>"
+p15
+sS'__str__'
+p16
+S"<method-wrapper '__str__' of ProgrammingError object>"
+p17
+sS'__reduce__'
+p18
+S'<built-in method __reduce__ of ProgrammingError object>'
+p19
+sS'__dict__'
+p20
+S'{}'
+p21
+sS'__sizeof__'
+p22
+S'<built-in method __sizeof__ of ProgrammingError object>'
+p23
+sS'__weakref__'
+p24
+S'None'
+p25
+sS'__init__'
+p26
+S"<method-wrapper '__init__' of ProgrammingError object>"
+p27
+sS'__setattr__'
+p28
+S"<method-wrapper '__setattr__' of ProgrammingError object>"
+p29
+sS'__reduce_ex__'
+p30
+S'<built-in method __reduce_ex__ of ProgrammingError object>'
+p31
+sS'__new__'
+p32
+S'<built-in method __new__ of type object>'
+p33
+sS'__format__'
+p34
+S'<built-in method __format__ of ProgrammingError object>'
+p35
+sS'__class__'
+p36
+S"<class 'gluon.contrib.pg8000.ProgrammingError'>"
+p37
+sS'__doc__'
+p38
+S"'Generic exception raised for programming errors....http://www.python.org/dev/peps/pep-0249/>`_.\\n    '"
+p39
+sS'__getitem__'
+p40
+S"<method-wrapper '__getitem__' of ProgrammingError object>"
+p41
+sS'__setstate__'
+p42
+S'<built-in method __setstate__ of ProgrammingError object>'
+p43
+sS'__getattribute__'
+p44
+S"<method-wrapper '__getattribute__' of ProgrammingError object>"
+p45
+sS'args'
+p46
+S'(\'ERROR\', \'42804\', \'column "f_pureza__tmp" is of type integer but expression is of type character varying\')'
+p47
+sS'__subclasshook__'
+p48
+S'<built-in method __subclasshook__ of type object>'
+p49
+sS'__unicode__'
+p50
+S'<built-in method __unicode__ of ProgrammingError object>'
+p51
+sS'__delattr__'
+p52
+S"<method-wrapper '__delattr__' of ProgrammingError object>"
+p53
+sS'__repr__'
+p54
+S"<method-wrapper '__repr__' of ProgrammingError object>"
+p55
+sS'__hash__'
+p56
+S"<method-wrapper '__hash__' of ProgrammingError object>"
+p57
+ssS'evalue'
+p58
+S'(\'ERROR\', \'42804\', \'column "f_pureza__tmp" is of type integer but expression is of type character varying\')'
+p59
+sS'request'
+p60
+cgluon.html
+XML_unpickle
+p61
+(S's]g\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">ajax</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">application</td><td style="vertical-align:top;">:</td><td><div>SistemaDesechos</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cid</td><td style="vertical-align:top;">:</td><td><div>c0899214679408</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">controller</td><td style="vertical-align:top;">:</td><td><div>appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_admin</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-59244c94-70c6-4f07-a2e3-a3761b798e9d<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_books</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-53409ccd-962f-4835-af9a-7fa37488bea5<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_sistemadesechos</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_welcome</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-324ffcac-48f2-4fa1-9d2c-cbcfd09ae68c<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">env</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT</td><td style="vertical-align:top;">:</td><td><div>*/*</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_ENCODING</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_LANGUAGE</td><td style="vertical-align:top;">:</td><td><div>en-US,en;q=0.5</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CONNECTION</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_COOKIE</td><td style="vertical-align:top;">:</td><td><div>session_id_welcome=127.0.0.1-324ffcac-48f2-4fa1-9d2c-cbcfd09ae68c; session_id_admin=127.0.0.1-59244c94-70c6-4f07-a2e3-a3761b798e9d; session_id_sistemadesechos=127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32; session_id_books=127.0.0.1-53409ccd-962f-4835-af9a-7fa37488bea5</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_HOST</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_REFERER</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/admin/default/edit/SistemaDesechos/models/menu.py?id=models__menu__py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_USER_AGENT</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:50.0) Gecko/20100101 Firefox/50.0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_WEB2PY_COMPONENT_ELEMENT</td><td style="vertical-align:top;">:</td><td><div>c0899214679408</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_WEB2PY_COMPONENT_LOCATION</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/admin/default/edit/SistemaDesechos/models/menu.py?id=models__menu__py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_X_REQUESTED_WITH</td><td style="vertical-align:top;">:</td><td><div>XMLHttpRequest</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">PATH_INFO</td><td style="vertical-align:top;">:</td><td><div>/SistemaDesechos/appadmin/hooks</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">QUERY_STRING</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_ADDR</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_PORT</td><td style="vertical-align:top;">:</td><td><div>53921</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_METHOD</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SCRIPT_NAME</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_NAME</td><td style="vertical-align:top;">:</td><td><div>Arnaldos-MacBook-Pro.local</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PORT</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PROTOCOL</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_SOFTWARE</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/Applications/web2py.app/Contents/Resources/applications/books/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/admin/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/welcome/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x105540ea8: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;Arnaldos-MacBook-Pro.local&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/Applications/web2py.app/Contents/Resources&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept</td><td style="vertical-align:top;">:</td><td><div>*/*</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_encoding</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_language</td><td style="vertical-align:top;">:</td><td><div>en-US,en;q=0.5</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_connection</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cookie</td><td style="vertical-align:top;">:</td><td><div>session_id_welcome=127.0.0.1-324ffcac-48f2-4fa1-9d2c-cbcfd09ae68c; session_id_admin=127.0.0.1-59244c94-70c6-4f07-a2e3-a3761b798e9d; session_id_sistemadesechos=127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32; session_id_books=127.0.0.1-53409ccd-962f-4835-af9a-7fa37488bea5</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_host</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_referer</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/admin/default/edit/SistemaDesechos/models/menu.py?id=models__menu__py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_user_agent</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:50.0) Gecko/20100101 Firefox/50.0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_web2py_component_element</td><td style="vertical-align:top;">:</td><td><div>c0899214679408</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_web2py_component_location</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/admin/default/edit/SistemaDesechos/models/menu.py?id=models__menu__py</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_x_requested_with</td><td style="vertical-align:top;">:</td><td><div>XMLHttpRequest</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>192.168.2.1</div></td></tr><tr><td><div>fe80::3c07:54ff:fee5:c564%bridge100</div></td></tr><tr><td><div>192.168.0.186</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>Arnaldos-MacBook-Pro.local</div></td></tr><tr><td><div>arnaldos-macbook-pro.local</div></td></tr><tr><td><div>127.0.0.1</div></td></tr><tr><td><div>fe80::cd2:f1d5:38f8:7e90%en1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path_info</td><td style="vertical-align:top;">:</td><td><div>/SistemaDesechos/appadmin/hooks</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">query_string</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_addr</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_port</td><td style="vertical-align:top;">:</td><td><div>53921</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_method</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_uri</td><td style="vertical-align:top;">:</td><td><div>/SistemaDesechos/appadmin/hooks</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">script_name</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_name</td><td style="vertical-align:top;">:</td><td><div>Arnaldos-MacBook-Pro.local</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_port</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_protocol</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_software</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_path</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x1000ae270&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x1053c1e88&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x10dfafe50&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x1000ae270&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x1053c1e88&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x10dfafe50&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">extension</td><td style="vertical-align:top;">:</td><td><div>html</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">folder</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">function</td><td style="vertical-align:top;">:</td><td><div>hooks</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">global_settings</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/Applications/web2py.app/Contents/Resources/applications/books/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/admin/&#x27;, &#x27;/Applications/web2py.app/Contents/Resources/applications/welcome/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x105540ea8: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;Arnaldos-MacBook-Pro.local&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/Applications/web2py.app/Contents/Resources&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>192.168.2.1</div></td></tr><tr><td><div>fe80::3c07:54ff:fee5:c564%bridge100</div></td></tr><tr><td><div>192.168.0.186</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>Arnaldos-MacBook-Pro.local</div></td></tr><tr><td><div>arnaldos-macbook-pro.local</div></td></tr><tr><td><div>127.0.0.1</div></td></tr><tr><td><div>fe80::cd2:f1d5:38f8:7e90%en1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_https</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_local</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_restful</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_scheduler</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_shell</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">now</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 1, 27, 23, 56, 39, 550507)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">raw_args</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">raw_extension</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">url</td><td style="vertical-align:top;">:</td><td><div>/SistemaDesechos/appadmin/hooks</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">utcnow</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 1, 28, 3, 56, 39, 550517)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi</td><td style="vertical-align:top;">:</td><td><div>&lt;gluon.main.LazyWSGI object at 0x107147390&gt;</div></td></tr></table></div>'
+tRp62
+sS'frames'
+p63
+(lp64
+(dp65
+S'file'
+p66
+S'/Applications/web2py.app/Contents/Resources/gluon/restricted.py'
+p67
+sS'dump'
+p68
+(dp69
+sS'lnum'
+p70
+I227
+sS'lines'
+p71
+(dp72
+I224
+S'            ccode = code'
+p73
+sI225
+S'        else:'
+p74
+sI226
+S'            ccode = compile2(code, layer)'
+p75
+sI227
+S'        exec ccode in environment'
+p76
+sI228
+S'    except HTTP:'
+p77
+sI229
+S'        raise'
+p78
+sI230
+S'    except RestrictedError:'
+p79
+sI231
+S'        # do not encapsulate (obfuscate) the original RestrictedError'
+p80
+sI222
+S'    try:'
+p81
+sI223
+S'        if isinstance(code, types.CodeType):'
+p82
+ssS'call'
+p83
+S'(code="### we prepend t_ to tablenames and f_ to fieldn...nce t_solicitud\',readable=False,writable=False))\\n", environment={\'A\': <class \'gluon.html.A\'>, \'ANY_OF\': <class \'gluon.validators.ANY_OF\'>, \'ASSIGNJS\': <function ASSIGNJS>, \'AppConfig\': <function AppConfig>, \'Auth\': <class \'gluon.tools.Auth\'>, \'B\': <class \'gluon.html.B\'>, \'BEAUTIFY\': <class \'gluon.html.BEAUTIFY\'>, \'BODY\': <class \'gluon.html.BODY\'>, \'BR\': <class \'gluon.html.BR\'>, \'BUTTON\': <class \'gluon.html.BUTTON\'>, ...}, layer=\'/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/models/db_wizard.py\')'
+p84
+sS'func'
+p85
+S'restricted'
+p86
+sa(dp87
+g66
+S'/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/models/db_wizard.py'
+p88
+sg68
+(dp89
+sg70
+I94
+sg71
+(dp90
+I96
+S"db.define_table('t_sustanciapeligrosa_archive',db.t_sustanciapeligrosa,Field('current_record','reference t_sustanciapeligrosa',readable=False,writable=False))"
+p91
+sI97
+S''
+sI98
+S'########################################'
+p92
+sI89
+S"    Field('f_control', 'string',"
+p93
+sI90
+S"          label=T('Control')),"
+p94
+sI91
+S"    Field('f_peligrosidad', 'string',"
+p95
+sI92
+S"          label=T('Peligrosidad')),"
+p96
+sI93
+S"    format='%(f_nombre)s',"
+p97
+sI94
+S'    migrate=settings.migrate)'
+p98
+sI95
+S''
+ssg83
+S'()'
+p99
+sg85
+S'<module>'
+p100
+sa(dp101
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/base.py'
+p102
+sg68
+(dp103
+sg70
+I834
+sg71
+(dp104
+I832
+S'            table = None'
+p105
+sI833
+S'        else:'
+p106
+sI834
+S'            table = self.lazy_define_table(tablename,*fields,**args)'
+p107
+sI835
+S'        if not tablename in self.tables:'
+p108
+sI836
+S'            self.tables.append(tablename)'
+p109
+sI837
+S'        return table'
+p110
+sI838
+S''
+sI829
+S'                    % (tablename,invalid_args))'
+p111
+sI830
+S'        if self._lazy_tables and tablename not in self._LAZY_TABLES:'
+p112
+sI831
+S'            self._LAZY_TABLES[tablename] = (tablename,fields,args)'
+p113
+ssg83
+S'(self=<DAL uri="postgres://arnaldopxm:@localhost/sistemadesechos">, tablename=\'t_sustanciapeligrosa\', *fields=(<pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>), **args={\'format\': \'%(f_nombre)s\', \'migrate\': True})'
+p114
+sg85
+S'define_table'
+p115
+sa(dp116
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/base.py'
+p117
+sg68
+(dp118
+sg70
+I873
+sg71
+(dp119
+I868
+S'            try:'
+p120
+sI869
+S'                GLOBAL_LOCKER.acquire()'
+p121
+sI870
+S'                self._lastsql = self._adapter.create_table('
+p122
+sI871
+S'                    table,migrate=migrate,'
+p123
+sI872
+S'                    fake_migrate=fake_migrate,'
+p124
+sI873
+S'                    polymodel=polymodel)'
+p125
+sI874
+S'            finally:'
+p126
+sI875
+S'                GLOBAL_LOCKER.release()'
+p127
+sI876
+S'        else:'
+p128
+sI877
+S'            table._dbt = None'
+p129
+ssg83
+S'(self=<DAL uri="postgres://arnaldopxm:@localhost/sistemadesechos">, tablename=\'t_sustanciapeligrosa\', *fields=(<pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>, <pydal.objects.Field object>), **args={\'format\': \'%(f_nombre)s\', \'migrate\': True})'
+p130
+sg85
+S'lazy_define_table'
+p131
+sa(dp132
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py'
+p133
+sg68
+(dp134
+sg70
+I510
+sg71
+(dp135
+I512
+S'        return query'
+p136
+sI513
+S''
+sI514
+S'    def migrate_table('
+p137
+sI505
+S'            if sql_fields != sql_fields_old:'
+p138
+sI506
+S'                self.migrate_table('
+p139
+sI507
+S'                    table,'
+p140
+sI508
+S'                    sql_fields, sql_fields_old,'
+p141
+sI509
+S'                    sql_fields_aux, None,'
+p142
+sI510
+S'                    fake_migrate=fake_migrate'
+p143
+sI511
+S'                    )'
+p144
+ssg83
+S'(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, table=<Table t_sustanciapeligrosa (id, f_nombre, f_cas, f_pureza, f_estado, f_control, f_peligrosidad)>, migrate=True, fake_migrate=False, polymodel=None)'
+p145
+sg85
+S'create_table'
+p146
+sa(dp147
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py'
+p148
+sg68
+(dp149
+sg70
+I623
+sg71
+(dp150
+I618
+S'                    if fake_migrate:'
+p151
+sI619
+S'                        if db._adapter.commit_on_alter_table:'
+p152
+sI620
+S'                            self.save_dbt(table,sql_fields_current)'
+p153
+sI621
+S"                        self.log('faked!\\n', table)"
+p154
+sI622
+S'                    else:'
+p155
+sI623
+S'                        self.execute(sub_query)'
+p156
+sI624
+S'                        # Caveat: mysql, oracle and firebird'
+p157
+sI625
+S'                        # do not allow multiple alter table'
+p158
+sI626
+S'                        # in one transaction so we must commit'
+p159
+sI627
+S'                        # partial transactions and'
+p160
+ssg83
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, table=<Table t_sustanciapeligrosa (id, f_nombre, f_cas, f_pureza, f_estado, f_control, f_peligrosidad)>, sql_fields={'f_cas': {'length': 512, 'notnull': False, 'sortable': 3, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_control': {'length': 512, 'notnull': False, 'sortable': 6, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_estado': {'length': 512, 'notnull': False, 'sortable': 5, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_nombre': {'length': 512, 'notnull': False, 'sortable': 2, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_peligrosidad': {'length': 512, 'notnull': False, 'sortable': 7, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_pureza': {'length': 512, 'notnull': False, 'sortable': 4, 'sql': 'INTEGER', 'type': 'integer', 'unique': False}, 'id': {'length': 512, 'notnull': False, 'sortable': 1, 'sql': 'SERIAL PRIMARY KEY', 'type': 'id', 'unique': False}}, sql_fields_old={'f_cas': {'length': 512, 'notnull': False, 'sortable': 3, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_control': {'length': 512, 'notnull': False, 'sortable': 6, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_estado': {'length': 512, 'notnull': False, 'sortable': 5, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_nombre': {'length': 512, 'notnull': False, 'sortable': 2, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_peligrosidad': {'length': 512, 'notnull': False, 'sortable': 7, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_pureza': {'length': 512, 'notnull': False, 'sortable': 4, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'id': {'length': 512, 'notnull': False, 'sortable': 1, 'sql': 'SERIAL PRIMARY KEY', 'type': 'id', 'unique': False}}, sql_fields_aux={'f_cas': {'sql': 'VARCHAR(512)'}, 'f_control': {'sql': 'VARCHAR(512)'}, 'f_estado': {'sql': 'VARCHAR(512)'}, 'f_nombre': {'sql': 'VARCHAR(512)'}, 'f_peligrosidad': {'sql': 'VARCHAR(512)'}, 'f_pureza': {'sql': 'INTEGER'}, 'id': {'sql': 'SERIAL PRIMARY KEY'}}, logfile=None, fake_migrate=False)"
+p161
+sg85
+S'migrate_table'
+p162
+sa(dp163
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/postgres.py'
+p164
+sg68
+(dp165
+sg70
+I362
+sg71
+(dp166
+I357
+S''
+sI358
+S'    def execute(self, *a, **b):'
+p167
+sI359
+S'        if PY2 and self.driver_name == "pg8000":'
+p168
+sI360
+S'            a = list(a)'
+p169
+sI361
+S"            a[0] = a[0].decode('utf8')"
+p170
+sI362
+S'        return BaseAdapter.execute(self, *a, **b)'
+p171
+sI363
+S''
+sI364
+S''
+sI365
+S'class NewPostgreSQLAdapter(PostgreSQLAdapter):'
+p172
+sI366
+S"    drivers = ('psycopg2','pg8000')"
+p173
+ssg83
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=[u'UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;'], **b={})"
+p174
+sg85
+S'execute'
+p175
+sa(dp176
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py'
+p177
+sg68
+(dp178
+sg70
+I1388
+sg71
+(dp179
+I1383
+S'        self.db._timings.append((command,time.time()-t0))'
+p180
+sI1384
+S'        del self.db._timings[:-TIMINGSSIZE]'
+p181
+sI1385
+S'        return ret'
+p182
+sI1386
+S''
+sI1387
+S'    def execute(self, *a, **b):'
+p183
+sI1388
+S'        return self.log_execute(*a, **b)'
+p184
+sI1389
+S''
+sI1390
+S'    def execute_test_query(self):'
+p185
+sI1391
+S'        return self.execute(self.test_query)'
+p186
+sI1392
+S''
+ssg83
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=(u'UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;',), **b={})"
+p187
+sg85
+g175
+sa(dp188
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py'
+p189
+sg68
+(dp190
+sg70
+I1382
+sg71
+(dp191
+I1377
+S'            command = self.filter_sql_command(command)'
+p192
+sI1378
+S'        if self.db._debug:'
+p193
+sI1379
+S"            self.db.logger.debug('SQL: %s' % command)"
+p194
+sI1380
+S'        self.db._lastsql = command'
+p195
+sI1381
+S'        t0 = time.time()'
+p196
+sI1382
+S'        ret = self.get_cursor().execute(command, *a[1:], **b)'
+p197
+sI1383
+S'        self.db._timings.append((command,time.time()-t0))'
+p198
+sI1384
+S'        del self.db._timings[:-TIMINGSSIZE]'
+p199
+sI1385
+S'        return ret'
+p200
+sI1386
+S''
+ssg83
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=(u'UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;',), **b={})"
+p201
+sg85
+S'log_execute'
+p202
+sa(dp203
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py'
+p204
+sg68
+(dp205
+sg70
+I573
+sg71
+(dp206
+I576
+S'                raise InterfaceError("Cursor closed")'
+p207
+sI577
+S'            elif self._c._sock is None:'
+p208
+sI568
+S'            self._c._lock.acquire()'
+p209
+sI569
+S'            self.stream = stream'
+p210
+sI570
+S''
+sI571
+S'            if not self._c.in_transaction and not self._c.autocommit:'
+p211
+sI572
+S'                self._c.execute(self, "begin transaction", None)'
+p212
+sI573
+S'            self._c.execute(self, operation, args)'
+p213
+sI574
+S'        except AttributeError:'
+p214
+sI575
+S'            if self._c is None:'
+p215
+ssg83
+S"(self=<gluon.contrib.pg8000.core.Cursor instance>, operation=u'UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;', args=None, stream=None)"
+p216
+sg85
+g175
+sa(dp217
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py'
+p218
+sg68
+(dp219
+sg70
+I1626
+sg71
+(dp220
+I1621
+S'                if self._sock is None:'
+p221
+sI1622
+S'                    raise InterfaceError("connection is closed")'
+p222
+sI1623
+S'                else:'
+p223
+sI1624
+S'                    raise exc_info()[1]'
+p224
+sI1625
+S''
+sI1626
+S'            self.handle_messages(cursor)'
+p225
+sI1627
+S''
+sI1628
+S"            # We've got row_desc that allows us to identify what we're"
+p226
+sI1629
+S'            # going to get back from this statement.'
+p227
+sI1630
+S'            output_fc = tuple('
+p228
+ssg83
+S"(self=<gluon.contrib.pg8000.core.Connection object>, cursor=<gluon.contrib.pg8000.core.Cursor instance>, operation=u'UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;', vals=())"
+p229
+sg85
+g175
+sa(dp230
+g66
+S'/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py'
+p231
+sg68
+(dp232
+sg70
+I1774
+sg71
+(dp233
+I1769
+S'        except:'
+p234
+sI1770
+S'            self._close()'
+p235
+sI1771
+S'            raise'
+p236
+sI1772
+S''
+sI1773
+S'        if self.error is not None:'
+p237
+sI1774
+S'            raise self.error'
+p238
+sI1775
+S''
+sI1776
+S"    # Byte1('C') - Identifies the message as a close command."
+p239
+sI1777
+S'    # Int32 - Message length, including self.'
+p240
+sI1778
+S"    # Byte1 - 'S' for prepared statement, 'P' for portal."
+p241
+ssg83
+S'(self=<gluon.contrib.pg8000.core.Connection object>, cursor=<gluon.contrib.pg8000.core.Cursor instance>)'
+p242
+sg85
+S'handle_messages'
+p243
+sasS'pyver'
+p244
+S'Python 2.7.3: /Applications/web2py.app/Contents/MacOS/python (prefix: /Applications/web2py.app/Contents/Resources)'
+p245
+sS'session'
+p246
+g61
+(S's\x98\t\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">auth</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">expiration</td><td style="vertical-align:top;">:</td><td><div>2592000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">hmac_key</td><td style="vertical-align:top;">:</td><td><div>0889e02a-f841-4238-a803-605f106c83e9</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_visit</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 1, 27, 8, 22, 17, 44985)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remember_me</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">user</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">email</td><td style="vertical-align:top;">:</td><td><div>arnaldopxm@me.com</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">first_name</td><td style="vertical-align:top;">:</td><td><div>Arnaldo</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">id</td><td style="vertical-align:top;">:</td><td><div>1L</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_name</td><td style="vertical-align:top;">:</td><td><div>Quintero</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">registration_id</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">registration_key</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">reset_password_key</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">user_groups</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_orderby</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_query</td><td style="vertical-align:top;">:</td><td><div>db.t_sustanciapeligrosa.id&gt;0</div></td></tr></table></div>'
+tRp247
+sS'etype'
+p248
+S"<class 'gluon.contrib.pg8000.ProgrammingError'>"
+p249
+sS'date'
+p250
+S'Fri Jan 27 23:56:39 2017'
+p251
+sS'response'
+p252
+g61
+(S's\xc4\x17\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">body</td><td style="vertical-align:top;">:</td><td><div>&lt;cStringIO.StringO object at 0x1121e7810&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_sistemadesechos</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">delimiters</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>{{</div></td></tr><tr><td><div>}}</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">files</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">form_label_separator</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">formstyle</td><td style="vertical-align:top;">:</td><td><div>bootstrap3_inline</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">generic_patterns</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>*</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">headers</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">X-Powered-By</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">menu</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">meta</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">models_to_run</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>^\\w+\\.py$</div></td></tr><tr><td><div>^appadmin/\\w+\\.py$</div></td></tr><tr><td><div>^appadmin/hooks/\\w+\\.py$</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">postprocessing</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_compression_level</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_expires</td><td style="vertical-align:top;">:</td><td><div>2592000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_data_name</td><td style="vertical-align:top;">:</td><td><div>session_data_sistemadesechos</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_file</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/sessions/02f/0c7/127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32&#x27;, mode &#x27;rb+&#x27; at 0x10dd50c00&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_filename</td><td style="vertical-align:top;">:</td><td><div>/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/sessions/127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_hash</td><td style="vertical-align:top;">:</td><td><div>ba5838d0afdf3e419d3b4be56f6877da</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-e7617975-c248-483d-8b4d-0382f4f4cc32</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_name</td><td style="vertical-align:top;">:</td><td><div>session_id_sistemadesechos</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_locked</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_masterapp</td><td style="vertical-align:top;">:</td><td><div>SistemaDesechos</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_new</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_storage_type</td><td style="vertical-align:top;">:</td><td><div>file</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">status</td><td style="vertical-align:top;">:</td><td><div>200</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">view</td><td style="vertical-align:top;">:</td><td><div>appadmin/hooks.html</div></td></tr></table></div>'
+tRp253
+sS'locals'
+p254
+(dp255
+S'cursor'
+p256
+S'<gluon.contrib.pg8000.core.Cursor instance>'
+p257
+sS'self'
+p258
+S'<gluon.contrib.pg8000.core.Connection object>'
+p259
+sg6
+S"'Z'"
+p260
+sS'data_len'
+p261
+S'5'
+sssS'traceback'
+p262
+S'Traceback (most recent call last):\n  File "/Applications/web2py.app/Contents/Resources/gluon/restricted.py", line 227, in restricted\n  File "/Applications/web2py.app/Contents/Resources/applications/SistemaDesechos/models/db_wizard.py", line 94, in <module>\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/base.py", line 834, in define_table\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/base.py", line 873, in lazy_define_table\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py", line 510, in create_table\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py", line 623, in migrate_table\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/postgres.py", line 362, in execute\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py", line 1388, in execute\n  File "/Applications/web2py.app/Contents/Resources/gluon/packages/dal/pydal/adapters/base.py", line 1382, in log_execute\n  File "/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py", line 573, in execute\n  File "/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py", line 1626, in execute\n  File "/Applications/web2py.app/Contents/Resources/gluon/contrib/pg8000/core.py", line 1774, in handle_messages\nProgrammingError: (\'ERROR\', \'42804\', \'column "f_pureza__tmp" is of type integer but expression is of type character varying\')\n'
+p263
+s.

@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+
+<h2>Manage sustanciapeligrosa</h2>
+
+<p>{{=table}}</p>
+<button class="btn btn-default" href="{{=URL('front_page','sustancias')}}">Atras</button>

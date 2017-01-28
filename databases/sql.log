@@ -198,3 +198,96 @@ CREATE TABLE t_solicitud_archive(
     current_record INTEGER REFERENCES t_solicitud (id) ON DELETE CASCADE  
 );
 success!
+timestamp: 2017-01-27T23:55:39.784776
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:55:41.864879
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:55:43.863651
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:56:39.854455
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:57:54.502123
+CREATE TABLE t_sustanciapeligrosa(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512)
+);
+timestamp: 2017-01-27T23:58:30.829305
+CREATE TABLE t_sustanciapeligrosa(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512)
+);
+timestamp: 2017-01-27T23:58:36.142608
+CREATE TABLE t_sustanciapeligrosa(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512)
+);
+timestamp: 2017-01-27T23:58:40.436739
+CREATE TABLE t_sustanciapeligrosa(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512)
+);
+timestamp: 2017-01-27T23:59:05.601504
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:59:09.340520
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:59:16.824719
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-27T23:59:24.956240
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-28T00:00:39.970539
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-28T00:00:42.323895
+ALTER TABLE t_sustanciapeligrosa ADD f_pureza__tmp INTEGER;
+UPDATE t_sustanciapeligrosa SET f_pureza__tmp=f_pureza;
+timestamp: 2017-01-28T00:02:17.186165
+CREATE TABLE t_sustanciapeligrosa(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512)
+);
+success!
+timestamp: 2017-01-28T00:02:17.437044
+CREATE TABLE t_sustanciapeligrosa_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado VARCHAR(512),
+    f_control VARCHAR(512),
+    f_peligrosidad VARCHAR(512),
+    current_record INTEGER REFERENCES t_sustanciapeligrosa (id) ON DELETE CASCADE  
+);
+success!

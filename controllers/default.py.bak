@@ -34,7 +34,17 @@ def bitacora_manage():
 def solicitudes_manage():
     return dict()
 
-
+#@auth.requires_permission('gestor','t_sustanciapeligrosa')
+def sustanciapeligrosa_manage():
+    form = SQLFORM.smartgrid(db.t_sustanciapeligrosa,onupdate=auth.archive)
+    rows = db(db.t_sustanciapeligrosa).select(db.t_sustanciapeligrosa.f_nombre,
+                                              db.t_sustanciapeligrosa.f_cas,
+                                              db.t_sustanciapeligrosa.f_pureza,
+                                              db.t_sustanciapeligrosa.f_estado,
+                                              db.t_sustanciapeligrosa.f_control,
+                                              db.t_sustanciapeligrosa.f_peligrosidad)
+    table = SQLTABLE(rows, headers='fieldname:capitalize',orderby=db.t_sustanciapeligrosa.f_pureza, _width="100%")
+    return locals()
 
 def cargo_manage():
     form = SQLFORM.smartgrid(db.t_cargo,onupdate=auth.archive)

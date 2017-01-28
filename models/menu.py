@@ -1,3 +1,6 @@
+#import inspect
+#all_functions = inspect.getmembers(sustancias, inspect.isfunction)
+
 app = request.application
 response.title = settings.title
 response.subtitle = settings.subtitle
