@@ -34,14 +34,8 @@ def bitacora_manage():
 def solicitudes_manage():
     return dict()
 
-
-
 def cargo_manage():
     form = SQLFORM.smartgrid(db.t_cargo,onupdate=auth.archive)
-    return locals()
-
-def inventario_manage():
-    form = SQLFORM.smartgrid(db.t_inventario,onupdate=auth.archive)
     return locals()
 
 def solicitud_manage():

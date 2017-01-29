@@ -291,3 +291,362 @@ CREATE TABLE t_sustanciapeligrosa_archive(
     current_record INTEGER REFERENCES t_sustanciapeligrosa (id) ON DELETE CASCADE  
 );
 success!
+timestamp: 2017-01-28T12:10:55.646941
+CREATE TABLE t_estado(
+    id SERIAL PRIMARY KEY,
+    f_estado VARCHAR(512)
+);
+success!
+timestamp: 2017-01-28T12:12:09.224012
+ALTER TABLE t_sustanciapeligrosa ADD f_estado__tmp TEXT;
+UPDATE t_sustanciapeligrosa SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa ADD f_estado TEXT;
+UPDATE t_sustanciapeligrosa SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T12:12:09.379825
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado__tmp TEXT;
+UPDATE t_sustanciapeligrosa_archive SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado TEXT;
+UPDATE t_sustanciapeligrosa_archive SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T12:19:00.181958
+ALTER TABLE t_sustanciapeligrosa ADD f_estado__tmp VARCHAR(512);
+UPDATE t_sustanciapeligrosa SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa ADD f_estado VARCHAR(512);
+UPDATE t_sustanciapeligrosa SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T12:19:01.162633
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado__tmp VARCHAR(512);
+UPDATE t_sustanciapeligrosa_archive SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado VARCHAR(512);
+UPDATE t_sustanciapeligrosa_archive SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T12:24:18.234933
+ALTER TABLE t_sustanciapeligrosa ADD f_estado__tmp TEXT;
+UPDATE t_sustanciapeligrosa SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa ADD f_estado TEXT;
+UPDATE t_sustanciapeligrosa SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T12:24:18.365748
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado__tmp TEXT;
+UPDATE t_sustanciapeligrosa_archive SET f_estado__tmp=f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado;
+ALTER TABLE t_sustanciapeligrosa_archive ADD f_estado TEXT;
+UPDATE t_sustanciapeligrosa_archive SET f_estado=f_estado__tmp;
+ALTER TABLE t_sustanciapeligrosa_archive DROP COLUMN f_estado__tmp;
+success!
+timestamp: 2017-01-28T14:19:55.496737
+ALTER TABLE t_laboratorio ADD f_jefe TEXT;
+timestamp: 2017-01-28T14:19:55.532593
+ALTER TABLE t_laboratorio DROP COLUMN f_nombresec;
+timestamp: 2017-01-28T14:19:55.605229
+ALTER TABLE t_laboratorio DROP COLUMN f_espaciofisico;
+success!
+timestamp: 2017-01-28T14:19:55.644289
+ALTER TABLE t_laboratorio_archive ADD f_jefe TEXT;
+timestamp: 2017-01-28T14:19:55.652503
+ALTER TABLE t_laboratorio_archive DROP COLUMN f_nombresec;
+timestamp: 2017-01-28T14:19:55.655793
+ALTER TABLE t_laboratorio_archive DROP COLUMN f_espaciofisico;
+success!
+success!
+success!
+timestamp: 2017-01-28T16:05:48.542690
+CREATE TABLE t_seccion(
+    id SERIAL PRIMARY KEY,
+    f_seccion VARCHAR(512),
+    f_laboratorio TEXT,
+    f_jefe TEXT
+);
+success!
+timestamp: 2017-01-28T16:05:48.641929
+CREATE TABLE t_espaciofisico(
+    id SERIAL PRIMARY KEY,
+    f_espacio VARCHAR(512),
+    f_direccion VARCHAR(512),
+    f_seccion TEXT,
+    f_tecnico TEXT
+);
+success!
+timestamp: 2017-01-28T16:08:27.939614
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+timestamp: 2017-01-28T16:08:55.939018
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+timestamp: 2017-01-28T16:09:23.772709
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-28T16:10:03.957446
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-28T20:51:31.268399
+ALTER TABLE t_inventario ADD f_espaciofisico__tmp TEXT;
+UPDATE t_inventario SET f_espaciofisico__tmp=f_espaciofisico;
+ALTER TABLE t_inventario DROP COLUMN f_espaciofisico;
+ALTER TABLE t_inventario ADD f_espaciofisico TEXT;
+UPDATE t_inventario SET f_espaciofisico=f_espaciofisico__tmp;
+ALTER TABLE t_inventario DROP COLUMN f_espaciofisico__tmp;
+timestamp: 2017-01-28T20:51:31.565593
+ALTER TABLE t_inventario DROP COLUMN f_seccion;
+timestamp: 2017-01-28T20:51:31.569888
+ALTER TABLE t_inventario DROP COLUMN f_responsable;
+success!
+timestamp: 2017-01-28T20:51:31.611429
+ALTER TABLE t_inventario_archive ADD f_espaciofisico__tmp TEXT;
+UPDATE t_inventario_archive SET f_espaciofisico__tmp=f_espaciofisico;
+ALTER TABLE t_inventario_archive DROP COLUMN f_espaciofisico;
+ALTER TABLE t_inventario_archive ADD f_espaciofisico TEXT;
+UPDATE t_inventario_archive SET f_espaciofisico=f_espaciofisico__tmp;
+ALTER TABLE t_inventario_archive DROP COLUMN f_espaciofisico__tmp;
+timestamp: 2017-01-28T20:51:31.671156
+ALTER TABLE t_inventario_archive DROP COLUMN f_seccion;
+timestamp: 2017-01-28T20:51:31.674987
+ALTER TABLE t_inventario_archive DROP COLUMN f_responsable;
+success!
+timestamp: 2017-01-28T22:48:10.058683
+ALTER TABLE t_inventario ADD f_cantidadusointerno__tmp INTEGER;
+UPDATE t_inventario SET f_cantidadusointerno__tmp=f_cantidadusointerno;
+timestamp: 2017-01-28T22:48:48.271722
+ALTER TABLE t_inventario ADD f_cantidadusointerno__tmp INTEGER;
+UPDATE t_inventario SET f_cantidadusointerno__tmp=f_cantidadusointerno;
+timestamp: 2017-01-28T22:49:34.635158
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+timestamp: 2017-01-28T22:49:52.864723
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+timestamp: 2017-01-28T22:50:18.761974
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+success!
+timestamp: 2017-01-28T22:50:18.864635
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER,
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-28T23:32:05.307056
+ALTER TABLE t_seccion ADD f_nombre VARCHAR(512);
+success!
+timestamp: 2017-01-28T23:50:13.057104
+ALTER TABLE t_inventario ADD f_espaciofisico__tmp INTEGER;
+UPDATE t_inventario SET f_espaciofisico__tmp=f_espaciofisico;
+success!
+success!
+timestamp: 2017-01-28T23:58:53.082456
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+success!
+timestamp: 2017-01-28T23:58:53.194944
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico TEXT,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER,
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-29T00:00:11.812811
+ALTER TABLE t_inventario ADD f_espaciofisico__tmp INTEGER;
+UPDATE t_inventario SET f_espaciofisico__tmp=f_espaciofisico;
+timestamp: 2017-01-29T00:00:38.714358
+ALTER TABLE t_inventario ADD f_espaciofisico__tmp INTEGER;
+UPDATE t_inventario SET f_espaciofisico__tmp=f_espaciofisico;
+timestamp: 2017-01-29T00:01:18.356159
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+timestamp: 2017-01-29T00:01:55.200490
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+success!
+timestamp: 2017-01-29T00:01:55.237687
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER,
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-29T00:08:10.276130
+ALTER TABLE t_seccion ADD f_laboratorio__tmp INTEGER;
+UPDATE t_seccion SET f_laboratorio__tmp=f_laboratorio;
+timestamp: 2017-01-29T00:08:56.574263
+ALTER TABLE t_seccion ADD f_laboratorio__tmp INTEGER;
+UPDATE t_seccion SET f_laboratorio__tmp=f_laboratorio;
+timestamp: 2017-01-29T00:11:14.247874
+CREATE TABLE t_laboratorio(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT
+);
+success!
+timestamp: 2017-01-29T00:11:14.336180
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe TEXT,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-29T00:11:14.371923
+CREATE TABLE t_seccion(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_laboratorio INTEGER,
+    f_jefe TEXT
+);
+success!
+timestamp: 2017-01-29T00:11:14.414087
+CREATE TABLE t_espaciofisico(
+    id SERIAL PRIMARY KEY,
+    f_espacio VARCHAR(512),
+    f_direccion VARCHAR(512),
+    f_seccion INTEGER,
+    f_tecnico TEXT
+);
+success!
+timestamp: 2017-01-29T00:11:14.453417
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER
+);
+success!
+timestamp: 2017-01-29T00:11:14.498875
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER,
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+timestamp: 2017-01-29T00:11:48.429576
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico INTEGER,
+    f_cantidadonacion INTEGER,
+    f_cantidadusointerno INTEGER,
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-29T00:14:34.338339
+ALTER TABLE t_seccion ADD f_jefe__tmp INTEGER;
+UPDATE t_seccion SET f_jefe__tmp=f_jefe;
+timestamp: 2017-01-29T00:15:24.936540
+CREATE TABLE t_seccion(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_laboratorio INTEGER,
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-01-29T00:17:57.000833
+ALTER TABLE t_laboratorio ADD f_jefe__tmp INTEGER;
+UPDATE t_laboratorio SET f_jefe__tmp=f_jefe;
+timestamp: 2017-01-29T00:19:20.226763
+CREATE TABLE t_laboratorio(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-01-29T00:19:20.264755
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-29T00:19:20.302104
+CREATE TABLE t_espaciofisico(
+    id SERIAL PRIMARY KEY,
+    f_espacio VARCHAR(512),
+    f_direccion VARCHAR(512),
+    f_seccion INTEGER,
+    f_tecnico INTEGER
+);
+success!
+timestamp: 2017-01-29T00:29:06.460853
+ALTER TABLE t_seccion DROP COLUMN f_nombre;
+success!
+timestamp: 2017-01-29T00:30:35.273648
+ALTER TABLE t_seccion ADD f_laboratorio__tmp VARCHAR(512);
+UPDATE t_seccion SET f_laboratorio__tmp=f_laboratorio;
+ALTER TABLE t_seccion DROP COLUMN f_laboratorio;
+ALTER TABLE t_seccion ADD f_laboratorio VARCHAR(512);
+UPDATE t_seccion SET f_laboratorio=f_laboratorio__tmp;
+ALTER TABLE t_seccion DROP COLUMN f_laboratorio__tmp;
+success!
