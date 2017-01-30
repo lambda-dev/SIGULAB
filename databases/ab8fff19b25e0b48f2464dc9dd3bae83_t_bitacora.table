@@ -13,14 +13,14 @@ p6
 I6
 sS'sql'
 p7
-S'VARCHAR(512) NOT NULL'
+S'INTEGER'
 p8
 sS'notnull'
 p9
-I01
+I00
 sS'type'
 p10
-S'string'
+S'integer'
 p11
 ssS'f_proceso'
 p12
@@ -37,10 +37,11 @@ p14
 sg9
 I01
 sg10
-g11
-ssS'f_consumo'
+S'string'
 p15
-(dp16
+ssS'f_consumo'
+p16
+(dp17
 g4
 I512
 sg5
@@ -48,15 +49,15 @@ I00
 sg6
 I5
 sg7
-S'VARCHAR(512) NOT NULL'
-p17
+S'INTEGER'
+p18
 sg9
-I01
+I00
 sg10
 g11
 ssS'f_sustancia'
-p18
-(dp19
+p19
+(dp20
 g4
 I512
 sg5
@@ -64,15 +65,15 @@ I00
 sg6
 I2
 sg7
-S'VARCHAR(512) NOT NULL'
-p20
+S'INTEGER NOT NULL'
+p21
 sg9
 I01
 sg10
 g11
 ssS'f_ingreso'
-p21
-(dp22
+p22
+(dp23
 g4
 I512
 sg5
@@ -80,15 +81,31 @@ I00
 sg6
 I4
 sg7
-S'VARCHAR(512) NOT NULL'
-p23
+S'INTEGER'
+p24
 sg9
-I01
+I00
+sg10
+g11
+ssS'f_espaciofisico'
+p25
+(dp26
+g4
+I512
+sg5
+I00
+sg6
+I8
+sg7
+S'INTEGER'
+p27
+sg9
+I00
 sg10
 g11
 ssS'f_fecha'
-p24
-(dp25
+p28
+(dp29
 g4
 I512
 sg5
@@ -96,15 +113,16 @@ I00
 sg6
 I7
 sg7
-S'VARCHAR(512) NOT NULL'
-p26
+S'TIMESTAMP NOT NULL'
+p30
 sg9
 I01
 sg10
-g11
+S'datetime'
+p31
 ssS'id'
-p27
-(dp28
+p32
+(dp33
 g4
 I512
 sg5
@@ -113,9 +131,9 @@ sg6
 I1
 sg7
 S'SERIAL PRIMARY KEY'
-p29
+p34
 sg9
 I00
 sg10
-g27
+g32
 ss.

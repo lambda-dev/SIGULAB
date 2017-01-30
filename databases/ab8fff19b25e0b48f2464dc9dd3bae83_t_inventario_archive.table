@@ -22,7 +22,7 @@ sS'type'
 p10
 S'integer'
 p11
-ssS'current_record'
+ssS'f_total'
 p12
 (dp13
 g4
@@ -32,16 +32,32 @@ I00
 sg6
 I6
 sg7
-S'INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  '
+S'INTEGER'
 p14
 sg9
 I00
 sg10
-S'reference t_inventario'
+g11
+ssS'current_record'
 p15
+(dp16
+g4
+I512
+sg5
+I00
+sg6
+I7
+sg7
+S'INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  '
+p17
+sg9
+I00
+sg10
+S'reference t_inventario'
+p18
 ssS'f_cantidadonacion'
-p16
-(dp17
+p19
+(dp20
 g4
 I512
 sg5
@@ -50,14 +66,14 @@ sg6
 I4
 sg7
 S'INTEGER'
-p18
+p21
 sg9
 I00
 sg10
 g11
 ssS'f_sustancia'
-p19
-(dp20
+p22
+(dp23
 g4
 I512
 sg5
@@ -65,16 +81,15 @@ I00
 sg6
 I2
 sg7
-S'VARCHAR(512)'
-p21
+S'INTEGER'
+p24
 sg9
 I00
 sg10
-S'string'
-p22
+g11
 ssS'f_espaciofisico'
-p23
-(dp24
+p25
+(dp26
 g4
 I512
 sg5
@@ -83,14 +98,14 @@ sg6
 I3
 sg7
 S'INTEGER'
-p25
+p27
 sg9
 I00
 sg10
 g11
 ssS'id'
-p26
-(dp27
+p28
+(dp29
 g4
 I512
 sg5
@@ -99,9 +114,9 @@ sg6
 I1
 sg7
 S'SERIAL PRIMARY KEY'
-p28
+p30
 sg9
 I00
 sg10
-g26
+g28
 ss.

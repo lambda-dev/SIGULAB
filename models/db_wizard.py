@@ -9,6 +9,10 @@
 #    migrate=settings.migrate)
 
 #db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
+########################################
+db.define_table('t_materiales',
+               Field('f_nombre','string',readable=False,writable=False,requires=IS_NOT_EMPTY()),
+               format='%(f_nombre)s')
 
 ########################################
 db.define_table('t_estado',
@@ -43,10 +47,13 @@ db.define_table('t_espaciofisico',
 
 ########################################
 db.define_table('t_inventario',
-    Field('f_sustancia', 'string', label=T('Sustancia')),
+    Field('f_sustancia', 'integer', label=T('Sustancia'),requires=IS_IN_DB(db,db.t_materiales.id,'%(f_nombre)s')\
+    ,represent= lambda name,row: \
+                A(str(db(db.t_materiales.id==name).select(db.t_materiales.f_nombre))[22:],_href=URL('sustancias','view_bitacora',args=[name]))),
     Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') , label=T('Espaciofisico')),
-    Field('f_cantidadonacion', 'integer', label=T('Cantidadonacion')),
-    Field('f_cantidadusointerno', 'integer',label=T('Cantidadusointerno')),
+    Field('f_cantidadonacion', 'integer', label=T('Cantida Donacion')),
+    Field('f_cantidadusointerno', 'integer',label=T('Cantidad Uso Interno')),
+    Field('f_total','integer',default=0,label=T('Cantidad Total')),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
@@ -54,13 +61,16 @@ db.define_table('t_inventario_archive',db.t_inventario,Field('current_record','r
 
 ########################################
 db.define_table('t_bitacora',
-    Field('f_sustancia', 'string', notnull=True, label=T('SustanciaBita')),
+    Field('f_sustancia', 'integer',requires=IS_IN_DB(db,db.t_materiales.id,'%(f_nombre)s'),
+            represent=lambda f_sustancia,row: str(db(db.t_materiales.id == f_sustancia).select(db.t_materiales.f_nombre))[22:],
+            notnull=True, label=T('Sustancia')),
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
-    Field('f_ingreso', 'string', notnull=True, label=T('Ingreso')),
-    Field('f_consumo', 'string', notnull=True, label=T('Consumo')),
-    Field('f_cantidad', 'string', notnull=True, label=T('CantidadBita')),
-    Field('f_fecha', 'string', notnull=True, label=T('Fecha')),
-    format='%(f_sustanciaBita)s',
+    Field('f_ingreso', 'integer', label=T('Ingreso')),
+    Field('f_consumo', 'integer', label=T('Consumo')),
+    Field('f_cantidad', 'integer', label=T('Cantidad')),
+    Field('f_fecha', 'datetime', notnull=True, label=T('Fecha')),
+    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') , label=T('Espaciofisico')),
+    format='%(f_sustancia)s',
     migrate=settings.migrate)
 
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
@@ -83,7 +93,7 @@ db.define_table('t_sustanciapeligrosa',
     Field('f_nombre', 'string', label=T('Nombre')),
     Field('f_cas', 'string', label=T('Cas')),
     Field('f_pureza', 'integer',requires=IS_INT_IN_RANGE(0, 101), label=T('Pureza')),
-    Field('f_estado', 'list:reference t_estado', label=T('Estado')),
+    Field('f_estado', 'string', requires=IS_IN_DB(db,db.t_estado.f_estado,'%(f_estado)s'), label=T('Estado')),
     Field('f_control', 'string', label=T('Control')),
     Field('f_peligrosidad', 'string', label=T('Peligrosidad')),
     format='%(f_nombre)s',
