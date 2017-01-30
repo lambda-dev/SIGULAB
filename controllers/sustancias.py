@@ -20,11 +20,6 @@ def sustanciapeligrosa_manage():
 def inventario_manage():
     if(auth.has_permission('tecnico','t_inventario')):
 
-        #cambiar por un trigger
-        for row in db(db.t_inventario).select(db.t_inventario.ALL):
-            row.update_record(f_total=(row.f_cantidadonacion+row.f_cantidadusointerno))
-        ##########
-
         rows = db(
             (db.t_espaciofisico.f_tecnico == auth.user.id)&
             (db.t_espaciofisico.id == db.t_inventario.f_espaciofisico)

@@ -13,6 +13,7 @@
 db.define_table('t_materiales',
                Field('f_nombre','string',readable=False,writable=False,requires=IS_NOT_EMPTY()),
                format='%(f_nombre)s')
+db.t_materiales.f_nombre.requires=IS_NOT_IN_DB(db,db.t_materiales.f_nombre)
 
 ########################################
 db.define_table('t_estado',
@@ -53,7 +54,7 @@ db.define_table('t_inventario',
     Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') , label=T('Espaciofisico')),
     Field('f_cantidadonacion', 'integer', label=T('Cantida Donacion')),
     Field('f_cantidadusointerno', 'integer',label=T('Cantidad Uso Interno')),
-    Field('f_total','integer',default=0,label=T('Cantidad Total')),
+    Field('f_total','integer',default=0,label=T('Cantidad Total'),readable=False,writable=False),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
