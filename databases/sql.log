@@ -803,3 +803,66 @@ CREATE TABLE t_inventario_archive(
     current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
 );
 success!
+timestamp: 2017-01-30T09:21:16.742915
+ALTER TABLE t_bitacora ADD f_fecha__tmp TIMESTAMP;
+UPDATE t_bitacora SET f_fecha__tmp=f_fecha;
+ALTER TABLE t_bitacora DROP COLUMN f_fecha;
+ALTER TABLE t_bitacora ADD f_fecha TIMESTAMP;
+UPDATE t_bitacora SET f_fecha=f_fecha__tmp;
+ALTER TABLE t_bitacora DROP COLUMN f_fecha__tmp;
+success!
+timestamp: 2017-01-30T09:21:17.030389
+ALTER TABLE t_bitacora_archive ADD f_fecha__tmp TIMESTAMP;
+UPDATE t_bitacora_archive SET f_fecha__tmp=f_fecha;
+ALTER TABLE t_bitacora_archive DROP COLUMN f_fecha;
+ALTER TABLE t_bitacora_archive ADD f_fecha TIMESTAMP;
+UPDATE t_bitacora_archive SET f_fecha=f_fecha__tmp;
+ALTER TABLE t_bitacora_archive DROP COLUMN f_fecha__tmp;
+success!
+timestamp: 2017-01-30T14:26:34.319498
+CREATE TABLE t_bitacora(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso INTEGER,
+    f_consumo INTEGER,
+    f_cantidad INTEGER,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER
+);
+success!
+timestamp: 2017-01-30T14:26:34.547608
+CREATE TABLE t_bitacora_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso INTEGER,
+    f_consumo INTEGER,
+    f_cantidad INTEGER,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER,
+    current_record INTEGER REFERENCES t_bitacora (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-01-30T20:25:23.224197
+ALTER TABLE t_bitacora ADD f_espaciofisico__tmp INTEGER NOT NULL;
+timestamp: 2017-01-30T20:25:26.562352
+ALTER TABLE t_bitacora ADD f_espaciofisico__tmp INTEGER NOT NULL;
+timestamp: 2017-01-30T20:25:35.409673
+ALTER TABLE t_bitacora ADD f_espaciofisico__tmp INTEGER NOT NULL;
+timestamp: 2017-01-30T20:26:11.963296
+ALTER TABLE t_bitacora ADD f_espaciofisico__tmp INTEGER NOT NULL;
+UPDATE t_bitacora SET f_espaciofisico__tmp=f_espaciofisico;
+ALTER TABLE t_bitacora DROP COLUMN f_espaciofisico;
+ALTER TABLE t_bitacora ADD f_espaciofisico INTEGER NOT NULL;
+UPDATE t_bitacora SET f_espaciofisico=f_espaciofisico__tmp;
+ALTER TABLE t_bitacora DROP COLUMN f_espaciofisico__tmp;
+success!
+timestamp: 2017-01-30T20:26:12.669282
+ALTER TABLE t_bitacora_archive ADD f_espaciofisico__tmp INTEGER NOT NULL;
+UPDATE t_bitacora_archive SET f_espaciofisico__tmp=f_espaciofisico;
+ALTER TABLE t_bitacora_archive DROP COLUMN f_espaciofisico;
+ALTER TABLE t_bitacora_archive ADD f_espaciofisico INTEGER NOT NULL;
+UPDATE t_bitacora_archive SET f_espaciofisico=f_espaciofisico__tmp;
+ALTER TABLE t_bitacora_archive DROP COLUMN f_espaciofisico__tmp;
+success!

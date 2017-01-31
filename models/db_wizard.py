@@ -50,10 +50,12 @@ db.define_table('t_espaciofisico',
 db.define_table('t_inventario',
     Field('f_sustancia', 'integer', label=T('Sustancia'),requires=IS_IN_DB(db,db.t_materiales.id,'%(f_nombre)s')\
     ,represent= lambda name,row: \
-                A(str(db(db.t_materiales.id==name).select(db.t_materiales.f_nombre))[22:],_href=URL('sustancias','view_bitacora',args=[name]))),
-    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') , label=T('Espaciofisico')),
-    Field('f_cantidadonacion', 'integer', label=T('Cantida Donacion')),
-    Field('f_cantidadusointerno', 'integer',label=T('Cantidad Uso Interno')),
+                A(str(db(db.t_materiales.id==name).select(db.t_materiales.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia)))),
+    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
+    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],
+    label=T('Espaciofisico')),
+    Field('f_cantidadonacion', 'integer', label=T('Cantidad Donacion')),
+    Field('f_cantidadusointerno', 'integer',default=0,label=T('Cantidad Uso Interno')),
     Field('f_total','integer',default=0,label=T('Cantidad Total'),readable=False,writable=False),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
@@ -62,17 +64,20 @@ db.define_table('t_inventario_archive',db.t_inventario,Field('current_record','r
 
 ########################################
 db.define_table('t_bitacora',
-    Field('f_sustancia', 'integer',requires=IS_IN_DB(db,db.t_materiales.id,'%(f_nombre)s'),
+    Field('f_sustancia', 'integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_materiales.id,'%(f_nombre)s'),
             represent=lambda f_sustancia,row: str(db(db.t_materiales.id == f_sustancia).select(db.t_materiales.f_nombre))[22:],
             notnull=True, label=T('Sustancia')),
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'integer', label=T('Ingreso')),
     Field('f_consumo', 'integer', label=T('Consumo')),
-    Field('f_cantidad', 'integer', label=T('Cantidad')),
-    Field('f_fecha', 'datetime', notnull=True, label=T('Fecha')),
-    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') , label=T('Espaciofisico')),
+    Field('f_cantidad', 'integer', label=T('Cantidad'),writable=False,default=0),
+    Field('f_fecha', 'datetime', label=T('Fecha'),writable=False, default=request.now),
+    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
+    writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
+     label=T('Espacio Fisico'),notnull=True),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
+db.t_bitacora.id.readable = False
 
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 
@@ -99,7 +104,8 @@ db.define_table('t_sustanciapeligrosa',
     Field('f_peligrosidad', 'string', label=T('Peligrosidad')),
     format='%(f_nombre)s',
     migrate=settings.migrate)
-
+db.t_sustanciapeligrosa.id.readable=False
+db.t_sustanciapeligrosa.id.writable=False
 db.define_table('t_sustanciapeligrosa_archive',db.t_sustanciapeligrosa,Field('current_record','reference t_sustanciapeligrosa',readable=False,writable=False))
 
 ########################################
