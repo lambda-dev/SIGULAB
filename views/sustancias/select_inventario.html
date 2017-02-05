@@ -1,0 +1,10 @@
+{{extend 'layout.html'}}
+
+<h2>Inventario</h2>
+{{for espacio in espacios:}}
+<a = href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}"
+<p>{{=espacio.f_espacio}}</p>
+{{pass}}
+<a  href="{{=URL('front_page','sustancias')}}">
+<button class="btn btn-default">Atras</button>
+</a>

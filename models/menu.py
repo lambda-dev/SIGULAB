@@ -9,8 +9,9 @@ response.meta.keywords = settings.keywords
 response.meta.description = settings.description
 response.menu = [
 (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
-(T('Modules'),False,None,[
-        (T('SMyDP'),URL('front_page','index'),URL('front_page','index')),
+(T('SMyDP'),False,None,[
+        (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
+        (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
         ]),
 (T('Editar'), False, URL('admin', 'default', 'design/%s' % app)),
 #(T('Personal'),URL('default','personal_manage')==URL(),URL('default','personal_manage'),[]),

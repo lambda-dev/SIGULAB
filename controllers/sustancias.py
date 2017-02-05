@@ -3,41 +3,38 @@ from gluon.tools import Crud
 
 @auth.requires_login()
 def sustanciapeligrosa_manage():
-    if(auth.has_permission('gestor','t_sustanciapeligrosa') or \
-    auth.has_permission('director','t_sustanciapeligrosa')):
-        table = SQLFORM.smartgrid(db.t_sustanciapeligrosa,onupdate=auth.archive)
+    if(auth.has_permission('gestor','t_sustancias') or \
+    auth.has_permission('director','t_sustancias')):
+        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,details=False,links_in_grid=False,csv=False,user_signature=True)
     else:
-        rows = db(db.t_sustanciapeligrosa).select(db.t_sustanciapeligrosa.f_nombre,
-                                                  db.t_sustanciapeligrosa.f_cas,
-                                                  db.t_sustanciapeligrosa.f_pureza,
-                                                  db.t_sustanciapeligrosa.f_estado,
-                                                  db.t_sustanciapeligrosa.f_control,
-                                                  db.t_sustanciapeligrosa.f_peligrosidad)
-        table = SQLTABLE(rows, headers='fieldname:capitalize',orderby=db.t_sustanciapeligrosa.f_pureza, _width="100%")
+        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
     return locals()
 
 @auth.requires_login()
+def select_inventario():
+    #if (auth.has_membership('tecnico')):
+    espacios = db(db.t_espaciofisico.f_tecnico == auth.user.id).select(db.t_espaciofisico.f_espacio, db.t_espaciofisico.id)
+    return locals()
+
+
+
+@auth.requires_login()
 def inventario_manage():
+    espF = request.vars['esp']
+    query = db.t_inventario.f_espaciofisico == espF
     if(auth.has_permission('tecnico','t_inventario')):
 
-        rows = db(
-            (db.t_espaciofisico.f_tecnico == auth.user.id)&
-            (db.t_espaciofisico.id == db.t_inventario.f_espaciofisico)
-        ).select(db.t_inventario.f_sustancia,
-                 db.t_inventario.f_cantidadusointerno,
-                 db.t_inventario.f_cantidadonacion,
-                 db.t_inventario.f_total,
-                 )
-        table = SQLTABLE(rows, headers='fieldname:capitalize', _width="100%")
+        table = SQLFORM.smartgrid(db.t_inventario,create=False,links_in_grid=False,csv=False,editable=False,deletable=False,details=False)
     else:
-        table = SQLFORM.smartgrid(db.t_inventario,onupdate=auth.archive)
+        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive)
     return locals()
 
 @auth.requires_login()
 def view_bitacora():
     sust = request.vars['sust']
-    name = str(db(db.t_materiales.id == sust).select(db.t_materiales.f_nombre))[22:]
-    espF = str(db(db.t_espaciofisico.f_tecnico == 3).select(db.t_espaciofisico.id))[20:]
+
+    name = str(db(db.t_sustancias.id == sust).select(db.t_sustancias.f_nombre))[22:]
+    #espF = str(db(db.t_espaciofisico.f_tecnico == 3).select(db.t_espaciofisico.id))[20:]
     total = str((db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno)))[34:]
     #total = str(total)[34:]
     #for row in db((db.t_bitacora.f_sustancia == name)&

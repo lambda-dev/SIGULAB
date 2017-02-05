@@ -4,7 +4,7 @@ p2
 (dp3
 S'sortable'
 p4
-I3
+I2
 sS'sql'
 p5
 S'VARCHAR(512)'
@@ -26,7 +26,7 @@ ssS'f_jefe'
 p12
 (dp13
 g4
-I5
+I4
 sg5
 S'INTEGER'
 p14
