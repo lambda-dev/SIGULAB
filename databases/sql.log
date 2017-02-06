@@ -479,3 +479,25 @@ ALTER TABLE t_inventario_archive ADD f_cantidadusointerno FLOAT;
 UPDATE t_inventario_archive SET f_cantidadusointerno=f_cantidadusointerno__tmp;
 ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadusointerno__tmp;
 success!
+timestamp: 2017-02-05T11:38:25.931874
+ALTER TABLE t_inventario ADD f_total__tmp FLOAT;
+UPDATE t_inventario SET f_total__tmp=f_total;
+ALTER TABLE t_inventario DROP COLUMN f_total;
+ALTER TABLE t_inventario ADD f_total FLOAT;
+UPDATE t_inventario SET f_total=f_total__tmp;
+ALTER TABLE t_inventario DROP COLUMN f_total__tmp;
+success!
+timestamp: 2017-02-05T11:38:26.002749
+ALTER TABLE t_inventario_archive ADD f_total__tmp FLOAT;
+UPDATE t_inventario_archive SET f_total__tmp=f_total;
+ALTER TABLE t_inventario_archive DROP COLUMN f_total;
+ALTER TABLE t_inventario_archive ADD f_total FLOAT;
+UPDATE t_inventario_archive SET f_total=f_total__tmp;
+ALTER TABLE t_inventario_archive DROP COLUMN f_total__tmp;
+success!
+timestamp: 2017-02-06T08:12:37.715715
+ALTER TABLE t_inventario ADD f_seccion INTEGER;
+success!
+timestamp: 2017-02-06T08:12:39.303197
+ALTER TABLE t_inventario_archive ADD f_seccion INTEGER;
+success!

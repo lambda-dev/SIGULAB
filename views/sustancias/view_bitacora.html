@@ -1,10 +1,9 @@
 {{extend 'layout.html'}}
 
 <h1>Bitacora</h1>
-<p>A:{{=espF}}</p>
 <h2>Sustancia: {{=name}}</h2>
 <p>{{=table}}</p>
 <p>Cantidad Disponible: {{=total}}</p>
-<a  href="{{=URL('sustancias','inventario_manage')}}">
+<a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
 <button class="btn btn-default">Atras</button>
 </a>

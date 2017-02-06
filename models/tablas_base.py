@@ -16,6 +16,10 @@ if db(db.auth_permission).isempty():
                             group_id=db(db.auth_group.role == "Gestor de Sustancias").select(db.auth_group.id).first())
     db.auth_permission.insert(name='tecnico',table_name='t_inventario',
                             group_id=db(db.auth_group.role == "Técnico").select(db.auth_group.id).first())
+    db.auth_permission.insert(name='jefeseccion',table_name='t_inventario',
+                            group_id=db(db.auth_group.role == "Jefe de Sección").select(db.auth_group.id).first())
+    db.auth_permission.insert(name='jefelab',table_name='t_inventario',
+                            group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
 
 ########################################
 db.define_table('t_regimenes',
@@ -117,18 +121,21 @@ db.define_table('t_espaciofisico',
     Field('f_tecnico','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
+db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
 
 ########################################
 db.define_table('t_inventario',
     Field('f_sustancia', 'integer', label=T('Sustancia'),requires=IS_IN_DB(db,db.t_sustancias.id,'%(f_nombre)s')\
     ,represent= lambda name,row: \
-                A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia)))),
-    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
+                A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),
+    Field('f_espaciofisico', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],
     label=T('Espaciofisico')),
-    Field('f_cantidadonacion', 'float',default=0,label=T('Cantidad Donacion')),
-    Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno')),
-    Field('f_total','integer',label=T('Cantidad Total'),writable=False),
+    Field('f_cantidadonacion', 'float',default=0,label=T('Cantidad Donacion'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_total','float',label=T('Cantidad Total'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_seccion','integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'),label=T('Sección'),
+    compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
@@ -142,14 +149,15 @@ db.define_table('t_bitacora',
             represent=lambda f_sustancia,row: str(db(db.t_sustancias.id == f_sustancia).select(db.t_sustancias.f_nombre))[22:],
             notnull=True, label=T('Sustancia')),
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
-    Field('f_ingreso', 'float', label=T('Ingreso')),
-    Field('f_consumo', 'float', label=T('Consumo')),
-    Field('f_cantidad', 'float', label=T('Cantidad'),writable=False,default=0),
+    Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0,compute=lambda r:
+    r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
-    Field('f_espaciofisico', 'integer', requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
+    Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
      label=T('Espacio Fisico'),notnull=True),
-    Field('f_descripcion','text',label=T('Descripción')),
+    Field('f_descripcion','text',label=T('Descripción'),readable=False),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 db.t_bitacora.id.readable = False
@@ -164,7 +172,6 @@ db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','refer
 #    Field('f_cargo', 'reference t_cargo', notnull=True, label=T('Cargo')),
 #    format='%(f_nombre)s',
 #    migrate=settings.migrate)
-
 #db.define_table('t_personal_archive',db.t_personal,Field('current_record','reference t_personal',readable=False,writable=False))
 
 
