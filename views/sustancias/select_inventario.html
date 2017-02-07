@@ -1,28 +1,36 @@
 {{extend 'layout.html'}}
 
 <h2>Seleccionar Inventario</h2>
-<p>{{#=espacios}}</p>
+
+{{if espacios:}}
+<h3>Espacios Fisicos:</h3>
 {{for espacio in espacios:}}
 <a = href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}"
 <p>{{=espacio.f_espacio}}</p>
 {{pass}}
+</a>
 
 {{if secciones:}}
+<h3>Secciones:</h3>
 {{  for seccion in secciones:}}
 <a = href="{{=URL('sustancias','inventario_manage',vars=dict(secc=seccion.id))}}"
-<p>Seccion: {{=seccion.f_seccion}}</p>
+<p>{{=seccion.f_seccion}}</p>
 </a>
 {{  pass}}
 {{pass}}
 
-{{if lab:}}
-{{  for seccion in secciones:}}
-<a = href="{{=URL('sustancias','inventario_manage',vars=dict(secc=seccion.id))}}"
-<p>Seccion: {{=seccion.f_seccion}}</p>
+{{if labs:}}
+<h3>Laboratorios:</h3>
+{{  for lab in labs:}}
+<a = href="{{=URL('sustancias','inventario_manage',vars=dict(lab=lab.id))}}"
+<p>{{=lab.f_nombre}}</p>
 </a>
 {{  pass}}
 {{pass}}
 
+{{else:}}
+<h3>No hay nada aqui :(</h3>
+{{pass}}
 <a  href="{{=URL('front_page','sustancias')}}">
 <button class="btn btn-default">Atras</button>
 </a>
