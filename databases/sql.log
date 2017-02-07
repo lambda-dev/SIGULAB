@@ -501,3 +501,54 @@ success!
 timestamp: 2017-02-06T08:12:39.303197
 ALTER TABLE t_inventario_archive ADD f_seccion INTEGER;
 success!
+timestamp: 2017-02-07T10:42:30.603780
+ALTER TABLE t_inventario ADD f_laboratorio INTEGER;
+success!
+timestamp: 2017-02-07T10:42:31.052100
+ALTER TABLE t_inventario_archive ADD f_laboratorio INTEGER;
+success!
+timestamp: 2017-02-07T10:46:02.645626
+ALTER TABLE t_inventario ADD f_laboratorio__tmp VARCHAR(512);
+UPDATE t_inventario SET f_laboratorio__tmp=f_laboratorio;
+ALTER TABLE t_inventario DROP COLUMN f_laboratorio;
+ALTER TABLE t_inventario ADD f_laboratorio VARCHAR(512);
+UPDATE t_inventario SET f_laboratorio=f_laboratorio__tmp;
+ALTER TABLE t_inventario DROP COLUMN f_laboratorio__tmp;
+success!
+timestamp: 2017-02-07T10:46:03.475373
+ALTER TABLE t_inventario_archive ADD f_laboratorio__tmp VARCHAR(512);
+UPDATE t_inventario_archive SET f_laboratorio__tmp=f_laboratorio;
+ALTER TABLE t_inventario_archive DROP COLUMN f_laboratorio;
+ALTER TABLE t_inventario_archive ADD f_laboratorio VARCHAR(512);
+UPDATE t_inventario_archive SET f_laboratorio=f_laboratorio__tmp;
+ALTER TABLE t_inventario_archive DROP COLUMN f_laboratorio__tmp;
+success!
+timestamp: 2017-02-07T12:06:52.612812
+CREATE TABLE table_solicitud(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    f_solicitud VARCHAR(512),
+    f_respuesta VARCHAR(512)
+);
+success!
+timestamp: 2017-02-07T12:06:53.269206
+CREATE TABLE table_solicitud_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    f_solicitud VARCHAR(512),
+    f_respuesta VARCHAR(512),
+    current_record INTEGER REFERENCES table_solicitud (id) ON DELETE CASCADE  
+);
+success!

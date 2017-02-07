@@ -136,6 +136,8 @@ db.define_table('t_inventario',
     Field('f_total','float',label=T('Cantidad Total'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_seccion','integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'),label=T('Sección'),
     compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),
+    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'),readable=False,writable=False,
+    compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
@@ -163,20 +165,6 @@ db.define_table('t_bitacora',
 db.t_bitacora.id.readable = False
 
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
-
-########################################
-#db.define_table('t_personal',
-#    Field('f_nombre', 'string', notnull=True, label=T('NombrePer')),
-#    Field('f_apellido', 'string', notnull=True, label=T('Apellido')),
-#    Field('f_correo', 'string', notnull=True, label=T('Correo')),
-#    Field('f_cargo', 'reference t_cargo', notnull=True, label=T('Cargo')),
-#    format='%(f_nombre)s',
-#    migrate=settings.migrate)
-#db.define_table('t_personal_archive',db.t_personal,Field('current_record','reference t_personal',readable=False,writable=False))
-
-
-
-########################################
 
 
 ########################################

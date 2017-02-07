@@ -47,7 +47,7 @@ def select_inventario():
     elif (auth.has_membership('Jefe de Sección') ):
         espacios = db((db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_seccion.f_jefe == auth.user.id)).select(db.t_espaciofisico.f_espacio,db.t_espaciofisico.id)
     elif (auth.has_membership('Jefe de Laboratorio') ):
-        espacios = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_laboratorio)).select().first()
+        espacios = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_laboratorio.f_nombre == db.t_inventario.f_laboratorio)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico)).select(db.t_espaciofisico.f_espacio,db.t_espaciofisico.id)
     else:
         espacios = db(db.t_espaciofisico.f_tecnico == auth.user.id).select(db.t_espaciofisico.f_espacio, db.t_espaciofisico.id)
 
@@ -70,7 +70,7 @@ def inventario_manage():
         db.t_inventario.f_espaciofisico.readable = True
         query = (db.t_inventario.f_seccion == request.vars['secc'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=False,
-        orderby=db.t_inventario.f_espaciofisico,create=False,csv=False,deletable=False,links_in_grid=False)#left=left)
+        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)#left=left)
         return locals()
         #left= (db.t_espaciofisico.on(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id) )
         #query = ((  == db.t_inventario.f_espaciofisico)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_seccion.f_jefe == auth.user.id))

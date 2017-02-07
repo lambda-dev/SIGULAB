@@ -1,6 +1,3 @@
-#import inspect
-#all_functions = inspect.getmembers(sustancias, inspect.isfunction)
-
 app = request.application
 response.title = settings.title
 response.subtitle = settings.subtitle
@@ -13,6 +10,12 @@ response.menu = [
         (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
         (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
         ]),
+(T('Solicitudes'),False, None,[
+	(T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
+		]),
+(T('Prestamos'),False, None,[
+	(T('Por devolver'), URL('s_entrada','p_por_devolver'), URL('s_entrada','p_por_devolver')),(T('Por recibir'), URL('s_entrada','p_por_recibir'), URL('s_entrada','p_por_recibir'))
+		]),
 (T('Editar'), False, URL('admin', 'default', 'design/%s' % app)),
 #(T('Personal'),URL('default','personal_manage')==URL(),URL('default','personal_manage'),[]),
 #(T('Rol'),URL('default','rol_manage')==URL(),URL('default','rol_manage'),[]),
