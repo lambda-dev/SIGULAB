@@ -9,6 +9,8 @@ def Popukatte():
         db.auth_group.insert(role='Jefe de Laboratorio',description='Jefe de Laboratorio')
         db.auth_group.insert(role='Jefe de Sección',description='Jefe de Sección')
         db.auth_group.insert(role='Técnico',description='Técnico de Laboratorio')
+        db.auth_group.insert(role='Usuario',description='Rol default de registro. No puede acceder a nada.')
+
 
     ################
     #auth_group

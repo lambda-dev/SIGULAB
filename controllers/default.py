@@ -10,13 +10,6 @@ def index():
 def error():
     return dict()
 
-def personal_manage():
-    form = SQLFORM.smartgrid(db.t_personal,onupdate=auth.archive)
-    return locals()
-
-def rol_manage():
-    return dict()
-
 def sustancia_manage():
     return dict()
 
@@ -33,10 +26,6 @@ def bitacora_manage():
 
 def solicitudes_manage():
     return dict()
-
-def cargo_manage():
-    form = SQLFORM.smartgrid(db.t_cargo,onupdate=auth.archive)
-    return locals()
 
 def solicitud_manage():
     form = SQLFORM.smartgrid(db.t_solicitud,onupdate=auth.archive)
