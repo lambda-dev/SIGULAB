@@ -13,9 +13,12 @@ response.meta.description = settings.description
 # 6 tec
 # 8 user normal
 
-if auth.has_membership(group_id=1) or auth.has_membership(group_id=2):
-    response.menu = [
-    (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
+response.menu = [
+    (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
+    ]
+
+if auth.has_membership(group_id=1) or auth.has_membership(group_id=2) or auth.has_membership(group_id=3) or auth.has_membership(group_id=4) or auth.has_membership(group_id=5) or auth.has_membership(group_id=6):
+    response.menu += [
     (T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
             (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
@@ -25,32 +28,13 @@ if auth.has_membership(group_id=1) or auth.has_membership(group_id=2):
     		]),
     (T('Prestamos'),False, None,[
     	(T('Por devolver'), URL('s_entrada','p_por_devolver'), URL('s_entrada','p_por_devolver')),(T('Por recibir'), URL('s_entrada','p_por_recibir'), URL('s_entrada','p_por_recibir'))
-    		]),
+    		])
+    ]
+if auth.has_membership(group_id=1) or auth.has_membership(group_id=2):
+    response.menu += [
     (T('Gestión'),False, None,[
       (T('Usuarios'), URL('gestion','usuarios'), URL('gestion','usuarios')), (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios'))
         ])
-    ]
-elif auth.has_membership(group_id=3) or auth.has_membership(group_id=4) or auth.has_membership(group_id=5) or auth.has_membership(group_id=6):
-    response.menu = [
-    (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
-    (T('SMyDP'),False,None,[
-            (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
-            (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
-            ]),
-    (T('Solicitudes'),False, None,[
-      (T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
-        ]),
-    (T('Prestamos'),False, None,[
-      (T('Por devolver'), URL('s_entrada','p_por_devolver'), URL('s_entrada','p_por_devolver')),(T('Por recibir'), URL('s_entrada','p_por_recibir'), URL('s_entrada','p_por_recibir'))
-        ])
-    ]
-elif not auth.is_logged_in():
-    response.menu = [
-    (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
-    ]
-else:
-    response.menu = [
-    (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
     ]
 
 #Original
