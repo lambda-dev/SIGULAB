@@ -38,7 +38,8 @@ if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.h
     (T('Gestión'),False, None,[
       (T('Usuarios Registrados'), URL('gestion','usuarios'), URL('gestion','usuarios')),
       (T('Usuarios Autorizados'), URL('gestion','autorizados'), URL('gestion','autorizados')), 
-      (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios'))
+      (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios')),
+      (T('Membresia'), URL('gestion','membresia'), URL('gestion','membresia'))
         ])
     ]
 #superuser

@@ -38,7 +38,7 @@ db.auth_user._singular = 'Usuario Registrado'
 
 db.define_table('t_users_autorizados',
     Field('f_email', 'string', label=T('Email')),
-    Field('f_group', 'string', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s')))
+    Field('f_group', 'string', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
 db.t_users_autorizados._singular = 'Usuario Autorizado'

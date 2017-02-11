@@ -279,6 +279,7 @@
 'lost password?': '¿olvidó la contraseña?',
 'Main Menu': 'Menú principal',
 'Manage Cache': 'Gestionar la Caché',
+'Membresia': 'Membresia',
 'Membresías': 'Membresías',
 'Menu Model': 'Modelo "menu"',
 'merge': 'combinar',

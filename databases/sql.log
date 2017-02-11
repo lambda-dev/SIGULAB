@@ -824,3 +824,11 @@ CREATE TABLE t_users_autorizados(
     f_group VARCHAR(512)
 );
 success!
+timestamp: 2017-02-10T21:37:21.134373
+CREATE TABLE t_users_autorizados_archive(
+    current_record INTEGER REFERENCES t_users_autorizados (id) ON DELETE CASCADE  ,
+    id SERIAL PRIMARY KEY,
+    f_email VARCHAR(512),
+    f_group VARCHAR(512)
+);
+success!
