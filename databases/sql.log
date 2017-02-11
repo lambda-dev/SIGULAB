@@ -817,3 +817,10 @@ CREATE TABLE auth_membership_archive(
     group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
 );
 success!
+timestamp: 2017-02-10T20:00:50.011048
+CREATE TABLE t_users_autorizados(
+    id SERIAL PRIMARY KEY,
+    f_email VARCHAR(512),
+    f_group VARCHAR(512)
+);
+success!

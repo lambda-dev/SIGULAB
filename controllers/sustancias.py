@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
 
+@auth.requires_login()
 def validar_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -16,7 +17,7 @@ def validar_bitacora(form):
         form.errors.f_consumo = T('Introduzca un ingreso o consumo')
         form.errors.f_ingreso = T('Introduzca un ingreso o consumo')
 
-
+@auth.requires_login()
 def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']

@@ -12,12 +12,14 @@ response.meta.description = settings.description
 # 5 jefesec
 # 6 tec
 # 8 user normal
+# 9 webmaster (superuser)
 
+# user basico
 response.menu = [
     (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
     ]
-
-if auth.has_membership(group_id=1) or auth.has_membership(group_id=2) or auth.has_membership(group_id=3) or auth.has_membership(group_id=4) or auth.has_membership(group_id=5) or auth.has_membership(group_id=6):
+#tec, jefes y gestor
+if auth.has_membership('Técnico') or auth.has_membership('Jefe de Laboratorio') or auth.has_membership('Jefe de Sección') or auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal'):
     response.menu += [
     (T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
@@ -30,12 +32,21 @@ if auth.has_membership(group_id=1) or auth.has_membership(group_id=2) or auth.ha
     	(T('Por devolver'), URL('s_entrada','p_por_devolver'), URL('s_entrada','p_por_devolver')),(T('Por recibir'), URL('s_entrada','p_por_recibir'), URL('s_entrada','p_por_recibir'))
     		])
     ]
-if auth.has_membership(group_id=1) or auth.has_membership(group_id=2):
+#dir o admin user
+if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal'):
     response.menu += [
     (T('Gestión'),False, None,[
-      (T('Usuarios'), URL('gestion','usuarios'), URL('gestion','usuarios')), (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios'))
+      (T('Usuarios Registrados'), URL('gestion','usuarios'), URL('gestion','usuarios')),
+      (T('Usuarios Autorizados'), URL('gestion','autorizados'), URL('gestion','autorizados')), 
+      (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios'))
         ])
     ]
+#superuser
+if auth.has_membership('WebMaster'):
+    response.menu += [
+    (T('Editar'), False, URL('admin', 'default', 'design/%s' % app))
+    ]
+
 
 #Original
 # response.menu = [
