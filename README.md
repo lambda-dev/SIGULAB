@@ -6,7 +6,7 @@ Branch de Adolfo
 
 + Está creada la tabla t_users_autorizados donde van los usuarios pre-aceptados. Habia entendido que esta tabla solo tiene email y cargo/rol/privilegio. Disponible nuevo menu en 'Gestion' para añadirlos.
 
-TODO: Editar el proceso de registro para que complete solo si el email hace match en esta tabla <else> se envia email a usuarios con rango 'Administrador de Personal' para 
+TODO: Editar el proceso de registro para que complete solo si el email hace match en esta tabla *else* se envia email a usuarios con rango 'Administrador de Personal' para 
 que los pre-acepten.
 
 + Creado rango/rol/privilegio 'WebMaster' para nosotros, por default se crea un user si 
@@ -18,7 +18,7 @@ TODO: Acomodar en todos los controladores
 
 TODO: Modificar heavymente el registro => Usuarios deben especificar ES/SEC/LAB y cargo.
       Triggers para añadir en db?
-      
+
 ********************************* 
 8 Febrero:
 
