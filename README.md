@@ -19,6 +19,13 @@ TODO: Acomodar en todos los controladores
 TODO: Modificar heavymente el registro => Usuarios deben especificar ES/SEC/LAB y cargo.
       Triggers para añadir en db?
 
++ Disponible menu 'gestion de membresia' donde se listan todos los usuarios y todos sus privilegios asignados. Se pueden añadir/editar/eliminar por Direc/Admin U.
+
++ Asumo que el Director/Admin User NO puede añadir o eliminar CARGOS existentes:
+  + Si añade nuevos no van a tener ningun efecto porque los permisos como tal están hard coded con los decoradores auth
+  + Si borra alguno de los existente, bueno, muere esa funcionalidad hasta que se agrege otro con el mismo nombre.
+  + Entonces solo user WebMaster pueden editar esto. 
+ 
 ********************************* 
 8 Febrero:
 
