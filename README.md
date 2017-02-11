@@ -13,8 +13,12 @@ que los pre-acepten.
 la db esta vacia con email webmaster@sigulab.com y pass 0000. 
 
 + Edite los decoradores de auth para que usen el nombre del rol y no el id, ya que el id puede variar por instalación 
+
 TODO: Acomodar en todos los controladores
 
+TODO: Modificar heavymente el registro => Usuarios deben especificar ES/SEC/LAB y cargo.
+      Triggers para añadir en db?
+      
 ********************************* 
 8 Febrero:
 
