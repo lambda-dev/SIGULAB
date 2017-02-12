@@ -106,8 +106,22 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # configure auth policy
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
-auth.settings.registration_requires_approval = False
+auth.settings.registration_requires_approval = True
 auth.settings.reset_password_requires_verification = True
+# Evita crear grupos al registar
+auth.settings.create_user_groups = None
+# Grupo default registro
+auth.settings.everybody_group_id = 8
+
+# Deshabilitar registro y otras paginas
+#auth.settings.actions_disabled.append('register')
+#auth.settings.actions_disabled.append('profile')
+#auth.settings.actions_disabled.append('change_password')
+auth.settings.actions_disabled.append('impersonate')
+#auth.settings.actions_disabled.append('groups')
+
+from gluon.tools import Crud
+crud = Crud(db)
 
 # -------------------------------------------------------------------------
 # Define your tables below (or better in another model file) for example

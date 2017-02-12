@@ -1,13 +1,14 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
 if db(db.auth_group).isempty():
+    db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
     db.auth_group.insert(role='Administrador Personal',description='Administrador de Personal')
     db.auth_group.insert(role='Gestor de Sustancias',description='Gestor de Sustancias')
     db.auth_group.insert(role='Jefe de Laboratorio',description='Jefe de Laboratorio')
     db.auth_group.insert(role='Jefe de Sección',description='Jefe de Sección')
     db.auth_group.insert(role='Técnico',description='Técnico de Laboratorio')
-
+    db.auth_group.insert(role='Usuario Normal',description='Usuario recien registrado')
 
 if db(db.auth_permission).isempty():
     db.auth_permission.insert(name='director',table_name='t_sustancias',
@@ -21,6 +22,26 @@ if db(db.auth_permission).isempty():
     db.auth_permission.insert(name='jefelab',table_name='t_inventario',
                             group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
 
+if db(db.auth_user).isempty():
+        db.auth_user.insert(first_name='Super',last_name='Usuario',email='webmaster@sigulab.com',password=db.auth_user.password.validate('0000')[0])
+        db.auth_membership.insert(user_id=(db(db.auth_user.email == 'webmaster@sigulab.com').select(db.auth_user.id).first()),\
+            group_id=db(db.auth_group.role == "WebMaster").select(db.auth_group.id).first());
+
+db.auth_membership._plural = 'Membresías'
+db.auth_membership._singular = 'Membresía'
+
+db.auth_group._plural = 'Privilegios'
+db.auth_group._singular = 'Privilegio'
+
+db.auth_user._plural = 'Usuarios Registrados'
+db.auth_user._singular = 'Usuario Registrado'
+
+db.define_table('t_users_autorizados',
+    Field('f_email', 'string', label=T('Email')),
+    Field('f_group', 'string', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))
+
+db.t_users_autorizados._plural = 'Usuarios Autorizados'
+db.t_users_autorizados._singular = 'Usuario Autorizado'
 ########################################
 db.define_table('t_regimenes',
     Field('f_nombre','string',label=T('Nombre')),

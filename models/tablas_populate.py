@@ -9,7 +9,12 @@ def Popukatte():
         db.auth_group.insert(role='Jefe de Laboratorio',description='Jefe de Laboratorio')
         db.auth_group.insert(role='Jefe de Sección',description='Jefe de Sección')
         db.auth_group.insert(role='Técnico',description='Técnico de Laboratorio')
+        db.auth_group.insert(role='Usuario',description='Rol default de registro. No puede acceder a nada.')
 
+    if db(auth_user).isempty():
+        db.auth_user.insert(first_name='Super',last_name='Usuario',email='webmaster@sigulab.com',password='0000')
+        db.auth_membership.insert(user_id=(db(db.auth_user.email == 'webmaster@sigulab.com').select(db.auth_user.id).first()),\
+            group_id=db(db.auth_group.role == "WebMaster").select(db.auth_group.id).first());
     ################
     #auth_group
     if db(auth_permission).isempty():
