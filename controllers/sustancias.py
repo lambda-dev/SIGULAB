@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
 
+@auth.requires_login()
 def validar_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -16,7 +17,7 @@ def validar_bitacora(form):
         form.errors.f_consumo = T('Introduzca un ingreso o consumo')
         form.errors.f_ingreso = T('Introduzca un ingreso o consumo')
 
-
+@auth.requires_login()
 def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -67,6 +68,7 @@ def inventario_manage():
     espF = request.vars['esp']
     query = db.t_inventario.f_espaciofisico == espF
     db.t_inventario.f_espaciofisico.default = espF
+
     if (request.vars['lab']):
         lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
         query = db.t_inventario.f_laboratorio == lab
@@ -82,10 +84,7 @@ def inventario_manage():
         orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
         return locals()
 
-    #if(auth.has_membership('tecnico','t_inventario')):
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=False,links_in_grid=False,csv=False,editable=False,deletable=False)
-    #else:
-    #    table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive)
     return locals()
 
 @auth.requires_login()

@@ -1,4 +1,4 @@
-timestamp: 2017-02-02T23:00:29.883985
+timestamp: 2017-02-08T13:30:37.321761
 CREATE TABLE auth_user(
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(128),
@@ -10,21 +10,21 @@ CREATE TABLE auth_user(
     registration_id VARCHAR(512)
 );
 success!
-timestamp: 2017-02-02T23:00:29.996530
+timestamp: 2017-02-08T13:30:37.517935
 CREATE TABLE auth_group(
     id SERIAL PRIMARY KEY,
     role VARCHAR(512),
     description TEXT
 );
 success!
-timestamp: 2017-02-02T23:00:30.047934
+timestamp: 2017-02-08T13:30:37.570475
 CREATE TABLE auth_membership(
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
     group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-02T23:00:30.140934
+timestamp: 2017-02-08T13:30:37.730278
 CREATE TABLE auth_permission(
     id SERIAL PRIMARY KEY,
     group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  ,
@@ -33,7 +33,7 @@ CREATE TABLE auth_permission(
     record_id INTEGER
 );
 success!
-timestamp: 2017-02-02T23:00:30.196699
+timestamp: 2017-02-08T13:30:37.903801
 CREATE TABLE auth_event(
     id SERIAL PRIMARY KEY,
     time_stamp TIMESTAMP,
@@ -43,7 +43,7 @@ CREATE TABLE auth_event(
     description TEXT
 );
 success!
-timestamp: 2017-02-02T23:00:30.252886
+timestamp: 2017-02-08T13:30:37.991539
 CREATE TABLE auth_cas(
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
@@ -53,477 +53,7 @@ CREATE TABLE auth_cas(
     renew CHAR(1)
 );
 success!
-timestamp: 2017-02-02T23:00:30.312400
-CREATE TABLE t_materiales(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512)
-);
-success!
-timestamp: 2017-02-02T23:00:30.367721
-CREATE TABLE t_estado(
-    id SERIAL PRIMARY KEY,
-    f_estado VARCHAR(512)
-);
-success!
-timestamp: 2017-02-02T23:00:30.419963
-CREATE TABLE t_laboratorio(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512) NOT NULL,
-    f_jefe INTEGER
-);
-success!
-timestamp: 2017-02-02T23:00:30.476140
-CREATE TABLE t_laboratorio_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512) NOT NULL,
-    f_jefe INTEGER,
-    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-02T23:00:30.583584
-CREATE TABLE t_seccion(
-    id SERIAL PRIMARY KEY,
-    f_seccion VARCHAR(512),
-    f_laboratorio INTEGER,
-    f_jefe INTEGER
-);
-success!
-timestamp: 2017-02-02T23:00:30.820439
-CREATE TABLE t_espaciofisico(
-    id SERIAL PRIMARY KEY,
-    f_espacio VARCHAR(512),
-    f_direccion VARCHAR(512),
-    f_seccion INTEGER,
-    f_tecnico INTEGER
-);
-success!
-timestamp: 2017-02-03T09:27:46.677089
-CREATE TABLE t_inventario(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER
-);
-success!
-timestamp: 2017-02-03T09:27:46.747102
-CREATE TABLE t_inventario_archive(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER,
-    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-03T09:31:52.458084
-ALTER TABLE t_materiales DROP COLUMN f_cas;
-success!
-timestamp: 2017-02-03T09:31:52.604019
-ALTER TABLE t_seccion ADD f_laboratorio__tmp VARCHAR(512);
-UPDATE t_seccion SET f_laboratorio__tmp=f_laboratorio;
-ALTER TABLE t_seccion DROP COLUMN f_laboratorio;
-ALTER TABLE t_seccion ADD f_laboratorio VARCHAR(512);
-UPDATE t_seccion SET f_laboratorio=f_laboratorio__tmp;
-ALTER TABLE t_seccion DROP COLUMN f_laboratorio__tmp;
-success!
-timestamp: 2017-02-03T09:31:52.733112
-ALTER TABLE t_inventario ADD f_cantidadusointerno INTEGER;
-timestamp: 2017-02-03T09:31:52.737675
-ALTER TABLE t_inventario ADD f_total INTEGER;
-timestamp: 2017-02-03T09:31:52.740213
-ALTER TABLE t_inventario ADD f_cantidadonacion INTEGER;
-timestamp: 2017-02-03T09:31:52.762523
-ALTER TABLE t_inventario ADD f_espaciofisico INTEGER;
-success!
-timestamp: 2017-02-03T09:31:52.814150
-ALTER TABLE t_inventario_archive ADD f_cantidadusointerno INTEGER;
-timestamp: 2017-02-03T09:31:52.818899
-ALTER TABLE t_inventario_archive ADD f_total INTEGER;
-timestamp: 2017-02-03T09:31:52.821406
-ALTER TABLE t_inventario_archive ADD f_cantidadonacion INTEGER;
-timestamp: 2017-02-03T09:31:52.823980
-ALTER TABLE t_inventario_archive ADD f_espaciofisico INTEGER;
-success!
-timestamp: 2017-02-03T09:31:52.869658
-CREATE TABLE t_bitacora(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER NOT NULL,
-    f_proceso VARCHAR(512) NOT NULL,
-    f_ingreso INTEGER,
-    f_consumo INTEGER,
-    f_cantidad INTEGER,
-    f_fecha TIMESTAMP,
-    f_espaciofisico INTEGER NOT NULL
-);
-success!
-timestamp: 2017-02-03T09:31:52.927442
-CREATE TABLE t_bitacora_archive(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER NOT NULL,
-    f_proceso VARCHAR(512) NOT NULL,
-    f_ingreso INTEGER,
-    f_consumo INTEGER,
-    f_cantidad INTEGER,
-    f_fecha TIMESTAMP,
-    f_espaciofisico INTEGER NOT NULL,
-    current_record INTEGER REFERENCES t_bitacora (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-03T09:31:52.987404
-CREATE TABLE t_sustanciapeligrosa(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control VARCHAR(512),
-    f_peligrosidad VARCHAR(512)
-);
-success!
-timestamp: 2017-02-03T09:31:53.086029
-CREATE TABLE t_sustanciapeligrosa_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control VARCHAR(512),
-    f_peligrosidad VARCHAR(512),
-    current_record INTEGER REFERENCES t_sustanciapeligrosa (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-03T09:31:53.141943
-CREATE TABLE t_solicitud(
-    id SERIAL PRIMARY KEY,
-    f_sustancia VARCHAR(512),
-    f_espaciofisico VARCHAR(512),
-    f_seccion VARCHAR(512),
-    f_responsable VARCHAR(512),
-    f_solicitador VARCHAR(512),
-    f_cantidadsolicitada VARCHAR(512),
-    f_estado VARCHAR(512)
-);
-success!
-timestamp: 2017-02-03T09:31:53.199746
-CREATE TABLE t_solicitud_archive(
-    id SERIAL PRIMARY KEY,
-    f_sustancia VARCHAR(512),
-    f_espaciofisico VARCHAR(512),
-    f_seccion VARCHAR(512),
-    f_responsable VARCHAR(512),
-    f_solicitador VARCHAR(512),
-    f_cantidadsolicitada VARCHAR(512),
-    f_estado VARCHAR(512),
-    current_record INTEGER REFERENCES t_solicitud (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-03T09:34:00.396928
-ALTER TABLE t_materiales ADD f_cas VARCHAR(512);
-success!
-timestamp: 2017-02-04T21:42:23.836395
-ALTER TABLE t_bitacora ADD f_fechaingreso TIMESTAMP;
-success!
-timestamp: 2017-02-04T21:42:24.120133
-ALTER TABLE t_bitacora_archive ADD f_fechaingreso TIMESTAMP;
-success!
-timestamp: 2017-02-04T21:48:12.728331
-CREATE TABLE t_regimenes(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T21:49:56.896049
-ALTER TABLE t_bitacora ADD f_descripcion TEXT;
-success!
-timestamp: 2017-02-04T21:49:56.941155
-ALTER TABLE t_bitacora_archive ADD f_descripcion TEXT;
-success!
-timestamp: 2017-02-04T21:52:11.744502
-ALTER TABLE t_sustanciapeligrosa ADD f_control__tmp INTEGER;
-UPDATE t_sustanciapeligrosa SET f_control__tmp=f_control;
-timestamp: 2017-02-04T21:54:25.504919
-CREATE TABLE t_sustanciapeligrosa(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512)
-);
-timestamp: 2017-02-04T21:54:47.228336
-CREATE TABLE t_sustanciapeligrosa(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T21:54:47.310483
-CREATE TABLE t_sustanciapeligrosa_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512),
-    current_record INTEGER REFERENCES t_sustanciapeligrosa (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-04T21:57:45.109624
-CREATE TABLE t_inventario(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER,
-    f_espaciofisico INTEGER,
-    f_cantidadonacion INTEGER,
-    f_cantidadusointerno INTEGER,
-    f_total INTEGER
-);
-success!
-timestamp: 2017-02-04T21:57:45.153940
-CREATE TABLE t_inventario_archive(
-    id SERIAL PRIMARY KEY,
-    f_sustancia INTEGER,
-    f_espaciofisico INTEGER,
-    f_cantidadonacion INTEGER,
-    f_cantidadusointerno INTEGER,
-    f_total INTEGER,
-    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-04T21:57:45.195575
-CREATE TABLE t_sustanciapeligrosa(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T21:57:45.228081
-CREATE TABLE t_sustanciapeligrosa_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512),
-    current_record INTEGER REFERENCES t_sustanciapeligrosa (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-04T22:00:09.684618
-ALTER TABLE t_inventario ADD f_cantidadusointerno__tmp FLOAT;
-UPDATE t_inventario SET f_cantidadusointerno__tmp=f_cantidadusointerno;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadusointerno;
-ALTER TABLE t_inventario ADD f_cantidadusointerno FLOAT;
-UPDATE t_inventario SET f_cantidadusointerno=f_cantidadusointerno__tmp;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadusointerno__tmp;
-timestamp: 2017-02-04T22:00:09.756829
-ALTER TABLE t_inventario ADD f_cantidadonacion__tmp FLOAT;
-UPDATE t_inventario SET f_cantidadonacion__tmp=f_cantidadonacion;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadonacion;
-ALTER TABLE t_inventario ADD f_cantidadonacion FLOAT;
-UPDATE t_inventario SET f_cantidadonacion=f_cantidadonacion__tmp;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadonacion__tmp;
-success!
-timestamp: 2017-02-04T22:00:09.787113
-ALTER TABLE t_inventario_archive ADD f_cantidadusointerno__tmp FLOAT;
-UPDATE t_inventario_archive SET f_cantidadusointerno__tmp=f_cantidadusointerno;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadusointerno;
-ALTER TABLE t_inventario_archive ADD f_cantidadusointerno FLOAT;
-UPDATE t_inventario_archive SET f_cantidadusointerno=f_cantidadusointerno__tmp;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadusointerno__tmp;
-timestamp: 2017-02-04T22:00:09.809151
-ALTER TABLE t_inventario_archive ADD f_cantidadonacion__tmp FLOAT;
-UPDATE t_inventario_archive SET f_cantidadonacion__tmp=f_cantidadonacion;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadonacion;
-ALTER TABLE t_inventario_archive ADD f_cantidadonacion FLOAT;
-UPDATE t_inventario_archive SET f_cantidadonacion=f_cantidadonacion__tmp;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadonacion__tmp;
-success!
-timestamp: 2017-02-04T22:00:09.843909
-ALTER TABLE t_bitacora ADD f_cantidad__tmp FLOAT;
-UPDATE t_bitacora SET f_cantidad__tmp=f_cantidad;
-ALTER TABLE t_bitacora DROP COLUMN f_cantidad;
-ALTER TABLE t_bitacora ADD f_cantidad FLOAT;
-UPDATE t_bitacora SET f_cantidad=f_cantidad__tmp;
-ALTER TABLE t_bitacora DROP COLUMN f_cantidad__tmp;
-timestamp: 2017-02-04T22:00:09.862702
-ALTER TABLE t_bitacora ADD f_consumo__tmp FLOAT;
-UPDATE t_bitacora SET f_consumo__tmp=f_consumo;
-ALTER TABLE t_bitacora DROP COLUMN f_consumo;
-ALTER TABLE t_bitacora ADD f_consumo FLOAT;
-UPDATE t_bitacora SET f_consumo=f_consumo__tmp;
-ALTER TABLE t_bitacora DROP COLUMN f_consumo__tmp;
-timestamp: 2017-02-04T22:00:09.874789
-ALTER TABLE t_bitacora ADD f_ingreso__tmp FLOAT;
-UPDATE t_bitacora SET f_ingreso__tmp=f_ingreso;
-ALTER TABLE t_bitacora DROP COLUMN f_ingreso;
-ALTER TABLE t_bitacora ADD f_ingreso FLOAT;
-UPDATE t_bitacora SET f_ingreso=f_ingreso__tmp;
-ALTER TABLE t_bitacora DROP COLUMN f_ingreso__tmp;
-success!
-timestamp: 2017-02-04T22:00:09.897411
-ALTER TABLE t_bitacora_archive ADD f_cantidad__tmp FLOAT;
-UPDATE t_bitacora_archive SET f_cantidad__tmp=f_cantidad;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_cantidad;
-ALTER TABLE t_bitacora_archive ADD f_cantidad FLOAT;
-UPDATE t_bitacora_archive SET f_cantidad=f_cantidad__tmp;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_cantidad__tmp;
-timestamp: 2017-02-04T22:00:09.925402
-ALTER TABLE t_bitacora_archive ADD f_consumo__tmp FLOAT;
-UPDATE t_bitacora_archive SET f_consumo__tmp=f_consumo;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_consumo;
-ALTER TABLE t_bitacora_archive ADD f_consumo FLOAT;
-UPDATE t_bitacora_archive SET f_consumo=f_consumo__tmp;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_consumo__tmp;
-timestamp: 2017-02-04T22:00:09.938908
-ALTER TABLE t_bitacora_archive ADD f_ingreso__tmp FLOAT;
-UPDATE t_bitacora_archive SET f_ingreso__tmp=f_ingreso;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_ingreso;
-ALTER TABLE t_bitacora_archive ADD f_ingreso FLOAT;
-UPDATE t_bitacora_archive SET f_ingreso=f_ingreso__tmp;
-ALTER TABLE t_bitacora_archive DROP COLUMN f_ingreso__tmp;
-success!
-timestamp: 2017-02-04T22:07:43.732048
-CREATE TABLE t_ingresos(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T22:07:43.848158
-CREATE TABLE t_consumos(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T22:14:19.752470
-CREATE TABLE t_sustancias(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T22:14:19.790270
-CREATE TABLE t_sustancias_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado VARCHAR(512),
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512),
-    current_record INTEGER REFERENCES t_sustancias (id) ON DELETE CASCADE  
-);
-success!
-timestamp: 2017-02-04T22:27:17.361460
-ALTER TABLE t_sustancias ADD f_estado__tmp INTEGER;
-UPDATE t_sustancias SET f_estado__tmp=f_estado;
-timestamp: 2017-02-04T22:28:11.543771
-ALTER TABLE t_sustancias ADD f_estado__tmp INTEGER;
-UPDATE t_sustancias SET f_estado__tmp=f_estado;
-timestamp: 2017-02-04T22:28:26.548068
-ALTER TABLE t_sustancias ADD f_estado__tmp INTEGER;
-UPDATE t_sustancias SET f_estado__tmp=f_estado;
-timestamp: 2017-02-04T22:28:46.552923
-ALTER TABLE t_sustancias ADD f_estado__tmp INTEGER;
-UPDATE t_sustancias SET f_estado__tmp=f_estado;
-timestamp: 2017-02-04T22:29:18.945112
-ALTER TABLE t_sustancias ADD f_estado__tmp INTEGER;
-UPDATE t_sustancias SET f_estado__tmp=f_estado;
-timestamp: 2017-02-04T22:29:57.362477
-CREATE TABLE t_sustancias(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado INTEGER,
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512)
-);
-success!
-timestamp: 2017-02-04T22:29:57.412205
-CREATE TABLE t_sustancias_archive(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512),
-    f_pureza INTEGER,
-    f_estado INTEGER,
-    f_control INTEGER,
-    f_peligrosidad VARCHAR(512),
-    current_record INTEGER REFERENCES t_sustancias (id) ON DELETE CASCADE  
-);
-success!
-success!
-success!
-timestamp: 2017-02-04T22:35:49.750280
-ALTER TABLE t_inventario ADD f_cantidadusointerno__tmp FLOAT;
-UPDATE t_inventario SET f_cantidadusointerno__tmp=f_cantidadusointerno;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadusointerno;
-ALTER TABLE t_inventario ADD f_cantidadusointerno FLOAT;
-UPDATE t_inventario SET f_cantidadusointerno=f_cantidadusointerno__tmp;
-ALTER TABLE t_inventario DROP COLUMN f_cantidadusointerno__tmp;
-success!
-timestamp: 2017-02-04T22:35:49.803415
-ALTER TABLE t_inventario_archive ADD f_cantidadusointerno__tmp FLOAT;
-UPDATE t_inventario_archive SET f_cantidadusointerno__tmp=f_cantidadusointerno;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadusointerno;
-ALTER TABLE t_inventario_archive ADD f_cantidadusointerno FLOAT;
-UPDATE t_inventario_archive SET f_cantidadusointerno=f_cantidadusointerno__tmp;
-ALTER TABLE t_inventario_archive DROP COLUMN f_cantidadusointerno__tmp;
-success!
-timestamp: 2017-02-05T11:38:25.931874
-ALTER TABLE t_inventario ADD f_total__tmp FLOAT;
-UPDATE t_inventario SET f_total__tmp=f_total;
-ALTER TABLE t_inventario DROP COLUMN f_total;
-ALTER TABLE t_inventario ADD f_total FLOAT;
-UPDATE t_inventario SET f_total=f_total__tmp;
-ALTER TABLE t_inventario DROP COLUMN f_total__tmp;
-success!
-timestamp: 2017-02-05T11:38:26.002749
-ALTER TABLE t_inventario_archive ADD f_total__tmp FLOAT;
-UPDATE t_inventario_archive SET f_total__tmp=f_total;
-ALTER TABLE t_inventario_archive DROP COLUMN f_total;
-ALTER TABLE t_inventario_archive ADD f_total FLOAT;
-UPDATE t_inventario_archive SET f_total=f_total__tmp;
-ALTER TABLE t_inventario_archive DROP COLUMN f_total__tmp;
-success!
-timestamp: 2017-02-06T08:12:37.715715
-ALTER TABLE t_inventario ADD f_seccion INTEGER;
-success!
-timestamp: 2017-02-06T08:12:39.303197
-ALTER TABLE t_inventario_archive ADD f_seccion INTEGER;
-success!
-timestamp: 2017-02-07T10:42:30.603780
-ALTER TABLE t_inventario ADD f_laboratorio INTEGER;
-success!
-timestamp: 2017-02-07T10:42:31.052100
-ALTER TABLE t_inventario_archive ADD f_laboratorio INTEGER;
-success!
-timestamp: 2017-02-07T10:46:02.645626
-ALTER TABLE t_inventario ADD f_laboratorio__tmp VARCHAR(512);
-UPDATE t_inventario SET f_laboratorio__tmp=f_laboratorio;
-ALTER TABLE t_inventario DROP COLUMN f_laboratorio;
-ALTER TABLE t_inventario ADD f_laboratorio VARCHAR(512);
-UPDATE t_inventario SET f_laboratorio=f_laboratorio__tmp;
-ALTER TABLE t_inventario DROP COLUMN f_laboratorio__tmp;
-success!
-timestamp: 2017-02-07T10:46:03.475373
-ALTER TABLE t_inventario_archive ADD f_laboratorio__tmp VARCHAR(512);
-UPDATE t_inventario_archive SET f_laboratorio__tmp=f_laboratorio;
-ALTER TABLE t_inventario_archive DROP COLUMN f_laboratorio;
-ALTER TABLE t_inventario_archive ADD f_laboratorio VARCHAR(512);
-UPDATE t_inventario_archive SET f_laboratorio=f_laboratorio__tmp;
-ALTER TABLE t_inventario_archive DROP COLUMN f_laboratorio__tmp;
-success!
-timestamp: 2017-02-07T12:06:52.612812
+timestamp: 2017-02-08T13:30:38.091558
 CREATE TABLE table_solicitud(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -537,7 +67,7 @@ CREATE TABLE table_solicitud(
     f_respuesta VARCHAR(512)
 );
 success!
-timestamp: 2017-02-07T12:06:53.269206
+timestamp: 2017-02-08T13:30:38.139402
 CREATE TABLE table_solicitud_archive(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -550,5 +80,170 @@ CREATE TABLE table_solicitud_archive(
     f_solicitud VARCHAR(512),
     f_respuesta VARCHAR(512),
     current_record INTEGER REFERENCES table_solicitud (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-08T13:30:38.288322
+CREATE TABLE t_regimenes(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.395108
+CREATE TABLE t_ingresos(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.461109
+CREATE TABLE t_consumos(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.525308
+CREATE TABLE t_materiales(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.574886
+CREATE TABLE t_estado(
+    id SERIAL PRIMARY KEY,
+    f_estado VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.668221
+CREATE TABLE t_sustancias(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado INTEGER,
+    f_control INTEGER,
+    f_peligrosidad VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:38.722842
+CREATE TABLE t_sustancias_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado INTEGER,
+    f_control INTEGER,
+    f_peligrosidad VARCHAR(512),
+    current_record INTEGER REFERENCES t_sustancias (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-08T13:30:38.785566
+CREATE TABLE t_laboratorio(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-02-08T13:30:38.851095
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-08T13:30:38.910691
+CREATE TABLE t_seccion(
+    id SERIAL PRIMARY KEY,
+    f_seccion VARCHAR(512),
+    f_laboratorio VARCHAR(512),
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-02-08T13:30:38.954623
+CREATE TABLE t_espaciofisico(
+    id SERIAL PRIMARY KEY,
+    f_espacio VARCHAR(512),
+    f_direccion VARCHAR(512),
+    f_seccion INTEGER,
+    f_tecnico INTEGER
+);
+success!
+timestamp: 2017-02-08T13:30:39.011700
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER,
+    f_espaciofisico INTEGER,
+    f_cantidadonacion FLOAT,
+    f_cantidadusointerno FLOAT,
+    f_total FLOAT,
+    f_seccion INTEGER,
+    f_laboratorio VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:39.052971
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER,
+    f_espaciofisico INTEGER,
+    f_cantidadonacion FLOAT,
+    f_cantidadusointerno FLOAT,
+    f_total FLOAT,
+    f_seccion INTEGER,
+    f_laboratorio VARCHAR(512),
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-08T13:30:39.110956
+CREATE TABLE t_bitacora(
+    id SERIAL PRIMARY KEY,
+    f_fechaingreso TIMESTAMP,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso FLOAT,
+    f_consumo FLOAT,
+    f_cantidad FLOAT,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER NOT NULL,
+    f_descripcion TEXT
+);
+success!
+timestamp: 2017-02-08T13:30:39.152727
+CREATE TABLE t_bitacora_archive(
+    id SERIAL PRIMARY KEY,
+    f_fechaingreso TIMESTAMP,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso FLOAT,
+    f_consumo FLOAT,
+    f_cantidad FLOAT,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER NOT NULL,
+    f_descripcion TEXT,
+    current_record INTEGER REFERENCES t_bitacora (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-08T13:30:39.230863
+CREATE TABLE t_solicitud(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512)
+);
+success!
+timestamp: 2017-02-08T13:30:39.296479
+CREATE TABLE t_solicitud_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    current_record INTEGER REFERENCES t_solicitud (id) ON DELETE CASCADE  
 );
 success!
