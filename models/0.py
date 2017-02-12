@@ -1,10 +1,11 @@
+#editado por adolfo: titulo, autor
 from gluon.storage import Storage
 settings = Storage()
 
 settings.migrate = True
 settings.title = 'Sistema De Gestión ULAB - USB'
 settings.subtitle = 'Equipo'
-settings.author = 'you'
+settings.author = 'Lambda'
 settings.author_email = 'you@example.com'
 settings.keywords = ''
 settings.description = ''

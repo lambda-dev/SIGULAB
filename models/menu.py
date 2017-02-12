@@ -4,16 +4,8 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
-# id grupos
-# 1 direc
-# 2 admin user
-# 3 gestor
-# 4 jefelab
-# 5 jefesec
-# 6 tec
-# 8 user normal
-# 9 webmaster (superuser)
 
+# Editado por Adolfo
 # user basico
 response.menu = [
     (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
@@ -37,7 +29,8 @@ if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.h
     response.menu += [
     (T('Gestión'),False, None,[
       (T('Usuarios Registrados'), URL('gestion','usuarios'), URL('gestion','usuarios')),
-      (T('Usuarios Autorizados'), URL('gestion','autorizados'), URL('gestion','autorizados')), 
+      (T('Lista de Autorizados'), URL('gestion','autorizados'), URL('gestion','autorizados')),
+      (T('Pendientes de confirmación'), URL('gestion','pendientes'), URL('gestion','pendientes')), 
       (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios')),
       (T('Membresia'), URL('gestion','membresia'), URL('gestion','membresia'))
         ])
