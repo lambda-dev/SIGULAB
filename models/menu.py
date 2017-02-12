@@ -4,6 +4,7 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
+pen = db(db.t_users_pendientes).count()
 
 # Editado por Adolfo
 # user basico
@@ -11,7 +12,13 @@ response.menu = [
     (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
     ]
 #tec, jefes y gestor
-if auth.has_membership('Técnico') or auth.has_membership('Jefe de Laboratorio') or auth.has_membership('Jefe de Sección') or auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal'):
+if auth.has_membership('Técnico') or \
+    auth.has_membership('Jefe de Laboratorio') or\
+    auth.has_membership('Jefe de Sección') or\
+    auth.has_membership('Gestor de Sustancias') or\
+    auth.has_membership('Director') or\
+    auth.has_membership('WebMaster') or\
+    auth.has_membership('Administrador Personal'):
     response.menu += [
     (T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
@@ -28,11 +35,11 @@ if auth.has_membership('Técnico') or auth.has_membership('Jefe de Laboratorio')
 if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal'):
     response.menu += [
     (T('Gestión'),False, None,[
-      (T('Usuarios Registrados'), URL('gestion','usuarios'), URL('gestion','usuarios')),
-      (T('Lista de Autorizados'), URL('gestion','autorizados'), URL('gestion','autorizados')),
-      (T('Pendientes de confirmación'), URL('gestion','pendientes'), URL('gestion','pendientes')), 
-      (T('Privilegios'), URL('gestion','privilegios'), URL('gestion','privilegios')),
-      (T('Membresia'), URL('gestion','membresia'), URL('gestion','membresia'))
+      (T('Usuarios Registrados'), False, URL('gestion','usuarios')),
+      (T('Lista de Autorizados'), False, URL('gestion','autorizados')),
+      (T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')), 
+      (T('Privilegios'), False, URL('gestion','privilegios')),
+      (T('Membresia'), False, URL('gestion','membresia'))
         ])
     ]
 #superuser
