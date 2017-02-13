@@ -329,6 +329,7 @@
 'Peeking at file': 'Visualizando archivo',
 'Peligrosidad': 'Peligrosidad',
 'Pendientes de confirmación': 'Pendientes de confirmación',
+'Pendientes de confirmación (0)': 'Pendientes de confirmación (0)',
 'Pendientes de confirmación (1)': 'Pendientes de confirmación (1)',
 'Pendientes de confirmación (100)': 'Pendientes de confirmación (100)',
 'Pendientes de confirmación (2)': 'Pendientes de confirmación (2)',

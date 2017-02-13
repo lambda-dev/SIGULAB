@@ -39,8 +39,9 @@ def membresia():
   or auth.has_membership('WebMaster'))
 def pendientes():
     confirmar_usuario = lambda row: A('Confirmar', _href=URL(c='gestion',f='confirmar', args=[row.f_email, row.f_group]))
-    links = [confirmar_usuario]
-    form = SQLFORM.smartgrid(db.t_users_pendientes,onupdate=auth.archive,csv=False,details=False,links=links)
+    eliminar_p = lambda row: A('Eliminar', _href=URL(c='gestion',f='eliminar_p', args=[row.f_email, row.f_group]))
+    links = [confirmar_usuario, eliminar_p]
+    form = SQLFORM.smartgrid(db.t_users_pendientes,onupdate=auth.archive,csv=False,details=False,deletable = False, links=links)
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -57,5 +58,20 @@ def confirmar():
     auth.add_membership(user_cargo, usuario.id)
 
     db(db.t_users_pendientes.f_email == user_email).delete()
+
+    redirect(URL(c='gestion',f='pendientes'))
+
+@auth.requires(auth.has_membership('Director') \
+  or auth.has_membership('Administrador Personal') \
+  or auth.has_membership('WebMaster'))
+def eliminar_p():
+    user_email = request.args[0]
+    user_cargo = request.args[1]
+    usuario = db(db.auth_user.email==user_email).select().first()
+
+    auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+
+    db(db.t_users_pendientes.f_email == user_email).delete()
+    db(db.auth_user.email == user_email).delete()
 
     redirect(URL(c='gestion',f='pendientes'))
