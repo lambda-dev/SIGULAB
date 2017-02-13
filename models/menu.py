@@ -12,13 +12,7 @@ response.menu = [
     (T('Home'),URL('default','index')==URL(),URL('default','index'),[])
     ]
 #tec, jefes y gestor
-if auth.has_membership('Técnico') or \
-    auth.has_membership('Jefe de Laboratorio') or\
-    auth.has_membership('Jefe de Sección') or\
-    auth.has_membership('Gestor de Sustancias') or\
-    auth.has_membership('Director') or\
-    auth.has_membership('WebMaster') or\
-    auth.has_membership('Administrador Personal'):
+if not auth.has_membership('Usuario Normal') and auth.is_logged_in():
     response.menu += [
     (T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),

@@ -298,3 +298,35 @@ CREATE TABLE t_users_pendientes_archive(
     f_group INTEGER
 );
 success!
+timestamp: 2017-02-13T17:29:25.842713
+ALTER TABLE t_laboratorio ADD f_jefe__tmp VARCHAR(512);
+UPDATE t_laboratorio SET f_jefe__tmp=f_jefe;
+ALTER TABLE t_laboratorio DROP COLUMN f_jefe;
+ALTER TABLE t_laboratorio ADD f_jefe VARCHAR(512);
+UPDATE t_laboratorio SET f_jefe=f_jefe__tmp;
+ALTER TABLE t_laboratorio DROP COLUMN f_jefe__tmp;
+success!
+timestamp: 2017-02-13T17:29:25.881818
+ALTER TABLE t_laboratorio_archive ADD f_jefe__tmp VARCHAR(512);
+UPDATE t_laboratorio_archive SET f_jefe__tmp=f_jefe;
+ALTER TABLE t_laboratorio_archive DROP COLUMN f_jefe;
+ALTER TABLE t_laboratorio_archive ADD f_jefe VARCHAR(512);
+UPDATE t_laboratorio_archive SET f_jefe=f_jefe__tmp;
+ALTER TABLE t_laboratorio_archive DROP COLUMN f_jefe__tmp;
+success!
+timestamp: 2017-02-13T17:31:20.752927
+ALTER TABLE t_seccion ADD f_jefe__tmp VARCHAR(512);
+UPDATE t_seccion SET f_jefe__tmp=f_jefe;
+ALTER TABLE t_seccion DROP COLUMN f_jefe;
+ALTER TABLE t_seccion ADD f_jefe VARCHAR(512);
+UPDATE t_seccion SET f_jefe=f_jefe__tmp;
+ALTER TABLE t_seccion DROP COLUMN f_jefe__tmp;
+success!
+timestamp: 2017-02-13T17:31:20.780323
+ALTER TABLE t_espaciofisico ADD f_tecnico__tmp VARCHAR(512);
+UPDATE t_espaciofisico SET f_tecnico__tmp=f_tecnico;
+ALTER TABLE t_espaciofisico DROP COLUMN f_tecnico;
+ALTER TABLE t_espaciofisico ADD f_tecnico VARCHAR(512);
+UPDATE t_espaciofisico SET f_tecnico=f_tecnico__tmp;
+ALTER TABLE t_espaciofisico DROP COLUMN f_tecnico__tmp;
+success!

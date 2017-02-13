@@ -110,13 +110,6 @@ if db(db.t_consumos).isempty():
 ########################################
 
 
-db.define_table('t_materiales',
-               Field('f_nombre','string',requires=IS_NOT_EMPTY()),
-               Field('f_cas','string',requires=IS_NOT_EMPTY()),
-               format='%(f_nombre)s')
-db.t_materiales.f_cas.requires=IS_NOT_IN_DB(db,db.t_materiales.f_cas)
-db.t_materiales.f_nombre.requires=IS_NOT_IN_DB(db,db.t_materiales.f_nombre)
-
 ########################################
 db.define_table('t_estado',
                Field('f_estado','string',readable=False,writable=False),
@@ -145,12 +138,10 @@ db.t_sustancias.id.writable=False
 db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','reference t_sustancias',readable=False,writable=False))
 
 
-
-
 ##########################################
 db.define_table('t_laboratorio',
     Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Jefe de Laboratorio')),
+    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Laboratorio')),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 
@@ -160,16 +151,16 @@ db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record',
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
     Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre,'%(f_nombre)s'), label=T('Laboratorio')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Jefe de Seccion')),
-    format='%(f_nombre)s'
-    )
+    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Laboratorio')),
+    format='%(f_nombre)s',
+    migrate=settings.migrate)
 
 ########################################
 db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Direccion')),
     Field('f_seccion', 'integer',requires=IS_IN_DB(db,db.t_seccion.id,'%(f_laboratorio)s, seccion %(f_seccion)s'), label=T('Seccion')),
-    Field('f_tecnico','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Tecnico')),
+    Field('f_tecnico','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
@@ -232,6 +223,4 @@ db.define_table('t_solicitud',
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
 
-#db.auth_user.f_espaciofisico.requires = IS_IN_DB(db, db.t_espaciofisico.id, '%(f_espacio)s')
-#db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s')
-#b.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s')
+populate_db()
