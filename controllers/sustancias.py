@@ -100,6 +100,7 @@ def inventario_lab():
 def inventario_seccion():
 
     secc = request.vars['secc']
+    seccion = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_seccion))[21:-2]
     lab = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_laboratorio))[25:-2]
     query = (db.v_seccion.f_laboratorio == lab)&(db.v_seccion.f_seccion == secc)
     table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
