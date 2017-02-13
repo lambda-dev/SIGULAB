@@ -1,7 +1,16 @@
 {{extend 'layout.html'}}
 
 <h2>Inventario</h2>
-<h2>{{=lab}}, {{=seccion}}</h2>
+<h2>{{=lab}}</h2>
+
+{{if seccion:}}
+<h2>Seccion: {{=seccion}}</h2>
+{{pass}}
+
+{{if sustancia:}}
+<h2>Sustancia: {{=sustancia}}</h2>
+{{pass}}
+
 <p>{{=table}}</p>
 <a  href="{{=URL('sustancias','select_inventario')}}">
 <button class="btn btn-default">Atras</button>

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
 
+###################################################
 @auth.requires_login()
 def validar_bitacora(form):
     espF = request.vars['esp']
@@ -35,6 +36,8 @@ def validar_bitacora(form):
                 form.vars.f_consumo = form.vars.f_cantidad
                 form.vars.f_cantidad = total - form.vars.f_consumo
 
+
+###################################################
 @auth.requires_login()
 def update_bitacora(form):
         espF = request.vars['esp']
@@ -44,6 +47,8 @@ def update_bitacora(form):
         row.update_record(f_cantidadusointerno=new)
         row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
 
+
+###################################################
 @auth.requires_login()
 def insert_bitacora(form):
     espF = request.vars['esp']
@@ -53,6 +58,8 @@ def insert_bitacora(form):
     row.update_record(f_cantidadusointerno=new)
     row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
 
+
+###################################################
 @auth.requires_login()
 def sustanciapeligrosa_manage():
     if(auth.has_permission('gestor','t_sustancias') or \
@@ -62,6 +69,8 @@ def sustanciapeligrosa_manage():
         table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
     return locals()
 
+
+###################################################
 @auth.requires_login()
 def select_inventario():
     espacios=False
@@ -87,7 +96,7 @@ def select_inventario():
     return locals()
 
 
-
+###################################################
 @auth.requires_login()
 def inventario_lab():
 
@@ -96,9 +105,22 @@ def inventario_lab():
     table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
+
+###################################################
 @auth.requires_login()
 def inventario_seccion():
 
+    if request.vars['secc'] == 't':
+        db.v_seccion.f_seccion.readable = True
+        db.v_seccion.f_sustancia.readable = False
+        lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
+        query = (db.v_seccion.f_laboratorio == lab)&(db.v_seccion.f_sustancia == request.vars['sust'])
+        table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
+        seccion = False
+        sustancia = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:]
+        return locals()
+
+    sustancia = False
     secc = request.vars['secc']
     seccion = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_seccion))[21:-2]
     lab = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_laboratorio))[25:-2]
@@ -106,24 +128,32 @@ def inventario_seccion():
     table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
+
+###################################################
 @auth.requires_login()
 def inventario_manage():
     #cheqeuar que no agreguen lo mismo
+    sustancia = False
+    labs = False
+    seccion = False
+
     espF = request.vars['esp']
     query = db.t_inventario.f_espaciofisico == espF
     db.t_inventario.f_espaciofisico.default = espF
 
-    if (request.vars['lab']):
-        lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
-        query = db.t_inventario.f_laboratorio == lab
-        db.t_inventario.f_espaciofisico.readable = True
-        db.t_inventario.f_seccion.readable = True
-        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),editable=False,
-        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
+    if request.vars['esp']:
+        seccion = int(str(db((db.t_espaciofisico.f_seccion == request.vars['esp'])&(db.t_seccion.id == db.t_espaciofisico.f_seccion)).select(db.t_seccion.f_seccion))[21:-2])
+        labs = str( db((db.t_seccion.id == seccion) ).select(db.t_seccion.f_laboratorio) )[25:-2]
 
     if (request.vars['secc']):
+        labs = str(db(db.t_seccion.id == request.vars['secc']).select(db.t_seccion.f_laboratorio))[25:]
+        seccion = str(db(db.t_seccion.id == request.vars['secc']).select(db.t_seccion.f_seccion))[21:]
         db.t_inventario.f_espaciofisico.readable = True
-        query = (db.t_inventario.f_seccion == request.vars['secc'])
+        if (request.vars['sust']):
+            sustancia = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:]
+            query = (db.t_inventario.f_seccion == request.vars['secc'])&(db.t_inventario.f_sustancia == request.vars['sust'])
+        else:
+            query = (db.t_inventario.f_seccion == request.vars['secc'])#&(db.t_inventario.f_sustancia == request.vars['sust'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=False,
         orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
         return locals()
@@ -131,11 +161,14 @@ def inventario_manage():
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,editable=False,deletable=False)
     return locals()
 
+
+###################################################
 @auth.requires_login()
 def view_bitacora():
     sust = request.vars['sust']
     espF = request.vars['esp']
     name = str(db(db.t_sustancias.id == sust).select(db.t_sustancias.f_nombre))[22:]
+    espacio = str(db(db.t_espaciofisico.id == espF).select(db.t_espaciofisico.f_espacio))[27:]
     total = str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[34:]
     db.t_bitacora.f_sustancia.default = sust
     db.t_bitacora.f_espaciofisico.default = espF
@@ -165,12 +198,8 @@ def view_bitacora():
         else:
             row.update_record(f_cantidad = row.f_ingreso)
 
-
-
     table = SQLFORM.smartgrid(db.t_bitacora,constraints=dict(t_bitacora=query),oncreate=insert_bitacora,
     orderby=~db.t_bitacora.f_fechaingreso,csv=False,links_in_grid=False,deletable=False,
     user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=update_bitacora)
-
-
 
     return locals()

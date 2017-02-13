@@ -1,8 +1,8 @@
 {{extend 'layout.html'}}
 
 <h1>Bitacora</h1>
-<p>{{=request.args}}
 <h2>Sustancia: {{=name}}</h2>
+<h2>Espacio Fisico: {{=espacio}}</h2>
 <p>{{=table}}</p>
 <p>Cantidad Disponible: {{=total}}</p>
 <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">

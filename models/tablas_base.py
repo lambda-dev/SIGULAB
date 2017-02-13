@@ -199,7 +199,9 @@ db.define_table('v_laboratorio',
     migrate=False
     )
 db.v_laboratorio.id.readable=False
-db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name)#,_href=URL('sustancias','inventario_seccion',vars=dict(secc=row.f_seccion)))
+db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
+lab= int(str(db(db.t_laboratorio.f_nombre == row.f_laboratorio).select(db.t_laboratorio.id))[18:-2]),
+sust=row.f_sustancia)))
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
 db.executesql(
 'create or replace view v_seccion as\
@@ -216,8 +218,8 @@ db.executesql(
 
 db.define_table('v_seccion',
     Field('f_laboratorio',readable = False),
-    Field('f_seccion',readable=False),
     Field('id'),
+    Field('f_seccion',readable=False,label = T('Sección')),
     Field('f_sustancia',label=T('Sustancia')),
     Field('f_cantidadonacion',label=T('Cantidad Donacion')),
     Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
@@ -225,7 +227,8 @@ db.define_table('v_seccion',
     migrate=False
     )
 db.v_seccion.id.readable=False
-db.v_seccion.f_sustancia.represent= lambda name,row: A(name)#,_href=URL('sustancias','inventario_seccion',vars=dict(secc=row.f_seccion)))
+db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
+db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
 
 
 ########################################
