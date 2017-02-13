@@ -146,14 +146,18 @@ db.define_table('t_laboratorio',
     migrate=settings.migrate)
 
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
+db.t_laboratorio._plural = 'Laboratorios'
+db.t_laboratorio._singular = 'Laboratorio'
 
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
-    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre,'%(f_nombre)s'), label=T('Laboratorio')),
-    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Laboratorio')),
-    format='%(f_nombre)s',
+    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre), label=T('Laboratorio')),
+    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
+
+db.t_seccion._plural = 'Secciones'
+db.t_seccion._singular = 'Sección'
 
 ########################################
 db.define_table('t_espaciofisico',

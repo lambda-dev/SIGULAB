@@ -10,7 +10,7 @@ def index():
   or auth.has_membership('Administrador Personal') \
   or auth.has_membership('WebMaster'))
 def usuarios():
-    form = SQLFORM.smartgrid(db.auth_user,onupdate=auth.archive,csv=False,details=False,linked_tables=['auth_membership'])#,links=links)
+    form = SQLFORM.smartgrid(db.auth_user,onupdate=auth.archive,csv=False,details=False,linked_tables=['auth_membership'])
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -75,3 +75,17 @@ def eliminar_p():
     db(db.auth_user.email == user_email).delete()
 
     redirect(URL(c='gestion',f='pendientes'))
+
+@auth.requires(auth.has_membership('Director') \
+  or auth.has_membership('Administrador Personal') \
+  or auth.has_membership('WebMaster'))
+def laboratorios():
+    form = SQLFORM.smartgrid(db.t_laboratorio,onupdate=auth.archive,csv=False,details=False, linked_tables=[], deletable = auth.has_membership('WebMaster'))
+    return locals()
+
+@auth.requires(auth.has_membership('Director') \
+  or auth.has_membership('Administrador Personal') \
+  or auth.has_membership('WebMaster'))
+def secciones():
+    form = SQLFORM.smartgrid(db.t_seccion,onupdate=auth.archive, csv=False, details=False, linked_tables=[], deletable = auth.has_membership('WebMaster'))
+    return locals()
