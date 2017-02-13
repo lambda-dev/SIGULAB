@@ -106,8 +106,8 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # configure auth policy
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
-auth.settings.registration_requires_approval = True
-auth.settings.reset_password_requires_verification = True
+auth.settings.registration_requires_approval = False
+auth.settings.reset_password_requires_verification = False
 # Evita crear grupos al registar
 auth.settings.create_user_groups = None
 # Grupo default registro

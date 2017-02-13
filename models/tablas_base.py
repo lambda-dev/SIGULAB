@@ -77,15 +77,6 @@ if db(db.t_consumos).isempty():
 #    migrate=settings.migrate)
 
 #db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
-########################################
-
-
-db.define_table('t_materiales',
-               Field('f_nombre','string',requires=IS_NOT_EMPTY()),
-               Field('f_cas','string',requires=IS_NOT_EMPTY()),
-               format='%(f_nombre)s')
-db.t_materiales.f_cas.requires=IS_NOT_IN_DB(db,db.t_materiales.f_cas)
-db.t_materiales.f_nombre.requires=IS_NOT_IN_DB(db,db.t_materiales.f_nombre)
 
 ########################################
 db.define_table('t_estado',
@@ -107,14 +98,12 @@ db.define_table('t_sustancias',
     represent = lambda value,row: str(db(db.t_estado.id == value).select(db.t_estado.f_estado))[18:] ),
     Field('f_control', 'integer', label=T('Control'), requires=IS_IN_DB(db,db.t_regimenes.id,'%(f_nombre)s'),
     represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),
-    Field('f_peligrosidad', 'string', label=T('Peligrosidad')),
+    Field('f_peligrosidad', 'string', label=T('Peligrosidad'),requires=IS_IN_SET(['Inflamable','Tóxico','Tóxico para el ambiente','Corrosivo','Comburente','Nocivo','Explosivo','Irritante'],multiple = True), widget=SQLFORM.widgets.checkboxes.widget ),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 db.t_sustancias.id.readable=False
 db.t_sustancias.id.writable=False
 db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','reference t_sustancias',readable=False,writable=False))
-
-
 
 
 ##########################################
@@ -174,8 +163,8 @@ db.define_table('t_bitacora',
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
-    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0,compute=lambda r:
-    r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
+    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),#compute=lambda r:
+    #r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
@@ -186,7 +175,7 @@ db.define_table('t_bitacora',
 db.t_bitacora.id.readable = False
 
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
-
+db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 
 ########################################
 db.define_table('t_solicitud',

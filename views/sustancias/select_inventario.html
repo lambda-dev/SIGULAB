@@ -1,12 +1,11 @@
 {{extend 'layout.html'}}
 
 <h2>Seleccionar Inventario</h2>
-
 {{if espacios:}}
 <h3>Espacios Fisicos:</h3>
 {{for espacio in espacios:}}
 <a = href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}"
-<p>{{=espacio.f_espacio}}</p>
+<p>Seccion: {{=espacio.f_seccion}}, {{=espacio.f_espacio}}</p>
 {{pass}}
 </a>
 
@@ -14,7 +13,7 @@
 <h3>Secciones:</h3>
 {{  for seccion in secciones:}}
 <a = href="{{=URL('sustancias','inventario_manage',vars=dict(secc=seccion.id))}}"
-<p>{{=seccion.f_seccion}}</p>
+<p>{{=seccion.f_laboratorio}}, {{=seccion.f_seccion}}</p>
 </a>
 {{  pass}}
 {{pass}}
