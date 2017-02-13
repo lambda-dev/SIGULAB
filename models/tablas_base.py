@@ -177,6 +177,55 @@ db.t_bitacora.id.readable = False
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 
+#vista para el inventario de Laboratorio, no ocupa espacio en la bd
+db.executesql(
+  'create or replace view v_laboratorio as\
+    select ROW_NUMBER() OVER(order by f_nombre) as id,\
+        s.f_nombre as f_sustancia, \
+        SUM(i.f_cantidadonacion) as f_cantidadonacion, \
+        SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
+        SUM(i.f_total) as f_total,\
+        i.f_laboratorio as f_laboratorio\
+    from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
+    group by s.f_nombre,i.f_laboratorio')
+
+db.define_table('v_laboratorio',
+    Field('f_laboratorio',readable=False),
+    Field('id'),
+    Field('f_sustancia',label=T('Sustancia')),
+    Field('f_cantidadonacion'),
+    Field('f_cantidadusointerno'),
+    Field('f_total'),
+    migrate=False
+    )
+db.v_laboratorio.id.readable=False
+#vista para el inventario de Laboratorio, no ocupa espacio en la bd
+db.executesql(
+'create or replace view v_seccion as\
+  select ROW_NUMBER() OVER(order by f_laboratorio,f_nombre,f_seccion) as id,\
+      s.f_nombre as f_sustancia, \
+      SUM(i.f_cantidadonacion) as f_cantidadonacion, \
+      SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
+      SUM(i.f_total) as f_total,\
+      i.f_laboratorio as f_laboratorio,\
+      i.f_seccion as f_seccion\
+  from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
+  group by s.f_nombre,i.f_seccion,i.f_laboratorio\
+  order by f_laboratorio,f_nombre,f_seccion;')
+
+db.define_table('v_seccion',
+    Field('f_laboratorio'),
+    Field('f_seccion'),
+    Field('id'),
+    Field('f_sustancia',label=T('Sustancia')),
+    Field('f_cantidadonacion'),
+    Field('f_cantidadusointerno'),
+    Field('f_total'),
+    migrate=False
+    )
+db.v_laboratorio.id.readable=False
+
+
 ########################################
 db.define_table('t_solicitud',
     Field('f_sustancia', 'string', label=T('Sustancia')),
@@ -190,3 +239,5 @@ db.define_table('t_solicitud',
     migrate=settings.migrate)
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
+
+#########################################

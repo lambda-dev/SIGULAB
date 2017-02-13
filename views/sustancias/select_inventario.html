@@ -12,7 +12,7 @@
 {{if secciones:}}
 <h3>Secciones:</h3>
 {{  for seccion in secciones:}}
-<a = href="{{=URL('sustancias','inventario_manage',vars=dict(secc=seccion.id))}}"
+<a = href="{{=URL('sustancias','inventario_seccion',vars=dict(secc=seccion.id))}}"
 <p>{{=seccion.f_laboratorio}}, {{=seccion.f_seccion}}</p>
 </a>
 {{  pass}}
@@ -21,7 +21,7 @@
 {{if labs:}}
 <h3>Laboratorios:</h3>
 {{  for lab in labs:}}
-<a = href="{{=URL('sustancias','inventario_manage',vars=dict(lab=lab.id))}}"
+<a = href="{{=URL('sustancias','inventario_lab',vars=dict(lab=lab.id))}}"
 <p>{{=lab.f_nombre}}</p>
 </a>
 {{  pass}}

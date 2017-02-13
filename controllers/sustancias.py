@@ -92,10 +92,17 @@ def select_inventario():
 def inventario_lab():
 
     lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
-    query = db(db.t_inventario.f_laboratorio == lab)
-    #db.t_inventario.f_espaciofisico.readable = True
-    #db.t_inventario.f_seccion.readable = True
-    table = SQLFORM.grid(query=query,groupby=db.t_inventario.f_sustancia)
+    query = db.v_laboratorio.f_laboratorio == lab
+    table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False)
+    return locals()
+
+@auth.requires_login()
+def inventario_seccion():
+
+    secc = request.vars['secc']
+    lab = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_laboratorio))[25:-2]
+    query = (db.v_seccion.f_laboratorio == lab)&(db.v_seccion.f_seccion == secc)
+    table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
 @auth.requires_login()
@@ -117,7 +124,7 @@ def inventario_manage():
         db.t_inventario.f_espaciofisico.readable = True
         query = (db.t_inventario.f_seccion == request.vars['secc'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=False,
-        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False,groupby=db.t_inventario.f_sustancia,count=db.t_inventario.f_sustancia)
+        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
         return locals()
 
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,editable=False,deletable=False)
