@@ -1,0 +1,746 @@
+(dp1
+S'output'
+p2
+S'<class \'psycopg2.ProgrammingError\'> column "f_group__tmp" is of type integer but expression is of type character varying\nLINE 1: UPDATE t_users_autorizados SET f_group__tmp=f_group;\n                                                    ^\nHINT:  You will need to rewrite or cast the expression.\n'
+p3
+sS'layer'
+p4
+S'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py'
+p5
+sS'code'
+p6
+S'### we prepend t_ to tablenames and f_ to fieldnames for disambiguity\n\n#editado por adolfo\nif db(db.auth_group).isempty():\n    db.auth_group.insert(role=\'WebMaster\',description=\'Super Usuario\')\n    db.auth_group.insert(role=\'Director\',description=\'Director de la Unidad de Laboratorio\')\n    db.auth_group.insert(role=\'Administrador Personal\',description=\'Administrador de Personal\')\n    db.auth_group.insert(role=\'Gestor de Sustancias\',description=\'Gestor de Sustancias\')\n    db.auth_group.insert(role=\'Jefe de Laboratorio\',description=\'Jefe de Laboratorio\')\n    db.auth_group.insert(role=\'Jefe de Secci\xc3\xb3n\',description=\'Jefe de Secci\xc3\xb3n\')\n    db.auth_group.insert(role=\'T\xc3\xa9cnico\',description=\'T\xc3\xa9cnico de Laboratorio\')\n    db.auth_group.insert(role=\'Usuario Normal\',description=\'Usuario recien registrado\')\n\nif db(db.auth_permission).isempty():\n    db.auth_permission.insert(name=\'director\',table_name=\'t_sustancias\',\n                            group_id=(db(db.auth_group.role == "Director").select(db.auth_group.id).first()))\n    db.auth_permission.insert(name=\'gestor\',table_name=\'t_sustancias\',\n                            group_id=db(db.auth_group.role == "Gestor de Sustancias").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'tecnico\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "T\xc3\xa9cnico").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'jefeseccion\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "Jefe de Secci\xc3\xb3n").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'jefelab\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())\n\n###############################################\n#editado por adolfo\nif db(db.auth_user).isempty():\n        db.auth_user.insert(first_name=\'Super\',last_name=\'Usuario\',email=\'webmaster@sigulab.com\',password=db.auth_user.password.validate(\'0000\')[0])\n        db.auth_membership.insert(user_id=(db(db.auth_user.email == \'webmaster@sigulab.com\').select(db.auth_user.id).first()),\\\n            group_id=auth.id_group(role="WebMaster"));\n\ndb.auth_membership._plural = \'Membres\xc3\xadas\'\ndb.auth_membership._singular = \'Membres\xc3\xada\'\n\ndb.auth_group._plural = \'Privilegios\'\ndb.auth_group._singular = \'Privilegio\'\n\ndb.auth_user._plural = \'Usuarios Registrados\'\ndb.auth_user._singular = \'Usuario Registrado\'\n\ndb.define_table(\'t_users_autorizados\',\n    Field(\'f_email\', \'string\', label=T(\'Email\')),\n    Field(\'f_group\', \'integer\', label=T(\'Privilegio\'), requires=IS_IN_DB(db, db.auth_group.id, \'%(role)s (%(id)s)\'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))\n\ndb.define_table(\'t_users_pendientes\',\n    Field(\'f_email\', \'string\', label=T(\'Email\')),\n    Field(\'f_group\', \'integer\', label=T(\'Privilegio\'), requires=IS_IN_DB(db, db.auth_group.id, \'%(role)s (%(id)s)\'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))\n\n\ndb.t_users_autorizados._plural = \'Usuarios Autorizados\'\ndb.t_users_autorizados._singular = \'Usuario Autorizado\'\n\ndb.t_users_pendientes._plural = \'Usuarios que requieren autorizaci\xc3\xb3n\'\ndb.t_users_pendientes._singular = \'Usuario que requiere autorizaci\xc3\xb3n\'\n\ndef check_autorizado(f, uid):\n    row = db(db.t_users_autorizados.f_email == f[\'email\']).select(db.t_users_autorizados.f_email, db.t_users_autorizados.f_group).first()\n    if row.f_email == f[\'email\'] and row.f_group == f[\'cargo\']:\n        auth.del_membership(auth.id_group(role="Usuario Normal"), uid)\n        auth.add_membership(row.f_group, uid)\n    else:\n        db.t_users_pendientes.insert(f_email=f[\'email\'], f_group=f[\'cargo\'])\n        f[\'autorizado\'] = False\n\ndb.auth_user._after_insert.append(lambda f, id: check_autorizado(f, id))\n\n#####################################################################\n\n########################################\ndb.define_table(\'t_regimenes\',\n    Field(\'f_nombre\',\'string\',label=T(\'Nombre\')),\n    format = \'%(f_nombre)s\')\n\nif db(db.t_regimenes).isempty():\n    db.t_regimenes.insert(f_nombre=\'RL4\')\n    db.t_regimenes.insert(f_nombre=\'RL7\')\n    db.t_regimenes.insert(f_nombre=\'RL4 y RL7\')\n    db.t_regimenes.insert(f_nombre=\'N/A\')\n##########################################\ndb.define_table(\'t_ingresos\',\n    Field(\'f_nombre\',label=T(\'Nombre\')),\n    format=\'%(f_nombre)s\'\n)\nif db(db.t_ingresos).isempty():\n    db.t_ingresos.insert(f_nombre=\'Suministro de Almac\xc3\xa9n\')\n    db.t_ingresos.insert(f_nombre=\'Compra a Proveedor\')\n    db.t_ingresos.insert(f_nombre=\'Pr\xc3\xa9stamo\')\n    db.t_ingresos.insert(f_nombre=\'Donaci\xc3\xb3n\')\n##########################################\ndb.define_table(\'t_consumos\',\n    Field(\'f_nombre\',label=T(\'Nombre\')),\n    format=\'%(f_nombre)s\'\n)\nif db(db.t_consumos).isempty():\n    db.t_consumos.insert(f_nombre=\'Pr\xc3\xa1ctica de Laboratorio\')\n    db.t_consumos.insert(f_nombre=\'Tesis\')\n    db.t_consumos.insert(f_nombre=\'Proyecto de Investigaci\xc3\xb3n\')\n    db.t_consumos.insert(f_nombre=\'Servicio de Laboratorio\')\n#    Field(\'f_permiso\',\'string\',label=T(\'Permiso\')),\n#    format=\'%(f_nombreCar)s\',\n#    migrate=settings.migrate)\n\n#db.define_table(\'t_cargo_archive\',db.t_cargo,Field(\'current_record\',\'reference t_cargo\',readable=False,writable=False))\n########################################\n\n\ndb.define_table(\'t_materiales\',\n               Field(\'f_nombre\',\'string\',requires=IS_NOT_EMPTY()),\n               Field(\'f_cas\',\'string\',requires=IS_NOT_EMPTY()),\n               format=\'%(f_nombre)s\')\ndb.t_materiales.f_cas.requires=IS_NOT_IN_DB(db,db.t_materiales.f_cas)\ndb.t_materiales.f_nombre.requires=IS_NOT_IN_DB(db,db.t_materiales.f_nombre)\n\n########################################\ndb.define_table(\'t_estado\',\n               Field(\'f_estado\',\'string\',readable=False,writable=False),\n               format=\'%(f_estado)s\')\n\nif db(db.t_estado).isempty():\n    db.t_estado.insert(f_estado=\'S\xc3\xb3lido\')\n    db.t_estado.insert(f_estado=\'L\xc3\xadquido\')\n    db.t_estado.insert(f_estado=\'Gaseoso\')\n\n########################################\n\ndb.define_table(\'t_sustancias\',\n    Field(\'f_nombre\', \'string\', label=T(\'Nombre\')),\n    Field(\'f_cas\', \'string\', label=T(\'Cas\')),\n    Field(\'f_pureza\', \'integer\',requires=IS_INT_IN_RANGE(0, 101), label=T(\'Pureza\')),\n    Field(\'f_estado\', \'integer\', requires=IS_IN_DB(db,db.t_estado.id,\'%(f_estado)s\'), label=T(\'Estado\'),\n    represent = lambda value,row: str(db(db.t_estado.id == value).select(db.t_estado.f_estado))[18:] ),\n    Field(\'f_control\', \'integer\', label=T(\'Control\'), requires=IS_IN_DB(db,db.t_regimenes.id,\'%(f_nombre)s\'),\n    represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),\n    Field(\'f_peligrosidad\', \'string\', label=T(\'Peligrosidad\')),\n    format=\'%(f_nombre)s\',\n    migrate=settings.migrate)\ndb.t_sustancias.id.readable=False\ndb.t_sustancias.id.writable=False\ndb.define_table(\'t_sustancias_archive\',db.t_sustancias,Field(\'current_record\',\'reference t_sustancias\',readable=False,writable=False))\n\n\n\n\n##########################################\ndb.define_table(\'t_laboratorio\',\n    Field(\'f_nombre\', \'string\', notnull=True, label=T(\'Nombre\')),\n    Field(\'f_jefe\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Jefe de Laboratorio\')),\n    format=\'%(f_nombre)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_laboratorio_archive\',db.t_laboratorio,Field(\'current_record\',\'reference t_laboratorio\',readable=False,writable=False))\n\n########################################\ndb.define_table(\'t_seccion\',\n    Field(\'f_seccion\',\'string\',requires=IS_NOT_EMPTY(),label=T(\'Secci\xc3\xb3n\')),\n    Field(\'f_laboratorio\',\'string\',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre,\'%(f_nombre)s\'), label=T(\'Laboratorio\')),\n    Field(\'f_jefe\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Jefe de Seccion\')),\n    format=\'%(f_nombre)s\'\n    )\n\n########################################\ndb.define_table(\'t_espaciofisico\',\n    Field(\'f_espacio\', \'string\', requires=IS_NOT_EMPTY(), label=T(\'Espacio\')),\n    Field(\'f_direccion\', \'string\', requires=IS_NOT_EMPTY(), label=T(\'Direccion\')),\n    Field(\'f_seccion\', \'integer\',requires=IS_IN_DB(db,db.t_seccion.id,\'%(f_laboratorio)s, seccion %(f_seccion)s\'), label=T(\'Seccion\')),\n    Field(\'f_tecnico\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Tecnico\')),\n    format=\'%(f_espacio)s\',\n    migrate=settings.migrate)\ndb.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]\n\n########################################\ndb.define_table(\'t_inventario\',\n    Field(\'f_sustancia\', \'integer\', label=T(\'Sustancia\'),requires=IS_IN_DB(db,db.t_sustancias.id,\'%(f_nombre)s\')\\\n    ,represent= lambda name,row: \\\n                A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL(\'sustancias\',\'view_bitacora\',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),\n    Field(\'f_espaciofisico\', \'integer\',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,\'%(f_espacio)s\') ,\n    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],\n    label=T(\'Espaciofisico\')),\n    Field(\'f_cantidadonacion\', \'float\',default=0,label=T(\'Cantidad Donacion\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_cantidadusointerno\', \'float\',default=0,label=T(\'Cantidad Uso Interno\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_total\',\'float\',label=T(\'Cantidad Total\'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_seccion\',\'integer\',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,\'%(f_seccion)s\'),label=T(\'Secci\xc3\xb3n\'),\n    compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),\n    Field(\'f_laboratorio\',\'string\',requires=IS_IN_DB(db,db.t_laboratorio.id,\'%(f_nombre)s\'),readable=False,writable=False,\n    compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_inventario_archive\',db.t_inventario,Field(\'current_record\',\'reference t_inventario\',readable=False,writable=False))\ndb.t_inventario.id.readable = False\n\n########################################\ndb.define_table(\'t_bitacora\',\n    Field(\'f_fechaingreso\',\'datetime\',label=T(\'Fecha\')),\n    Field(\'f_sustancia\', \'integer\',readable=False,writable=False,requires=IS_IN_DB(db,db.t_sustancias.id,\'%(f_nombre)s\'),\n            represent=lambda f_sustancia,row: str(db(db.t_sustancias.id == f_sustancia).select(db.t_sustancias.f_nombre))[22:],\n            notnull=True, label=T(\'Sustancia\')),\n    Field(\'f_proceso\', \'string\', notnull=True, label=T(\'Proceso\')),\n    Field(\'f_ingreso\', \'float\', default=0, label=T(\'Ingreso\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_consumo\', \'float\', default=0,label=T(\'Consumo\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_cantidad\', \'float\', label=T(\'Cantidad\'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0,compute=lambda r:\n    r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),\n    Field(\'f_fecha\', \'datetime\', label=T(\'FechaIngreso\'),writable=False,readable=False, default=request.now),\n    Field(\'f_espaciofisico\', \'integer\',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,\'%(f_espacio)s\') ,\n    writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],\n     label=T(\'Espacio Fisico\'),notnull=True),\n    Field(\'f_descripcion\',\'text\',label=T(\'Descripci\xc3\xb3n\'),readable=False),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\ndb.t_bitacora.id.readable = False\n\ndb.define_table(\'t_bitacora_archive\',db.t_bitacora,Field(\'current_record\',\'reference t_bitacora\',readable=False,writable=False))\n\n\n########################################\ndb.define_table(\'t_solicitud\',\n    Field(\'f_sustancia\', \'string\', label=T(\'Sustancia\')),\n    Field(\'f_espaciofisico\', \'string\', label=T(\'Espaciofisico\')),\n    Field(\'f_seccion\', \'string\', label=T(\'Seccion\')),\n    Field(\'f_responsable\', \'string\', label=T(\'Responsable\')),\n    Field(\'f_solicitador\', \'string\', label=T(\'Solicitador\')),\n    Field(\'f_cantidadsolicitada\', \'string\', label=T(\'Cantidadsolicitada\')),\n    Field(\'f_estado\', \'string\', label=T(\'Estado\')),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_solicitud_archive\',db.t_solicitud,Field(\'current_record\',\'reference t_solicitud\',readable=False,writable=False))\n'
+p7
+sS'snapshot'
+p8
+(dp9
+S'exception'
+p10
+(dp11
+S'__module__'
+p12
+S"'psycopg2'"
+p13
+sS'__getslice__'
+p14
+S"<method-wrapper '__getslice__' of ProgrammingError object>"
+p15
+sS'__str__'
+p16
+S"<method-wrapper '__str__' of ProgrammingError object>"
+p17
+sS'__reduce__'
+p18
+S'<built-in method __reduce__ of ProgrammingError object>'
+p19
+sS'__dict__'
+p20
+S'{}'
+p21
+sS'__sizeof__'
+p22
+S'<built-in method __sizeof__ of ProgrammingError object>'
+p23
+sS'__weakref__'
+p24
+S'None'
+p25
+sS'__init__'
+p26
+S"<method-wrapper '__init__' of ProgrammingError object>"
+p27
+sS'__setattr__'
+p28
+S"<method-wrapper '__setattr__' of ProgrammingError object>"
+p29
+sS'__reduce_ex__'
+p30
+S'<built-in method __reduce_ex__ of ProgrammingError object>'
+p31
+sS'__new__'
+p32
+S'<built-in method __new__ of type object>'
+p33
+sS'diag'
+p34
+S'<psycopg2.extensions.Diagnostics object>'
+p35
+sS'__format__'
+p36
+S'<built-in method __format__ of ProgrammingError object>'
+p37
+sS'__class__'
+p38
+S"<class 'psycopg2.ProgrammingError'>"
+p39
+sS'pgerror'
+p40
+S'\'ERROR:  column "f_group__tmp" is of type integer...You will need to rewrite or cast the expression.\\n\''
+p41
+sS'__doc__'
+p42
+S"'Error related to database programming (SQL error, table not found etc).'"
+p43
+sS'__getitem__'
+p44
+S"<method-wrapper '__getitem__' of ProgrammingError object>"
+p45
+sS'__setstate__'
+p46
+S'<built-in method __setstate__ of ProgrammingError object>'
+p47
+sS'__getattribute__'
+p48
+S"<method-wrapper '__getattribute__' of ProgrammingError object>"
+p49
+sS'args'
+p50
+S'(\'column "f_group__tmp" is of type integer but exp...You will need to rewrite or cast the expression.\\n\',)'
+p51
+sS'__subclasshook__'
+p52
+S'<built-in method __subclasshook__ of type object>'
+p53
+sS'pgcode'
+p54
+S"'42804'"
+p55
+sS'__unicode__'
+p56
+S'<built-in method __unicode__ of ProgrammingError object>'
+p57
+sS'cursor'
+p58
+S'<cursor object at 0x7f1143f83bf0; closed: 0>'
+p59
+sS'__delattr__'
+p60
+S"<method-wrapper '__delattr__' of ProgrammingError object>"
+p61
+sS'__repr__'
+p62
+S"<method-wrapper '__repr__' of ProgrammingError object>"
+p63
+sS'__hash__'
+p64
+S"<method-wrapper '__hash__' of ProgrammingError object>"
+p65
+ssS'evalue'
+p66
+S'column "f_group__tmp" is of type integer but expression is of type character varying\nLINE 1: UPDATE t_users_autorizados SET f_group__tmp=f_group;\n                                                    ^\nHINT:  You will need to rewrite or cast the expression.\n'
+p67
+sS'request'
+p68
+cgluon.html
+XML_unpickle
+p69
+(S's\xcaW\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">ajax</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">application</td><td style="vertical-align:top;">:</td><td><div>SIGULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cid</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">controller</td><td style="vertical-align:top;">:</td><td><div>appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_admin</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_sigulab</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">env</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_ENCODING</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate, sdch, br</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_LANGUAGE</td><td style="vertical-align:top;">:</td><td><div>es,en;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CACHE_CONTROL</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CONNECTION</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_COOKIE</td><td style="vertical-align:top;">:</td><td><div>session_id_sigulab=127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0; session_id_admin=127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_DNT</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_HOST</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_REFERER</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/appadmin/select/db?query=db.t_users_autorizados.id%3E0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_UPGRADE_INSECURE_REQUESTS</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_USER_AGENT</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">PATH_INFO</td><td style="vertical-align:top;">:</td><td><div>/appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">QUERY_STRING</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_ADDR</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_PORT</td><td style="vertical-align:top;">:</td><td><div>55040</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_METHOD</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SCRIPT_NAME</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_NAME</td><td style="vertical-align:top;">:</td><td><div>adolfo-PC</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PORT</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PROTOCOL</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_SOFTWARE</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/admin/&#x27;, &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x7f1190492680: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;adolfo-PC&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/home/adolfo/Desktop/PROYECTO ULAB&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_encoding</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate, sdch, br</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_language</td><td style="vertical-align:top;">:</td><td><div>es,en;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cache_control</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_connection</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cookie</td><td style="vertical-align:top;">:</td><td><div>session_id_sigulab=127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0; session_id_admin=127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_dnt</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_host</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_referer</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/appadmin/select/db?query=db.t_users_autorizados.id%3E0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_upgrade_insecure_requests</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_user_agent</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>adolfo-PC</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path_info</td><td style="vertical-align:top;">:</td><td><div>/appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">query_string</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_addr</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_port</td><td style="vertical-align:top;">:</td><td><div>55040</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_method</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_uri</td><td style="vertical-align:top;">:</td><td><div>/SIGULAB/appadmin/index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">script_name</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_name</td><td style="vertical-align:top;">:</td><td><div>adolfo-PC</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_port</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_protocol</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_software</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_original_uri</td><td style="vertical-align:top;">:</td><td><div>/appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_path</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x7f119b25e1e0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x7f1190543120&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x7f1143eb9250&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x7f119b25e1e0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x7f1190543120&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x7f1143eb9250&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">extension</td><td style="vertical-align:top;">:</td><td><div>html</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">folder</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">function</td><td style="vertical-align:top;">:</td><td><div>index</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">global_settings</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/admin/&#x27;, &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x7f1190492680: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;adolfo-PC&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/home/adolfo/Desktop/PROYECTO ULAB&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>adolfo-PC</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_https</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_local</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_restful</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_scheduler</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_shell</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">now</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 2, 12, 17, 7, 14, 159484)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">url</td><td style="vertical-align:top;">:</td><td><div>/appadmin</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">utcnow</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 2, 12, 21, 7, 14, 159555)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi</td><td style="vertical-align:top;">:</td><td><div>&lt;gluon.main.LazyWSGI object at 0x7f1143d00950&gt;</div></td></tr></table></div>'
+tRp70
+sS'frames'
+p71
+(lp72
+(dp73
+S'file'
+p74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/restricted.py'
+p75
+sS'dump'
+p76
+(dp77
+S'environment'
+p78
+S"{'A': <class 'gluon.html.A'>, 'ANY_OF': <class 'gluon.validators.ANY_OF'>, 'ASSIGNJS': <function ASSIGNJS>, 'AppConfig': <function AppConfig>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'BUTTON': <class 'gluon.html.BUTTON'>, ...}"
+p79
+sS'ccode'
+p80
+S'<code object <module> at 0x7f114397dc30, file "/...lications/SIGULAB/models/tablas_base.py", line 4>'
+p81
+ssS'lnum'
+p82
+I227
+sS'lines'
+p83
+(dp84
+I224
+S'            ccode = code'
+p85
+sI225
+S'        else:'
+p86
+sI226
+S'            ccode = compile2(code, layer)'
+p87
+sI227
+S'        exec ccode in environment'
+p88
+sI228
+S'    except HTTP:'
+p89
+sI229
+S'        raise'
+p90
+sI230
+S'    except RestrictedError:'
+p91
+sI231
+S'        # do not encapsulate (obfuscate) the original RestrictedError'
+p92
+sI222
+S'    try:'
+p93
+sI223
+S'        if isinstance(code, types.CodeType):'
+p94
+ssS'call'
+p95
+S'(code="### we prepend t_ to tablenames and f_ to fieldn...nce t_solicitud\',readable=False,writable=False))\\n", environment={\'A\': <class \'gluon.html.A\'>, \'ANY_OF\': <class \'gluon.validators.ANY_OF\'>, \'ASSIGNJS\': <function ASSIGNJS>, \'AppConfig\': <function AppConfig>, \'Auth\': <class \'gluon.tools.Auth\'>, \'B\': <class \'gluon.html.B\'>, \'BEAUTIFY\': <class \'gluon.html.BEAUTIFY\'>, \'BODY\': <class \'gluon.html.BODY\'>, \'BR\': <class \'gluon.html.BR\'>, \'BUTTON\': <class \'gluon.html.BUTTON\'>, ...}, layer=\'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py\')'
+p96
+sS'func'
+p97
+S'restricted'
+p98
+sa(dp99
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py'
+p100
+sg76
+(dp101
+S'represent'
+p102
+S'undefined'
+p103
+sS'builtinstr'
+p104
+S"<type 'str'>"
+p105
+sS'row'
+p106
+g103
+sS'db'
+p107
+S'<DAL uri="postgres:******@localhost/sigulab">'
+p108
+sS'value'
+p109
+g103
+sS'IS_IN_DB'
+p110
+S"<class 'gluon.validators.IS_IN_DB'>"
+p111
+sS'Field'
+p112
+S"<class 'pydal.objects.Field'>"
+p113
+sS'T'
+S'<gluon.languages.translator object>'
+p114
+sS'db.auth_group.id'
+p115
+S'<pydal.objects.Field object>'
+p116
+sS'db.auth_group.role'
+p117
+S'<pydal.objects.Field object>'
+p118
+sS'label'
+p119
+g103
+sS'requires'
+p120
+g103
+sS'db.auth_group'
+p121
+S'<Table auth_group (id, role, description)>'
+p122
+ssg82
+I44
+sg83
+(dp123
+I39
+S"db.auth_user._plural = 'Usuarios Registrados'"
+p124
+sI40
+S"db.auth_user._singular = 'Usuario Registrado'"
+p125
+sI41
+S''
+sI42
+S"db.define_table('t_users_autorizados',"
+p126
+sI43
+S"    Field('f_email', 'string', label=T('Email')),"
+p127
+sI44
+S"    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))"
+p128
+sI45
+S''
+sI46
+S"db.define_table('t_users_pendientes',"
+p129
+sI47
+S"    Field('f_email', 'string', label=T('Email')),"
+p130
+sI48
+S"    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))"
+p131
+ssg95
+S'()'
+p132
+sg97
+S'<module>'
+p133
+sa(dp134
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/base.py'
+p135
+sg76
+(dp136
+S'fields'
+p137
+S'(<pydal.objects.Field object>, <pydal.objects.Field object>)'
+p138
+sS'self'
+p139
+S'<DAL uri="postgres:******@localhost/sigulab">'
+p140
+sS'args'
+p141
+g21
+sS'tablename'
+p142
+S"'t_users_autorizados'"
+p143
+sS'table'
+p144
+g103
+sS'self.lazy_define_table'
+p145
+S'<bound method DAL.lazy_define_table of <DAL uri="postgres:******@localhost/sigulab">>'
+p146
+ssg82
+I834
+sg83
+(dp147
+I832
+S'            table = None'
+p148
+sI833
+S'        else:'
+p149
+sI834
+S'            table = self.lazy_define_table(tablename,*fields,**args)'
+p150
+sI835
+S'        if not tablename in self.tables:'
+p151
+sI836
+S'            self.tables.append(tablename)'
+p152
+sI837
+S'        return table'
+p153
+sI838
+S''
+sI829
+S'                    % (tablename,invalid_args))'
+p154
+sI830
+S'        if self._lazy_tables and tablename not in self._LAZY_TABLES:'
+p155
+sI831
+S'            self._LAZY_TABLES[tablename] = (tablename,fields,args)'
+p156
+ssg95
+S'(self=<DAL uri="postgres:******@localhost/sigulab">, tablename=\'t_users_autorizados\', *fields=(<pydal.objects.Field object>, <pydal.objects.Field object>), **args={})'
+p157
+sg97
+S'define_table'
+p158
+sa(dp159
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/base.py'
+p160
+sg76
+(dp161
+S'polymodel'
+p162
+S'None'
+p163
+ssg82
+I873
+sg83
+(dp164
+I868
+S'            try:'
+p165
+sI869
+S'                GLOBAL_LOCKER.acquire()'
+p166
+sI870
+S'                self._lastsql = self._adapter.create_table('
+p167
+sI871
+S'                    table,migrate=migrate,'
+p168
+sI872
+S'                    fake_migrate=fake_migrate,'
+p169
+sI873
+S'                    polymodel=polymodel)'
+p170
+sI874
+S'            finally:'
+p171
+sI875
+S'                GLOBAL_LOCKER.release()'
+p172
+sI876
+S'        else:'
+p173
+sI877
+S'            table._dbt = None'
+p174
+ssg95
+S'(self=<DAL uri="postgres:******@localhost/sigulab">, tablename=\'t_users_autorizados\', *fields=(<pydal.objects.Field object>, <pydal.objects.Field object>), **args={})'
+p175
+sg97
+S'lazy_define_table'
+p176
+sa(dp177
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py'
+p178
+sg76
+(dp179
+S'fake_migrate'
+p180
+S'False'
+p181
+ssg82
+I510
+sg83
+(dp182
+I512
+S'        return query'
+p183
+sI513
+S''
+sI514
+S'    def migrate_table('
+p184
+sI505
+S'            if sql_fields != sql_fields_old:'
+p185
+sI506
+S'                self.migrate_table('
+p186
+sI507
+S'                    table,'
+p187
+sI508
+S'                    sql_fields, sql_fields_old,'
+p188
+sI509
+S'                    sql_fields_aux, None,'
+p189
+sI510
+S'                    fake_migrate=fake_migrate'
+p190
+sI511
+S'                    )'
+p191
+ssg95
+S'(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, table=<Table t_users_autorizados (id, f_email, f_group)>, migrate=True, fake_migrate=False, polymodel=None)'
+p192
+sg97
+S'create_table'
+p193
+sa(dp194
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py'
+p195
+sg76
+(dp196
+S'self'
+p197
+S'<pydal.adapters.postgres.PostgreSQLAdapter object>'
+p198
+sS'self.execute'
+p199
+S'<bound method PostgreSQLAdapter.execute of <pydal.adapters.postgres.PostgreSQLAdapter object>>'
+p200
+sS'sub_query'
+p201
+S"'UPDATE t_users_autorizados SET f_group__tmp=f_group;'"
+p202
+ssg82
+I623
+sg83
+(dp203
+I618
+S'                    if fake_migrate:'
+p204
+sI619
+S'                        if db._adapter.commit_on_alter_table:'
+p205
+sI620
+S'                            self.save_dbt(table,sql_fields_current)'
+p206
+sI621
+S"                        self.log('faked!\\n', table)"
+p207
+sI622
+S'                    else:'
+p208
+sI623
+S'                        self.execute(sub_query)'
+p209
+sI624
+S'                        # Caveat: mysql, oracle and firebird'
+p210
+sI625
+S'                        # do not allow multiple alter table'
+p211
+sI626
+S'                        # in one transaction so we must commit'
+p212
+sI627
+S'                        # partial transactions and'
+p213
+ssg95
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, table=<Table t_users_autorizados (id, f_email, f_group)>, sql_fields={'f_email': {'length': 512, 'notnull': False, 'sortable': 2, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_group': {'length': 512, 'notnull': False, 'sortable': 3, 'sql': 'INTEGER', 'type': 'integer', 'unique': False}, 'id': {'length': 512, 'notnull': False, 'sortable': 1, 'sql': 'SERIAL PRIMARY KEY', 'type': 'id', 'unique': False}}, sql_fields_old={'f_email': {'length': 512, 'notnull': False, 'sortable': 2, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'f_group': {'length': 512, 'notnull': False, 'sortable': 3, 'sql': 'VARCHAR(512)', 'type': 'string', 'unique': False}, 'id': {'length': 512, 'notnull': False, 'sortable': 1, 'sql': 'SERIAL PRIMARY KEY', 'type': 'id', 'unique': False}}, sql_fields_aux={'f_email': {'sql': 'VARCHAR(512)'}, 'f_group': {'sql': 'INTEGER'}, 'id': {'sql': 'SERIAL PRIMARY KEY'}}, logfile=None, fake_migrate=False)"
+p214
+sg97
+S'migrate_table'
+p215
+sa(dp216
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/postgres.py'
+p217
+sg76
+(dp218
+S'a'
+S"('UPDATE t_users_autorizados SET f_group__tmp=f_group;',)"
+p219
+sS'self'
+p220
+S'<pydal.adapters.postgres.PostgreSQLAdapter object>'
+p221
+sS'b'
+g21
+sS'BaseAdapter.execute'
+p222
+S'<unbound method BaseAdapter.execute>'
+p223
+sS'global BaseAdapter'
+p224
+S"<class 'pydal.adapters.base.BaseAdapter'>"
+p225
+ssg82
+I362
+sg83
+(dp226
+I357
+S''
+sI358
+S'    def execute(self, *a, **b):'
+p227
+sI359
+S'        if PY2 and self.driver_name == "pg8000":'
+p228
+sI360
+S'            a = list(a)'
+p229
+sI361
+S"            a[0] = a[0].decode('utf8')"
+p230
+sI362
+S'        return BaseAdapter.execute(self, *a, **b)'
+p231
+sI363
+S''
+sI364
+S''
+sI365
+S'class NewPostgreSQLAdapter(PostgreSQLAdapter):'
+p232
+sI366
+S"    drivers = ('psycopg2','pg8000')"
+p233
+ssg95
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=('UPDATE t_users_autorizados SET f_group__tmp=f_group;',), **b={})"
+p234
+sg97
+S'execute'
+p235
+sa(dp236
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py'
+p237
+sg76
+(dp238
+S'a'
+S"('UPDATE t_users_autorizados SET f_group__tmp=f_group;',)"
+p239
+sS'self'
+p240
+S'<pydal.adapters.postgres.PostgreSQLAdapter object>'
+p241
+sS'b'
+g21
+sS'self.log_execute'
+p242
+S'<bound method PostgreSQLAdapter.log_execute of <pydal.adapters.postgres.PostgreSQLAdapter object>>'
+p243
+ssg82
+I1388
+sg83
+(dp244
+I1383
+S'        self.db._timings.append((command,time.time()-t0))'
+p245
+sI1384
+S'        del self.db._timings[:-TIMINGSSIZE]'
+p246
+sI1385
+S'        return ret'
+p247
+sI1386
+S''
+sI1387
+S'    def execute(self, *a, **b):'
+p248
+sI1388
+S'        return self.log_execute(*a, **b)'
+p249
+sI1389
+S''
+sI1390
+S'    def execute_test_query(self):'
+p250
+sI1391
+S'        return self.execute(self.test_query)'
+p251
+sI1392
+S''
+ssg95
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=('UPDATE t_users_autorizados SET f_group__tmp=f_group;',), **b={})"
+p252
+sg97
+g235
+sa(dp253
+g74
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py'
+p254
+sg76
+(dp255
+S'a'
+S"('UPDATE t_users_autorizados SET f_group__tmp=f_group;',)"
+p256
+sS'b'
+g21
+sS'self'
+p257
+S'<pydal.adapters.postgres.PostgreSQLAdapter object>'
+p258
+sS'ret'
+p259
+g103
+sS'command'
+p260
+S"'UPDATE t_users_autorizados SET f_group__tmp=f_group;'"
+p261
+sS'self.get_cursor'
+p262
+S'<bound method PostgreSQLAdapter.get_cursor of <pydal.adapters.postgres.PostgreSQLAdapter object>>'
+p263
+sS').execute'
+p264
+g103
+ssg82
+I1382
+sg83
+(dp265
+I1377
+S'            command = self.filter_sql_command(command)'
+p266
+sI1378
+S'        if self.db._debug:'
+p267
+sI1379
+S"            self.db.logger.debug('SQL: %s' % command)"
+p268
+sI1380
+S'        self.db._lastsql = command'
+p269
+sI1381
+S'        t0 = time.time()'
+p270
+sI1382
+S'        ret = self.get_cursor().execute(command, *a[1:], **b)'
+p271
+sI1383
+S'        self.db._timings.append((command,time.time()-t0))'
+p272
+sI1384
+S'        del self.db._timings[:-TIMINGSSIZE]'
+p273
+sI1385
+S'        return ret'
+p274
+sI1386
+S''
+ssg95
+S"(self=<pydal.adapters.postgres.PostgreSQLAdapter object>, *a=('UPDATE t_users_autorizados SET f_group__tmp=f_group;',), **b={})"
+p275
+sg97
+S'log_execute'
+p276
+sasS'pyver'
+p277
+S'Python 2.7.12: /usr/bin/python (prefix: /usr)'
+p278
+sS'session'
+p279
+g69
+(S's\xc2\x01\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_orderby</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_query</td><td style="vertical-align:top;">:</td><td><div>db.t_users_autorizados.id&gt;0</div></td></tr></table></div>'
+tRp280
+sS'etype'
+p281
+S"<class 'psycopg2.ProgrammingError'>"
+p282
+sS'date'
+p283
+S'Sun Feb 12 17:07:14 2017'
+p284
+sS'response'
+p285
+g69
+(S's\x05\x1b\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">body</td><td style="vertical-align:top;">:</td><td><div>&lt;cStringIO.StringO object at 0x7f114396d6f8&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_sigulab</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">delimiters</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>{{</div></td></tr><tr><td><div>}}</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">files</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">form_label_separator</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">formstyle</td><td style="vertical-align:top;">:</td><td><div>bootstrap3_inline</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">generic_patterns</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>*</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">headers</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">X-Powered-By</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">menu</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div><table><tr><td><div>Inicio</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>/</div></td></tr><tr><td><div><table></table></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">meta</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">author</td><td style="vertical-align:top;">:</td><td><div>Lambda &lt;you@example.com&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">description</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">keywords</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">models_to_run</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>^\\w+\\.py$</div></td></tr><tr><td><div>^appadmin/\\w+\\.py$</div></td></tr><tr><td><div>^appadmin/index/\\w+\\.py$</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">postprocessing</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_compression_level</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_expires</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_data_name</td><td style="vertical-align:top;">:</td><td><div>session_data_sigulab</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_file</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/sessions/08f/1fa/127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0&#x27;, mode &#x27;rb+&#x27; at 0x7f1144369c00&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_filename</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/sessions/127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_hash</td><td style="vertical-align:top;">:</td><td><div>f0c96ab8000c8d4c76c19dcd6404601f</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-daf7a29c-efd6-47dd-9056-094bb24c98d0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_name</td><td style="vertical-align:top;">:</td><td><div>session_id_sigulab</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_locked</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_masterapp</td><td style="vertical-align:top;">:</td><td><div>SIGULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_new</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_storage_type</td><td style="vertical-align:top;">:</td><td><div>file</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">status</td><td style="vertical-align:top;">:</td><td><div>200</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">subtitle</td><td style="vertical-align:top;">:</td><td><div>Equipo</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">title</td><td style="vertical-align:top;">:</td><td><div>Sistema De Gesti\xc3\xb3n ULAB - USB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">view</td><td style="vertical-align:top;">:</td><td><div>appadmin/index.html</div></td></tr></table></div>'
+tRp286
+sS'locals'
+p287
+(dp288
+S'a'
+S"('UPDATE t_users_autorizados SET f_group__tmp=f_group;',)"
+p289
+sS'self'
+p290
+S'<pydal.adapters.postgres.PostgreSQLAdapter object>'
+p291
+sS'b'
+g21
+sS'command'
+p292
+S"'UPDATE t_users_autorizados SET f_group__tmp=f_group;'"
+p293
+sS't0'
+p294
+S'1486933634.306886'
+p295
+sssS'traceback'
+p296
+S'Traceback (most recent call last):\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py", line 44, in <module>\n    Field(\'f_group\', \'integer\', label=T(\'Privilegio\'), requires=IS_IN_DB(db, db.auth_group.id, \'%(role)s (%(id)s)\'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/base.py", line 834, in define_table\n    table = self.lazy_define_table(tablename,*fields,**args)\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/base.py", line 873, in lazy_define_table\n    polymodel=polymodel)\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py", line 510, in create_table\n    fake_migrate=fake_migrate\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py", line 623, in migrate_table\n    self.execute(sub_query)\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/postgres.py", line 362, in execute\n    return BaseAdapter.execute(self, *a, **b)\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py", line 1388, in execute\n    return self.log_execute(*a, **b)\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/packages/dal/pydal/adapters/base.py", line 1382, in log_execute\n    ret = self.get_cursor().execute(command, *a[1:], **b)\nProgrammingError: column "f_group__tmp" is of type integer but expression is of type character varying\nLINE 1: UPDATE t_users_autorizados SET f_group__tmp=f_group;\n                                                    ^\nHINT:  You will need to rewrite or cast the expression.\n\n'
+p297
+s.
