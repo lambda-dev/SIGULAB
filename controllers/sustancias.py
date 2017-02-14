@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
-
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def validar_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -16,20 +10,6 @@ def validar_bitacora(form):
 
     if form.vars.f_cantidad == 0:
         form.errors.f_cantidad = T('Introduzca un ingreso o consumo')
-
-    if 'edit' in request.args:
-        if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
-            back =  float(str(db((db.t_bitacora.f_fechaingreso == form.vars.f_fechaingreso)&(db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.f_ingreso))[21:])
-            form.vars.f_ingreso = form.vars.f_cantidad
-            form.vars.f_cantidad = form.vars.f_ingreso + total - back
-        else:
-            if form.vars.f_cantidad > total:
-                form.errors.f_cantidad = T('No puede consumir más de la cantidad disponible')
-            else:
-                back =  float(str(db((db.t_bitacora.f_fechaingreso == form.vars.f_fechaingreso)&(db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.f_consumo))[21:])
-                form.vars.f_consumo = form.vars.f_cantidad
-                form.vars.f_cantidad = total - form.vars.f_consumo + back
-
     else:
 
         if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
@@ -44,6 +24,7 @@ def validar_bitacora(form):
 
 
 ###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def update_bitacora(form):
         espF = request.vars['esp']
@@ -55,14 +36,8 @@ def update_bitacora(form):
 
 
 ###################################################
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
-
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -73,13 +48,8 @@ def insert_bitacora(form):
 
 
 ###################################################
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def sustanciapeligrosa_manage():
     if(auth.has_permission('gestor','t_sustancias') or \
     auth.has_permission('director','t_sustancias')):
@@ -89,14 +59,8 @@ def sustanciapeligrosa_manage():
     return locals()
 
 
-###################################################
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def select_inventario():
     espacios=False
     labs=False
@@ -120,8 +84,8 @@ def select_inventario():
 
     return locals()
 
-
 ###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def inventario_lab():
 
@@ -132,6 +96,7 @@ def inventario_lab():
 
 
 ###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def inventario_seccion():
 
@@ -155,13 +120,8 @@ def inventario_seccion():
 
 
 ###################################################
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def inventario_manage():
     #cheqeuar que no agreguen lo mismo
     sustancia = False
@@ -192,15 +152,9 @@ def inventario_manage():
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,editable=False,deletable=False)
     return locals()
 
-
-###################################################
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+##########
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def view_bitacora():
     sust = request.vars['sust']
     espF = request.vars['esp']

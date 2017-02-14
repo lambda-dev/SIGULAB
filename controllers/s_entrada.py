@@ -1,23 +1,13 @@
 # -*- coding: utf-8 -*-
 import time
 # try something like
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def index():
 	return dict()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def entrada():
 	datos=db(db.table_solicitud.f_estado=='Pendiente')
 	#datos=db(db.table_solicitud)
@@ -44,13 +34,8 @@ def entrada():
 	form1 = SQLFORM.grid(query=datos1, fields=fields, headers=headers, create=False, deletable=False, editable=False, details=False, csv=False)
 	return locals()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def salida():
 	datos=db(db.table_solicitud.f_estado=='Pendiente')
 	#datos=db(db.table_solicitud)
@@ -73,13 +58,8 @@ def salida():
 	form1 = SQLFORM.grid(query=datos1, fields=fields, headers=headers, create=False, deletable=False, editable=False, details=False, csv=False)
 	return locals()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def p_por_devolver():
 	datos=db(db.table_solicitud.f_estado=='Préstamo/Pendiente')
 	#datos=db(db.table_solicitud)
@@ -100,13 +80,8 @@ def p_por_devolver():
 	form1 = SQLFORM.grid(query=datos1, fields=fields, headers=headers, create=False, deletable=False, editable=False, details=False, csv=False)
 	return locals()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def p_por_recibir():
 	datos=db(db.table_solicitud.f_estado=='Préstamo/Pendiente')
 	#datos=db(db.table_solicitud)
@@ -129,13 +104,8 @@ def p_por_recibir():
 	form1 = SQLFORM.grid(query=datos1, fields=fields, headers=headers, create=False, deletable=False, editable=False, details=False, csv=False)
 	return locals()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def donacion():
 	procesoID = request.args[0]
 	proceso=db(db.table_solicitud.id==procesoID).select().first()
@@ -144,27 +114,18 @@ def donacion():
 	redirect(URL(c='s_entrada',f='entrada'))
 	return dict()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def prestamo_pendiente():
 	procesoID = request.args[0]
 	proceso=db(db.table_solicitud.id==procesoID).select().first()
 	proceso.update_record(f_estado='Préstamo/Pendiente')
 	redirect(URL(c='s_entrada',f='entrada'))
 	return dict()
-	
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def prestamo_devuelto():
 	procesoID = request.args[0]
 	proceso=db(db.table_solicitud.id==procesoID).select().first()
@@ -172,13 +133,8 @@ def prestamo_devuelto():
 	redirect(URL(c='s_entrada',f='p_por_recibir'))
 	return dict()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def rechazar():
 	procesoID = request.args[0]
 	proceso=db(db.table_solicitud.id==procesoID).select().first()
@@ -186,13 +142,8 @@ def rechazar():
 	redirect(URL(c='s_entrada',f='entrada'))
 	return dict()
 
-@auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'))
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def cancelar():
 	procesoID = request.args[0]
 	proceso=db(db.table_solicitud.id==procesoID).select().first()
