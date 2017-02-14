@@ -152,13 +152,13 @@ def populate_db():
         db.t_users_autorizados.insert(f_email='lubesv@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='luhidalgo@usb.ve',f_group='7')
         db.t_users_autorizados.insert(f_email='mariaesthermoline@usb.ve',f_group='6')
-        db.t_users_autorizados.insert(f_email='msabino@usb.ve   ',f_group='6')
+        db.t_users_autorizados.insert(f_email='msabino@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='nciguela@usb.ve',f_group='7')
         db.t_users_autorizados.insert(f_email='nelsonaraujo@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='noeliarodriguez@usb.ve',f_group='7')
         db.t_users_autorizados.insert(f_email='oscaruiz@usb.ve',f_group='7')
         db.t_users_autorizados.insert(f_email='pmoncada@usb.ve',f_group='7')
-        db.t_users_autorizados.insert(f_email='psuarez@usb.ve ',f_group='6')
+        db.t_users_autorizados.insert(f_email='psuarez@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='rmichell@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='ronaldvargas@usb.ve',f_group='6')
         db.t_users_autorizados.insert(f_email='sdeleon@usb.ve',f_group='7')
@@ -326,7 +326,7 @@ def populate_db():
         db.t_seccion.insert(f_seccion='Diseño Asistido por Computadora',f_laboratorio='Laboratorio F',f_jefe='mscembo@usb.ve ')
         db.t_seccion.insert(f_seccion='Matemáticas y Estadísticas Computacionales',f_laboratorio='Laboratorio F',f_jefe='jacob@usb.ve ')
         db.t_seccion.insert(f_seccion='Centro de Estadística y Software Matemático',f_laboratorio='Laboratorio F',f_jefe='Isabel.llatas@gmail.com ')
-        db.t_seccion.insert(f_seccion='Bases de Datos',f_laboratorio='Laboratori oF',f_jefe='mgoncalves@ldc.usb.ve')
+        db.t_seccion.insert(f_seccion='Bases de Datos',f_laboratorio='Laboratorio F',f_jefe='mgoncalves@ldc.usb.ve')
         db.t_seccion.insert(f_seccion='Computación Gráfica y Multimedia',f_laboratorio='Laboratorio F',f_jefe='')
         db.t_seccion.insert(f_seccion='Geomática Urbana',f_laboratorio='Laboratorio F',f_jefe='lusitano@usb.ve ')
         db.t_seccion.insert(f_seccion='Inteligencia Artificial',f_laboratorio='Laboratorio F',f_jefe='martinez@ldc.usb.ve ')
@@ -352,7 +352,7 @@ def populate_db():
         db.t_seccion.insert(f_seccion='Comunicaciones',f_laboratorio='Laboratorio D',f_jefe='oescobar@usb.ve')
         db.t_seccion.insert(f_seccion='Idiomas',f_laboratorio='Laboratorio D',f_jefe='adenisraga@usb.ve')
         db.t_seccion.insert(f_seccion='Alimentos y Bebidas',f_laboratorio='Laboratorio D',f_jefe='')
-
+        
     #if db(db.t_espaciofisico).isempty():
     #    db.t_espaciofisico.insert(f_direccion="CB1-228",f_espacio="Laboratorio de Evaluación Nutricional",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")
     #    db.t_espaciofisico.insert(f_direccion="CB1-231",f_espacio="Laboratorio Docente Polimeros",f_tecnico="arnaldopxm@me.com",f_seccion="Polímeros")

@@ -1,5 +1,6 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
+#editado por adolfo
 if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
@@ -50,13 +51,13 @@ db.t_users_pendientes._plural = 'Usuarios que requieren autorización'
 db.t_users_pendientes._singular = 'Usuario que requiere autorización'
 
 def check_autorizado(f, uid):
-    row = db(db.t_users_autorizados.f_email == f['email']).select(db.t_users_autorizados.f_email, db.t_users_autorizados.f_group).first()
+    row = db(db.t_users_autorizados.f_email == f['email']).select().first()
     usuario = db(db.auth_user.id==uid).select().first()
 
     if row is not None:
         if row.f_group == f['cargo']:
-            auth.del_membership(auth.id_group(role="Usuario Normal"), uid)
-            auth.add_membership(row.f_group, uid)
+            auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+            auth.add_membership(row.f_group, usuario.id)
             usuario.update_record(autorizado = True)
         else:
             db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
@@ -66,10 +67,19 @@ def check_autorizado(f, uid):
         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
         usuario.update_record(autorizado = False)
 
-db.auth_user._after_insert.append(lambda f, id: check_autorizado(f, id))
+def actualizar_privilegio(f, uid):
+    usuario = db(db.auth_user.id==f['user_id']).select().first()
 
+    if usuario.autorizado:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+
+
+db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
+db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
 
 #####################################################################
+
+########################################
 db.define_table('t_regimenes',
     Field('f_nombre','string',label=T('Nombre')),
     format = '%(f_nombre)s')
@@ -105,7 +115,8 @@ if db(db.t_consumos).isempty():
     db.t_consumos.insert(f_nombre='Servicio de Laboratorio')
 
 
-
+#db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
+########################################
 ########################################
 db.define_table('t_estado',
                Field('f_estado','string',readable=False,writable=False),
@@ -137,7 +148,7 @@ db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','r
 ##########################################
 db.define_table('t_laboratorio',
     Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
-    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Laboratorio')),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Jefe de Laboratorio')),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 
@@ -149,20 +160,19 @@ db.t_laboratorio._singular = 'Laboratorio'
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
-    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre), label=T('Laboratorio')),
-    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Sección')),
+    Field('f_laboratorio','integer',requires=IS_IN_DB(db,db.t_laboratorio.id), label=T('Laboratorio')),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id, '%(email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
-
+#db.t_seccion.f_jefe.represent = lambda value,row: str(db(db.t_users_autorizados.f_email == value).select(db.t_users_autorizados.f_email))[28:]
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
-
 
 ########################################
 db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Direccion')),
     Field('f_seccion', 'integer',requires=IS_IN_DB(db,db.t_seccion.id,'%(f_laboratorio)s, seccion %(f_seccion)s'), label=T('Seccion')),
-    Field('f_tecnico','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Tecnico')),
+    Field('f_tecnico','integer', notnull = False,requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
@@ -284,8 +294,5 @@ db.define_table('t_solicitud',
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
 
-
-#########################################
-#db.auth_user.f_espaciofisico.requires = IS_IN_DB(db, db.t_espaciofisico.id, '%(f_espacio)s')
-#db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s')
-populate_db()
+#Por arreglar
+#populate_db()
