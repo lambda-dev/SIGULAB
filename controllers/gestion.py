@@ -2,6 +2,7 @@
 @auth.requires(auth.has_membership('Director') \
   or auth.has_membership('Administrador Personal') \
   or auth.has_membership('WebMaster'))
+
 def index():
     pen = db(db.t_users_pendientes).count()
     return dict(message="Index de Gestión", users_pen=pen)

@@ -159,6 +159,7 @@ mail.settings.server = settings.email_server
 mail.settings.sender = settings.email_sender
 mail.settings.login = settings.email_login
 
+
 # Se define aqui para poder usarla en
 db.define_table('t_users_pendientes',
     Field('f_email', 'string', label=T('Email')),
