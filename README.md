@@ -1,6 +1,27 @@
 # SIGULAB
 Branch de Adolfo
 ******************
+12 Febrero:
+
+Habemus registro por tabla!
++ Al registrarse usurio especifica su cargo. Luego al enviar ocurre:
+  + Si el email + cargo coinciden con la lista de autorizacion, el usuario puede logearse y usar el sistema sin ningun otro problema
+  + Si no esta el email en la tabla de autorizacion, o si puso un cargo diferente, se guarda en la tabla de pendientes y debe ser autorizado por el Administrador de Usuario. Este usuario solo puede logearse pero no tiene acceso a las otras partes del sistema.
+
++ Admin de Usuarios puede:
+  + Añadir a la tabla de autorizacion para que los usuarios se registren
+  + Aprobar, eliminar o editar la lista de pendientes para que esos usuarios puedan usar el sistema
+
++ Index de gestion muestra un aviso de cuantos usuarios pendientes están esperando.
+
+TODO: 
++ Enviar email a los usuarios Administradores para que sepan cuando hay un pendiente nuevo
++ Validacion solo usa email + cargo. Me habian dicho que tambien hay que validar EspacioFisico + Seccion + Laboratorio.
++ ¿Como se le asigna al usuario esos datos? ¿Como hace si tiene mas de un EF, S o L?
+¿Esos datos los da el usuario o el Admin? ¿Si son mas de 1, como se valida?
+
+
+
 
 10 Febrero:
 
