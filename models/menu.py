@@ -20,9 +20,6 @@ if not auth.has_membership('Usuario Normal') and auth.is_logged_in():
             ]],
     [T('Solicitudes'),False, None,[
     	(T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
-    		]],
-    [T('Prestamos'),False, None,[
-    	(T('Por devolver'), URL('s_entrada','p_por_devolver'), URL('s_entrada','p_por_devolver')),(T('Por recibir'), URL('s_entrada','p_por_recibir'), URL('s_entrada','p_por_recibir'))
     		]]
     ]
 #dir o admin user
@@ -31,7 +28,7 @@ if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.h
     [T('Gestión Usuarios'),False, None,[
       (T('Lista de Autorizados'), False, URL('gestion','autorizados')),
       (T('Usuarios Registrados'), False, URL('gestion','usuarios')),
-      [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
+      [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')], 
       [T('Privilegios'), False, URL('gestion','privilegios')],
       [T('Membresia'), False, URL('gestion','membresia')]
       ]],
