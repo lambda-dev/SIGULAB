@@ -352,3 +352,15 @@ def populate_db():
         db.t_seccion.insert(f_seccion='Comunicaciones',f_laboratorio='Laboratorio D',f_jefe='oescobar@usb.ve')
         db.t_seccion.insert(f_seccion='Idiomas',f_laboratorio='Laboratorio D',f_jefe='adenisraga@usb.ve')
         db.t_seccion.insert(f_seccion='Alimentos y Bebidas',f_laboratorio='Laboratorio D',f_jefe='')
+
+    #if db(db.t_espaciofisico).isempty():
+    #    db.t_espaciofisico.insert(f_direccion="CB1-228",f_espacio="Laboratorio de Evaluación Nutricional",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-231",f_espacio="Laboratorio Docente Polimeros",f_tecnico="arnaldopxm@me.com",f_seccion="Polímeros")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-232",f_espacio="Laboratorio Investigacion Polimeros",f_tecnico="arnaldopxm@me.com",f_seccion="Polímeros")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-315",f_espacio="Lab. Biologia Marina",f_tecnico="arnaldopxm@me.com",f_seccion="Biología Marina")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-316",f_espacio="Lab. Biologia Marina",f_tecnico="arnaldopxm@me.com",f_seccion="Biología Marina")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-317",f_espacio="Lab. Biologia Marina",f_tecnico="arnaldopxm@me.com",f_seccion="Biología Marina")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-318",f_espacio="Laboratorio Nutrición",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-319",f_espacio="Laboratorio Nutrición",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-320",f_espacio="Laboratorio Nutricional",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")
+    #    db.t_espaciofisico.insert(f_direccion="CB1-321",f_espacio="Laboratorio Nutricional",f_tecnico="arnaldopxm@me.com",f_seccion="Nutrición")

@@ -1,6 +1,5 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
-#editado por adolfo
 if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
@@ -23,8 +22,8 @@ if db(db.auth_permission).isempty():
     db.auth_permission.insert(name='jefelab',table_name='t_inventario',
                             group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
 
+
 ###############################################
-#editado por adolfo
 if db(db.auth_user).isempty():
         db.auth_user.insert(first_name='Super',last_name='Usuario',email='webmaster@sigulab.com',password=db.auth_user.password.validate('0000')[0])
         db.auth_membership.insert(user_id=(db(db.auth_user.email == 'webmaster@sigulab.com').select(db.auth_user.id).first()),\
@@ -69,9 +68,8 @@ def check_autorizado(f, uid):
 
 db.auth_user._after_insert.append(lambda f, id: check_autorizado(f, id))
 
-#####################################################################
 
-########################################
+#####################################################################
 db.define_table('t_regimenes',
     Field('f_nombre','string',label=T('Nombre')),
     format = '%(f_nombre)s')
@@ -81,6 +79,8 @@ if db(db.t_regimenes).isempty():
     db.t_regimenes.insert(f_nombre='RL7')
     db.t_regimenes.insert(f_nombre='RL4 y RL7')
     db.t_regimenes.insert(f_nombre='N/A')
+
+
 ##########################################
 db.define_table('t_ingresos',
     Field('f_nombre',label=T('Nombre')),
@@ -91,6 +91,8 @@ if db(db.t_ingresos).isempty():
     db.t_ingresos.insert(f_nombre='Compra a Proveedor')
     db.t_ingresos.insert(f_nombre='Préstamo')
     db.t_ingresos.insert(f_nombre='Donación')
+
+
 ##########################################
 db.define_table('t_consumos',
     Field('f_nombre',label=T('Nombre')),
@@ -101,12 +103,9 @@ if db(db.t_consumos).isempty():
     db.t_consumos.insert(f_nombre='Tesis')
     db.t_consumos.insert(f_nombre='Proyecto de Investigación')
     db.t_consumos.insert(f_nombre='Servicio de Laboratorio')
-#    Field('f_permiso','string',label=T('Permiso')),
-#    format='%(f_nombreCar)s',
-#    migrate=settings.migrate)
 
-#db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
-########################################
+
+
 ########################################
 db.define_table('t_estado',
                Field('f_estado','string',readable=False,writable=False),
@@ -117,8 +116,8 @@ if db(db.t_estado).isempty():
     db.t_estado.insert(f_estado='Líquido')
     db.t_estado.insert(f_estado='Gaseoso')
 
-########################################
 
+########################################
 db.define_table('t_sustancias',
     Field('f_nombre', 'string', label=T('Nombre')),
     Field('f_cas', 'string', label=T('Cas')),
@@ -146,6 +145,7 @@ db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record',
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
 
+
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
@@ -156,6 +156,7 @@ db.define_table('t_seccion',
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
 
+
 ########################################
 db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
@@ -165,6 +166,7 @@ db.define_table('t_espaciofisico',
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
+
 
 ########################################
 db.define_table('t_inventario',
@@ -187,6 +189,7 @@ db.define_table('t_inventario',
 db.define_table('t_inventario_archive',db.t_inventario,Field('current_record','reference t_inventario',readable=False,writable=False))
 db.t_inventario.id.readable = False
 
+
 ########################################
 db.define_table('t_bitacora',
     Field('f_fechaingreso','datetime',label=T('Fecha')),
@@ -196,8 +199,7 @@ db.define_table('t_bitacora',
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
-    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),#compute=lambda r:
-    #r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
+    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
@@ -210,6 +212,7 @@ db.t_bitacora.id.readable = False
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 
+########################################
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
 db.executesql(
   'create or replace view v_laboratorio as\
@@ -234,7 +237,10 @@ db.define_table('v_laboratorio',
 db.v_laboratorio.id.readable=False
 db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
 lab= int(str(db(db.t_laboratorio.f_nombre == row.f_laboratorio).select(db.t_laboratorio.id))[18:-2]),
-sust=row.f_sustancia)))
+sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
+
+
+########################################
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
 db.executesql(
 'create or replace view v_seccion as\
@@ -260,8 +266,8 @@ db.define_table('v_seccion',
     migrate=False
     )
 db.v_seccion.id.readable=False
-db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
-db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
+db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2]   )))
+db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
 
 
 ########################################
@@ -277,6 +283,7 @@ db.define_table('t_solicitud',
     migrate=settings.migrate)
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
+
 
 #########################################
 #db.auth_user.f_espaciofisico.requires = IS_IN_DB(db, db.t_espaciofisico.id, '%(f_espacio)s')
