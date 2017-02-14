@@ -51,14 +51,14 @@ db.t_users_pendientes._plural = 'Usuarios que requieren autorización'
 db.t_users_pendientes._singular = 'Usuario que requiere autorización'
 
 def check_autorizado(f, uid):
-    row = db(db.t_users_autorizados.f_email == f['email']).select(db.t_users_autorizados.f_email, db.t_users_autorizados.f_group).first()
+    row = db(db.t_users_autorizados.f_email == f['email']).select().first()
     
     usuario = db(db.auth_user.id==uid).select().first()
 
     if row is not None:
         if row.f_group == f['cargo']:
-            auth.del_membership(auth.id_group(role="Usuario Normal"), uid)
-            auth.add_membership(row.f_group, uid)
+            auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+            auth.add_membership(row.f_group, usuario.id)
             usuario.update_record(autorizado = True)
         else:
             db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
@@ -68,7 +68,15 @@ def check_autorizado(f, uid):
         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
         usuario.update_record(autorizado = False)
 
-db.auth_user._after_insert.append(lambda f, id: check_autorizado(f, id))
+def actualizar_privilegio(f, uid):
+    usuario = db(db.auth_user.id==f['user_id']).select().first()
+
+    if usuario.autorizado:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+
+
+db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
+db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
 
 #####################################################################
 

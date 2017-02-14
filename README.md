@@ -1,6 +1,12 @@
 # SIGULAB
 Branch de Adolfo
 ******************
+14 Febrero:
+
++ Arreglado error en el registro [Se mantenía Usuario Normal+Otro cargo en usuario autorizados]
+
+
+
 12 Febrero:
 
 Habemus registro por tabla!
