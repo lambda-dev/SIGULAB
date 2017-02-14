@@ -64,6 +64,9 @@ def check_autorizado(f, uid):
             db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
             usuario.update_record(autorizado = False)
 
+    elif usuario.autorizado:
+        auth.add_membership(f['cargo'], usuario.id)
+
     else:
         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
         usuario.update_record(autorizado = False)
@@ -148,22 +151,25 @@ db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','r
 db.define_table('t_laboratorio',
     Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
     Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Jefe de Laboratorio')),
-    format='%(f_nombre)s',
     migrate=settings.migrate)
 
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
+db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
 
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
     Field('f_laboratorio','integer',requires=IS_IN_DB(db,db.t_laboratorio.id), label=T('Laboratorio')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id, '%(email)s'), label=T('Jefe de Sección')),
+    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
 #db.t_seccion.f_jefe.represent = lambda value,row: str(db(db.t_users_autorizados.f_email == value).select(db.t_users_autorizados.f_email))[28:]
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
+db.t_seccion.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select(db.t_laboratorio.f_nombre).first()['f_nombre']
+db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
+
 
 ########################################
 db.define_table('t_espaciofisico',
@@ -288,4 +294,4 @@ db.define_table('t_solicitud',
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
 
 #Por arreglar
-#populate_db()
+populate_db()
