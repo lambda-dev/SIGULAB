@@ -108,8 +108,6 @@ if db(db.t_consumos).isempty():
 
 #db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
 ########################################
-
-
 ########################################
 db.define_table('t_estado',
                Field('f_estado','string',readable=False,writable=False),
@@ -130,7 +128,7 @@ db.define_table('t_sustancias',
     represent = lambda value,row: str(db(db.t_estado.id == value).select(db.t_estado.f_estado))[18:] ),
     Field('f_control', 'integer', label=T('Control'), requires=IS_IN_DB(db,db.t_regimenes.id,'%(f_nombre)s'),
     represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),
-    Field('f_peligrosidad', 'string', label=T('Peligrosidad')),
+    Field('f_peligrosidad', 'string', label=T('Peligrosidad'),requires=IS_IN_SET(['Inflamable','Tóxico','Tóxico para el ambiente','Corrosivo','Comburente','Nocivo','Explosivo','Irritante'],multiple = True), widget=SQLFORM.widgets.checkboxes.widget ),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 db.t_sustancias.id.readable=False
@@ -199,8 +197,8 @@ db.define_table('t_bitacora',
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
-    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0,compute=lambda r:
-    r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
+    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),#compute=lambda r:
+    #r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
@@ -211,6 +209,60 @@ db.define_table('t_bitacora',
 db.t_bitacora.id.readable = False
 
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
+db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
+
+#vista para el inventario de Laboratorio, no ocupa espacio en la bd
+db.executesql(
+  'create or replace view v_laboratorio as\
+    select ROW_NUMBER() OVER(order by f_nombre) as id,\
+        s.f_nombre as f_sustancia, \
+        SUM(i.f_cantidadonacion) as f_cantidadonacion, \
+        SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
+        SUM(i.f_total) as f_total,\
+        i.f_laboratorio as f_laboratorio\
+    from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
+    group by s.f_nombre,i.f_laboratorio')
+
+db.define_table('v_laboratorio',
+    Field('f_laboratorio',readable=False),
+    Field('id'),
+    Field('f_sustancia',label=T('Sustancia')),
+    Field('f_cantidadonacion',label=T('Cantidad Donacion')),
+    Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
+    Field('f_total',label=T('Total')),
+    migrate=False
+    )
+db.v_laboratorio.id.readable=False
+db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
+lab= int(str(db(db.t_laboratorio.f_nombre == row.f_laboratorio).select(db.t_laboratorio.id))[18:-2]),
+sust=row.f_sustancia)))
+#vista para el inventario de Laboratorio, no ocupa espacio en la bd
+db.executesql(
+'create or replace view v_seccion as\
+  select ROW_NUMBER() OVER(order by f_laboratorio,f_nombre,f_seccion) as id,\
+      s.f_nombre as f_sustancia, \
+      SUM(i.f_cantidadonacion) as f_cantidadonacion, \
+      SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
+      SUM(i.f_total) as f_total,\
+      i.f_laboratorio as f_laboratorio,\
+      i.f_seccion as f_seccion\
+  from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
+  group by s.f_nombre,i.f_seccion,i.f_laboratorio\
+  order by f_laboratorio,f_nombre,f_seccion;')
+
+db.define_table('v_seccion',
+    Field('f_laboratorio',readable = False),
+    Field('id'),
+    Field('f_seccion',readable=False,label = T('Sección')),
+    Field('f_sustancia',label=T('Sustancia')),
+    Field('f_cantidadonacion',label=T('Cantidad Donacion')),
+    Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
+    Field('f_total',label=T('Total')),
+    migrate=False
+    )
+db.v_seccion.id.readable=False
+db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
+db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
 
 
 ########################################

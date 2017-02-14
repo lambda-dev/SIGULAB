@@ -115,10 +115,8 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
-auth.settings.reset_password_requires_verification = True
+auth.settings.reset_password_requires_verification = False
 
-###########################################################################
-# Editado por Adolfo
 # Evita crear grupos al registar
 auth.settings.create_user_groups = None
 # Grupo default registro - id cambia?
