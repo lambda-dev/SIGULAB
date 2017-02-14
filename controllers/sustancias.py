@@ -85,6 +85,7 @@ def select_inventario():
     return locals()
 
 ###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def inventario_lab():
 
@@ -151,8 +152,7 @@ def inventario_manage():
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,editable=False,deletable=False)
     return locals()
 
-###################################################
-=======
+##########
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def view_bitacora():
