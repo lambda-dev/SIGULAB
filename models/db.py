@@ -90,8 +90,16 @@ plugins = PluginManager()
 # -------------------------------------------------------------------------
 # create all tables needed by auth if not custom tables
 # -------------------------------------------------------------------------
-auth.define_tables(username=False, signature=False)
+auth.settings.extra_fields['auth_user'] = [
+   Field('autorizado', default='False', writable=False, readable=False),
+   Field('cargo', readable = False),
+   #Field('f_espaciofisico'),
+   #Field('f_seccion'),
+   #Field('f_laboratorio')
+]
 
+auth.define_tables(username=False, signature=False)
+db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s')
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
@@ -107,11 +115,14 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
-auth.settings.reset_password_requires_verification = False
+auth.settings.reset_password_requires_verification = True
+
+###########################################################################
+# Editado por Adolfo
 # Evita crear grupos al registar
 auth.settings.create_user_groups = None
-# Grupo default registro
-auth.settings.everybody_group_id = 8
+# Grupo default registro - id cambia?
+auth.settings.everybody_group_id = auth.id_group(role="Usuario Normal")
 
 # Deshabilitar registro y otras paginas
 #auth.settings.actions_disabled.append('register')
@@ -119,6 +130,7 @@ auth.settings.everybody_group_id = 8
 #auth.settings.actions_disabled.append('change_password')
 auth.settings.actions_disabled.append('impersonate')
 #auth.settings.actions_disabled.append('groups')
+####################################################################
 
 from gluon.tools import Crud
 crud = Crud(db)
@@ -148,3 +160,9 @@ crud = Crud(db)
 mail.settings.server = settings.email_server
 mail.settings.sender = settings.email_sender
 mail.settings.login = settings.email_login
+
+# Se define aqui para poder usarla en
+db.define_table('t_users_pendientes',
+    Field('f_email', 'string', label=T('Email')),
+    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
+    migrate=settings.migrate)

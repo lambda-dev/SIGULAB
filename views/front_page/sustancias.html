@@ -1,4 +1,15 @@
 {{extend 'layout.html'}}
+
+{{if auth.has_membership('Director') \
+  or auth.has_membership('Administrador Personal') \
+  or auth.has_membership('WebMaster')\
+  or auth.has_membership('Jefe de Laboratorio') \
+  or auth.has_membership('Jefe de Sección') \
+  or auth.has_membership('Técnico')\
+  or auth.has_membership('Gestor de Sustancias'):}}
 <li><a href="{{=URL('sustancias','sustanciapeligrosa_manage')}}">Listado</a></li>
 <li><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
 <li><a href="{{=URL('front_page','index')}}">Atras</a></li>
+{{else:}}
+{{pass}}
+
