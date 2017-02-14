@@ -4,6 +4,11 @@ from gluon.tools import Crud
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def validar_bitacora(form):
+    #estado = form.vars.extra
+
+    #if estado in ['L','Kg']:
+    #    form.vars.f_cantidad = form.vars.f_cantidad*1000
+
     espF = request.vars['esp']
     sust = request.vars['sust']
     total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[33:-2])
@@ -212,5 +217,14 @@ def view_bitacora():
     table = SQLFORM.smartgrid(db.t_bitacora,constraints=dict(t_bitacora=query),oncreate=insert_bitacora,
     orderby=~db.t_bitacora.f_fechaingreso,csv=False,links_in_grid=False,deletable=False,
     user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=update_bitacora)
+
+    #if ('new' in request.args):
+    #    estado  = str(db((db.t_sustancias.id == sust)&(db.t_estado.id == db.t_sustancias.f_estado)).select(db.t_estado.f_estado))[19:-2]
+    #    if estado == 'Sólido':
+    #        extra = FORM('Unidades:',SELECT('g','Kg'))
+    #    else:
+    #        extra = FORM('Unidades:',SELECT('mL','L'))
+    #    table[2].insert(1,extra)
+
 
     return locals()
