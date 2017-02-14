@@ -147,7 +147,7 @@ db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','r
 ##########################################
 db.define_table('t_laboratorio',
     Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
-    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Laboratorio')),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Jefe de Laboratorio')),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 
@@ -158,10 +158,10 @@ db.t_laboratorio._singular = 'Laboratorio'
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
-    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre), label=T('Laboratorio')),
-    Field('f_jefe','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Jefe de Sección')),
+    Field('f_laboratorio','integer',requires=IS_IN_DB(db,db.t_laboratorio.id), label=T('Laboratorio')),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id, '%(email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
-
+#db.t_seccion.f_jefe.represent = lambda value,row: str(db(db.t_users_autorizados.f_email == value).select(db.t_users_autorizados.f_email))[28:]
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
 
@@ -170,7 +170,7 @@ db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Direccion')),
     Field('f_seccion', 'integer',requires=IS_IN_DB(db,db.t_seccion.id,'%(f_laboratorio)s, seccion %(f_seccion)s'), label=T('Seccion')),
-    Field('f_tecnico','string', requires=IS_IN_DB(db,db.t_users_autorizados,'%(f_email)s'), label=T('Tecnico')),
+    Field('f_tecnico','integer', notnull = False,requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
@@ -287,4 +287,5 @@ db.define_table('t_solicitud',
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
 
-populate_db()
+#Por arreglar
+#populate_db()
