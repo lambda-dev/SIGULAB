@@ -5,6 +5,14 @@ Branch de Adolfo
 
 + Arreglado error en el registro [Se mantenía Usuario Normal+Otro cargo en usuario autorizados]
 
++ Añadido gestion de espacios fisicos, donde se listan
++ Como espacios fisicos-Tecnicos es N:N hice una tabla para guardar estas relaciones, en gestion de espacios se añaden los tecnicos.
+
+*ES POSIBLE QUE ESO TE ROMPA ALGO, DEJÉ EL CAMPO F_TECNICO EN T_ESPACIOFISICO PARA EVITAR ERRORES PERO NO SE DEBE USAR*
+
+TODO: Agregar espacios fisicos via populate.py
++ En teoria ya funciona TODO! :)
+
 
 12 Febrero:
 
@@ -19,7 +27,8 @@ Habemus registro por tabla!
 
 + Index de gestion muestra un aviso de cuantos usuarios pendientes están esperando.
 
-TODO:
+TODO: 
+
 + Enviar email a los usuarios Administradores para que sepan cuando hay un pendiente nuevo
 + Validacion solo usa email + cargo. Me habian dicho que tambien hay que validar EspacioFisico + Seccion + Laboratorio.
 + ¿Como se le asigna al usuario esos datos? ¿Como hace si tiene mas de un EF, S o L?

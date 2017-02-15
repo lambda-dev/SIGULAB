@@ -91,8 +91,8 @@ plugins = PluginManager()
 # create all tables needed by auth if not custom tables
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = [
-   Field('autorizado', default='False', writable=False, readable=False),
-   Field('cargo', readable = False),
+   Field('autorizado', default=False, writable=False, readable=False),
+   Field('cargo', 'integer', readable = False),
    #Field('f_espaciofisico'),
    #Field('f_seccion'),
    #Field('f_laboratorio')
@@ -160,7 +160,7 @@ mail.settings.sender = settings.email_sender
 mail.settings.login = settings.email_login
 
 
-# Se define aqui para poder usarla en
+# Se define aqui para poder usarla en 
 db.define_table('t_users_pendientes',
     Field('f_email', 'string', label=T('Email')),
     Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
