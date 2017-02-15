@@ -91,7 +91,7 @@ plugins = PluginManager()
 # create all tables needed by auth if not custom tables
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = [
-   Field('autorizado', default='False', writable=False, readable=False),
+   Field('autorizado', default=False, writable=False, readable=False),
    Field('cargo', 'integer', readable = False),
    #Field('f_espaciofisico'),
    #Field('f_seccion'),

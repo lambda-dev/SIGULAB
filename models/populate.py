@@ -103,7 +103,7 @@ def populate_db():
 
     # llenamos si solo está presente el superuser
     # solo jefes de lab y de seccion
-    if db(db.auth_user).count() == 1:
+    if db(db.auth_user).count() <= 1:
 
         db.auth_user.insert(first_name="No", last_name="Asignado", email='no_asig@usb.ve', cargo=db(db.auth_group.role == "Usuario Normal").select(db.auth_group.id).first(), autorizado=False)
         #labs
@@ -189,14 +189,13 @@ def populate_db():
         db.auth_user.insert(email='figueira@ldc.usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='eduardo@ldc.usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='camayora@usb.ve', cargo=id_jefe_s, autorizado=True)
-
-        
-
+        db.auth_user.insert(email='wgonzal@usb.ve', cargo=2, autorizado=True)
+        db.auth_user.insert(email='yortega@usb.ve', cargo=4, autorizado=True)
+        db.auth_user.insert(email='mmacias@usb.ve', cargo=3, autorizado=True)
 
     if db(db.t_users_autorizados).isempty():
         id_tec = db(db.auth_group.role == "Técnico").select(db.auth_group.id).first()
 
-        db.t_users_autorizados.insert(f_email='mcmarque@usb.ve',f_group='3')
         db.t_users_autorizados.insert(f_email='adegouveia@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='aguillon@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='hcmarquez@usb.ve',f_group=id_tec)
@@ -256,8 +255,6 @@ def populate_db():
         db.t_users_autorizados.insert(f_email='wsanchez@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='bchirinos@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='lualvare@usb.ve',f_group=id_tec)
-        db.t_users_autorizados.insert(f_email='wgonzal@usb.ve',f_group='2')
-        db.t_users_autorizados.insert(f_email='yortega@usb.ve',f_group='4')
 
     ###Laboratorios
     if db(db.t_laboratorio).isempty():
@@ -383,17 +380,20 @@ def populate_db():
         db.t_seccion.insert(f_seccion='Idiomas Asistido por Computadoras ',f_laboratorio=id_f,f_jefe=db(db.auth_user.email == 'camayora@usb.ve').select(db.auth_user.id).first())
 
         id_g = db(db.t_laboratorio.f_nombre == 'Laboratorio G').select(db.t_laboratorio.id).first()
-        db.t_seccion.insert(f_seccion='Conversión de Energía Electrica',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Conversión de Energía Mecánica',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'elsacardenas@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Aeronaves',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'aamerio@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Procesos Mecánicos de Fabricación y Materiales',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Física',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chechelev@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Fundamentos de Circuitos Eléctricos',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'hrssca@hotmail.com').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Digitales',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Intrumentación y Control',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'dleal@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Biomédica',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'kgomez@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Tecnologías de la Información',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chikhani@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Telemática',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'jgutierr@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Comunicaciones',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'oescobar@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Idiomas',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'adenisraga@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Alimentos y Bebidas',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Conversión de Energía Electrica (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Conversión de Energía Mecánica (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'elsacardenas@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Aeronaves (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'aamerio@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Procesos Mecánicos de Fabricación y Materiales (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Física (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chechelev@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Fundamentos de Circuitos Eléctricos (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'hrssca@hotmail.com').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Digitales (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Intrumentación y Control (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'dleal@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Biomédica (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'kgomez@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Tecnologías de la Información (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chikhani@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Telemática (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'jgutierr@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Comunicaciones (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'oescobar@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Idiomas (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'adenisraga@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Alimentos y Bebidas (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+
+    if db(db.t_espaciofisico).isempty():
+        db.t_espaciofisico.insert(f_espacio='ELE-305', f_direccion='ELE Piso 3', f_seccion=db(db.t_seccion.f_seccion == 'Grupo de Telecomunicaciones (GTEL)').select(db.t_seccion.id).first())

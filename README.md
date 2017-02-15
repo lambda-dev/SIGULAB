@@ -4,7 +4,13 @@ Branch de Adolfo
 14 Febrero:
 
 + Arreglado error en el registro [Se mantenía Usuario Normal+Otro cargo en usuario autorizados]
++ Añadido gestion de espacios fisicos, donde se listan
++ Como espacios fisicos-Tecnicos es N:N hice una tabla para guardar estas relaciones, en gestion de espacios se añaden los tecnicos.
 
+*ES POSIBLE QUE ESO TE ROMPA ALGO, DEJÉ EL CAMPO F_TECNICO EN T_ESPACIOFISICO PARA EVITAR ERRORES PERO NO SE DEBE USAR*
+
+TODO: Agregar espacios fisicos via populate.py
++ En teoria ya funciona TODO! :)
 
 
 12 Febrero:
