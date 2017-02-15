@@ -13,7 +13,7 @@
 <h3>Secciones:</h3>
 {{  for seccion in secciones:}}
 <a = href="{{=URL('sustancias','inventario_seccion',vars=dict(secc=seccion.id))}}"
-<p>{{=seccion.f_laboratorio}}, {{=seccion.f_seccion}}</p>
+<p>{{=str(db(db.t_laboratorio.id ==  seccion.f_laboratorio).select(db.t_laboratorio.f_nombre))[24:-2]}}, {{=seccion.f_seccion}}</p>
 </a>
 {{  pass}}
 {{pass}}
