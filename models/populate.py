@@ -199,7 +199,7 @@ def populate_db():
         db.t_users_autorizados.insert(f_email='aguillon@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='hcmarquez@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='iacosta@usb.ve',f_group=id_tec)
-        db.t_users_autorizados.insert(f_email='jesu.alberto.pinto.alayon@gmail',f_group=id_tec)
+        db.t_users_autorizados.insert(f_email='jesu.alberto.pinto.alayon@gmail.com',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='luisalas@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='mdacosta@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='npulido@usb.ve',f_group=id_tec)

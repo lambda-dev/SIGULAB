@@ -40,7 +40,7 @@ db.auth_user._plural = 'Usuarios Registrados'
 db.auth_user._singular = 'Usuario Registrado'
 
 db.define_table('t_users_autorizados',
-    Field('f_email', 'string', label=T('Email')),
+    Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
     Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
     migrate=settings.migrate)
 
@@ -54,29 +54,6 @@ def check_autorizado(f, uid):
     row = db(db.t_users_autorizados.f_email == f['email']).select().first()
 
     usuario = db(db.auth_user.id==uid).select().first()
-
-    # if row is not None:
-    #     if row.f_group == f['cargo']:
-    #         auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
-    #         auth.add_membership(row.f_group, usuario.id)
-    #         usuario.update_record(autorizado = True)
-
-    #         db(db.t_users_autorizados.f_email == usuario.email).delete()
-
-    #     elif usuario.autorizado:
-    #         auth.del_membership(auth.id_group(role='Usuario Normal'), usuario.id)
-    #         auth.add_membership(row.f_group, usuario.id)
-
-    #     else:
-    #         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
-    #         auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
-    #         usuario.update_record(autorizado = False)
-
-    # else:
-    #     db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
-    #     auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
-    #     usuario.update_record(autorizado = False)
-
     if usuario.autorizado:
         auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
         auth.add_membership(f['cargo'], usuario.id)
@@ -172,8 +149,8 @@ db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','r
 
 ##########################################
 db.define_table('t_laboratorio',
-    Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Jefe de Laboratorio')),
+    Field('f_nombre', 'string', notnull=True, label=T('Nombre'), requires=IS_NOT_EMPTY()),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Laboratorio')),
     migrate=settings.migrate)
 
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
@@ -185,7 +162,7 @@ db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == valu
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
     Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'), label=T('Laboratorio')),
-    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(email)s'), label=T('Jefe de Sección')),
+    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
@@ -197,7 +174,7 @@ db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Dirección')),
     Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'), label=T('Sección')),
-    Field('f_tecnico', 'integer',notnull=False, requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Tecnico')),
+    #Field('f_tecnico', 'integer',notnull=False, requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion']
@@ -206,10 +183,10 @@ db.t_espaciofisico._singular = 'Espacio Físico'
 
 db.define_table('t_tecs_esp',
     Field('t_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
-    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Técnico')),
+    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s - %(email)s'), label=T('Técnico')),
     migrate=settings.migrate)
 db.t_tecs_esp.t_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_espacio']
-db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['email']
+#db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['first_name'] + " " + lambda value,row: db(db.auth_user.id == value).select().first()['last_name']
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
