@@ -43,4 +43,3 @@ if auth.has_membership('WebMaster'):
     [T('Editar'), False, URL('admin', 'default', 'design/%s' % app)]
     ]
 
-

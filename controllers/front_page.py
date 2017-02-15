@@ -9,7 +9,7 @@ def index():
 @auth.requires_login()
 def sustancias():
     return dict()
-    
+
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def desechos():

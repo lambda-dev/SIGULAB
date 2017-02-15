@@ -4,6 +4,7 @@ Branch de Adolfo
 14 Febrero:
 
 + Arreglado error en el registro [Se mantenía Usuario Normal+Otro cargo en usuario autorizados]
+
 + Añadido gestion de espacios fisicos, donde se listan
 + Como espacios fisicos-Tecnicos es N:N hice una tabla para guardar estas relaciones, en gestion de espacios se añaden los tecnicos.
 
@@ -27,6 +28,7 @@ Habemus registro por tabla!
 + Index de gestion muestra un aviso de cuantos usuarios pendientes están esperando.
 
 TODO: 
+
 + Enviar email a los usuarios Administradores para que sepan cuando hay un pendiente nuevo
 + Validacion solo usa email + cargo. Me habian dicho que tambien hay que validar EspacioFisico + Seccion + Laboratorio.
 + ¿Como se le asigna al usuario esos datos? ¿Como hace si tiene mas de un EF, S o L?
@@ -39,13 +41,13 @@ TODO:
 
 + Está creada la tabla t_users_autorizados donde van los usuarios pre-aceptados. Habia entendido que esta tabla solo tiene email y cargo/rol/privilegio. Disponible nuevo menu en 'Gestion' para añadirlos.
 
-TODO: Editar el proceso de registro para que complete solo si el email hace match en esta tabla *else* se envia email a usuarios con rango 'Administrador de Personal' para 
+TODO: Editar el proceso de registro para que complete solo si el email hace match en esta tabla *else* se envia email a usuarios con rango 'Administrador de Personal' para
 que los pre-acepten.
 
-+ Creado rango/rol/privilegio 'WebMaster' para nosotros, por default se crea un user si 
-la db esta vacia con email webmaster@sigulab.com y pass 0000. 
++ Creado rango/rol/privilegio 'WebMaster' para nosotros, por default se crea un user si
+la db esta vacia con email webmaster@sigulab.com y pass 0000.
 
-+ Edite los decoradores de auth para que usen el nombre del rol y no el id, ya que el id puede variar por instalación 
++ Edite los decoradores de auth para que usen el nombre del rol y no el id, ya que el id puede variar por instalación
 
 TODO: Acomodar en todos los controladores
 
@@ -57,9 +59,9 @@ TODO: Modificar heavymente el registro => Usuarios deben especificar ES/SEC/LAB 
 + Asumo que el Director/Admin User NO puede añadir o eliminar CARGOS existentes:
   + Si añade nuevos no van a tener ningun efecto porque los permisos como tal están hard coded con los decoradores auth
   + Si borra alguno de los existente, bueno, muere esa funcionalidad hasta que se agrege otro con el mismo nombre.
-  + Entonces solo user WebMaster pueden editar esto. 
- 
-********************************* 
+  + Entonces solo user WebMaster pueden editar esto.
+
+*********************************
 8 Febrero:
 
 Ya está disponible 'gestion de usuarios' y 'gestion de privlegios'
@@ -71,9 +73,8 @@ También arreglé algunas opciones:
 + Al registrarse se unen automaticamente al grupo 'Usuario' cuyo unico
 permiso/privilegio es ver la pagina inicial.
 
-+ En el menu aparecen las opciones segun el rango. Tecnicos, jefes de lab/sec no 
++ En el menu aparecen las opciones segun el rango. Tecnicos, jefes de lab/sec no
 pueden ver, ni acceder a gestion de usuarios/privilegios.
 
 + Me falta modificar los otros controladores para que usuarios sin privilegio no puedan
 acceder a diferentes secciones.
-

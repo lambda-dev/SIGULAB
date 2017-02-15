@@ -122,7 +122,7 @@ def prestamo_pendiente():
 	proceso.update_record(f_estado='Préstamo/Pendiente')
 	redirect(URL(c='s_entrada',f='entrada'))
 	return dict()
-	
+
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def prestamo_devuelto():

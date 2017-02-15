@@ -2,6 +2,7 @@
 @auth.requires(auth.has_membership('Director') \
   or auth.has_membership('Administrador Personal') \
   or auth.has_membership('WebMaster'))
+
 def index(): 
     pen = db(db.t_users_pendientes).count()
     return dict(message="Index de Gestión", users_pen=pen)
@@ -91,5 +92,3 @@ def espacios():
     db.t_tecs_esp.t_espaciofisico.writable = False
     form = SQLFORM.smartgrid(db.t_espaciofisico,onupdate=auth.archive,csv=False,details=False, linked_tables=['t_tecs_esp'])
     return locals()
-
-
