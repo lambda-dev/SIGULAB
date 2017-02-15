@@ -105,7 +105,7 @@ def populate_db():
     # solo jefes de lab y de seccion
     if db(db.auth_user).count() <= 1:
 
-        db.auth_user.insert(first_name="No", last_name="Asignado", email='no_asig@usb.ve', cargo=db(db.auth_group.role == "Usuario Normal").select(db.auth_group.id).first(), autorizado=False)
+        db.auth_user.insert(first_name="No", last_name="Asignado", email='no_asig@usb.ve', cargo=db(db.auth_group.role == "Usuario Normal").select(db.auth_group.id).first(), autorizado=True)
         #labs
         id_jefe = db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first()
 
@@ -164,7 +164,6 @@ def populate_db():
         db.auth_user.insert(email='jgutierr@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='kgomez@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='oescobar@usb.ve', cargo=id_jefe_s, autorizado=True)
-        db.auth_user.insert(email='no_aut@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='eguerre@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='rescal@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(email='clladera@usb.ve', cargo=id_jefe_s, autorizado=True)

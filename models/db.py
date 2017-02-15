@@ -91,7 +91,7 @@ plugins = PluginManager()
 # create all tables needed by auth if not custom tables
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = [
-   Field('autorizado', default=False, writable=False, readable=False),
+   Field('autorizado', type='boolean', default=False, writable=False, readable=False),
    Field('cargo', 'integer', readable = False),
    #Field('f_espaciofisico'),
    #Field('f_seccion'),
@@ -115,12 +115,12 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
-auth.settings.reset_password_requires_verification = False
+auth.settings.reset_password_requires_verification = True
 
 # Evita crear grupos al registar
 auth.settings.create_user_groups = None
 # Grupo default registro - id cambia?
-auth.settings.everybody_group_id = auth.id_group(role="Usuario Normal")
+auth.settings.everybody_group_id = auth.id_group(role='Usuario Normal')
 
 # Deshabilitar registro y otras paginas
 #auth.settings.actions_disabled.append('register')

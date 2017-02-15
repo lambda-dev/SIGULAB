@@ -55,30 +55,49 @@ def check_autorizado(f, uid):
 
     usuario = db(db.auth_user.id==uid).select().first()
 
-    if row is not None:
-        if row.f_group == f['cargo']:
-            auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
-            auth.add_membership(row.f_group, usuario.id)
-            usuario.update_record(autorizado = True)
+    # if row is not None:
+    #     if row.f_group == f['cargo']:
+    #         auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+    #         auth.add_membership(row.f_group, usuario.id)
+    #         usuario.update_record(autorizado = True)
 
-            db(db.t_users_autorizados.f_email == usuario.email).delete()
+    #         db(db.t_users_autorizados.f_email == usuario.email).delete()
 
-        else:
-            db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
-            usuario.update_record(autorizado = False)
+    #     elif usuario.autorizado:
+    #         auth.del_membership(auth.id_group(role='Usuario Normal'), usuario.id)
+    #         auth.add_membership(row.f_group, usuario.id)
 
-    elif usuario.autorizado:
+    #     else:
+    #         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
+    #         auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
+    #         usuario.update_record(autorizado = False)
+
+    # else:
+    #     db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
+    #     auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
+    #     usuario.update_record(autorizado = False)
+
+    if usuario.autorizado:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
         auth.add_membership(f['cargo'], usuario.id)
-
+    elif (row is not None) and row.f_group == f['cargo']:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+        auth.add_membership(row.f_group, usuario.id)
+        db(db.t_users_autorizados.f_email == usuario.email).delete()
+        usuario.update_record(autorizado = True)
+        return
     else:
         db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
+        auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
         usuario.update_record(autorizado = False)
+
+    usuario.update_record(autorizado = False)
 
 def actualizar_privilegio(f, uid):
     usuario = db(db.auth_user.id==f['user_id']).select().first()
 
     if usuario.autorizado:
-        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+        auth.del_membership(auth.id_group(role='Usuario Normal'), usuario.id)
 
 
 db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
