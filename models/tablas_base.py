@@ -220,7 +220,7 @@ db.t_inventario.id.readable = False
 
 ########################################
 db.define_table('t_bitacora',
-    Field('f_fechaingreso','datetime',label=T('Fecha')),
+    Field('f_fechaingreso','date',label=T('Fecha'),notnull=True),
     Field('f_sustancia', 'integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_sustancias.id,'%(f_nombre)s'),
             represent=lambda f_sustancia,row: str(db(db.t_sustancias.id == f_sustancia).select(db.t_sustancias.f_nombre))[22:],
             notnull=True, label=T('Sustancia')),
@@ -264,7 +264,7 @@ db.define_table('v_laboratorio',
     )
 db.v_laboratorio.id.readable=False
 db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
-lab= int(str(db(db.t_laboratorio.f_nombre == row.f_laboratorio).select(db.t_laboratorio.id))[18:-2]),
+lab= row.f_laboratorio,
 sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
 
 
@@ -314,4 +314,3 @@ db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','ref
 
 #Por arreglar
 populate_db()
-
