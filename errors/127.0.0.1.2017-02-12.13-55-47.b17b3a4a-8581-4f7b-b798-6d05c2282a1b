@@ -1,0 +1,812 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.NameError'> name 'f' is not defined"
+p3
+sS'layer'
+p4
+S'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py'
+p5
+sS'code'
+p6
+S'### we prepend t_ to tablenames and f_ to fieldnames for disambiguity\n\n#editado por adolfo\nif db(db.auth_group).isempty():\n    db.auth_group.insert(role=\'WebMaster\',description=\'Super Usuario\')\n    db.auth_group.insert(role=\'Director\',description=\'Director de la Unidad de Laboratorio\')\n    db.auth_group.insert(role=\'Administrador Personal\',description=\'Administrador de Personal\')\n    db.auth_group.insert(role=\'Gestor de Sustancias\',description=\'Gestor de Sustancias\')\n    db.auth_group.insert(role=\'Jefe de Laboratorio\',description=\'Jefe de Laboratorio\')\n    db.auth_group.insert(role=\'Jefe de Secci\xc3\xb3n\',description=\'Jefe de Secci\xc3\xb3n\')\n    db.auth_group.insert(role=\'T\xc3\xa9cnico\',description=\'T\xc3\xa9cnico de Laboratorio\')\n    db.auth_group.insert(role=\'Usuario Normal\',description=\'Usuario recien registrado\')\n\nif db(db.auth_permission).isempty():\n    db.auth_permission.insert(name=\'director\',table_name=\'t_sustancias\',\n                            group_id=(db(db.auth_group.role == "Director").select(db.auth_group.id).first()))\n    db.auth_permission.insert(name=\'gestor\',table_name=\'t_sustancias\',\n                            group_id=db(db.auth_group.role == "Gestor de Sustancias").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'tecnico\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "T\xc3\xa9cnico").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'jefeseccion\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "Jefe de Secci\xc3\xb3n").select(db.auth_group.id).first())\n    db.auth_permission.insert(name=\'jefelab\',table_name=\'t_inventario\',\n                            group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())\n\n###############################################\n#editado por adolfo\nif db(db.auth_user).isempty():\n        db.auth_user.insert(first_name=\'Super\',last_name=\'Usuario\',email=\'webmaster@sigulab.com\',password=db.auth_user.password.validate(\'0000\')[0])\n        db.auth_membership.insert(user_id=(db(db.auth_user.email == \'webmaster@sigulab.com\').select(db.auth_user.id).first()),\\\n            group_id=db(db.auth_group.role == "WebMaster").select(db.auth_group.id).first());\n\ndb.auth_membership._plural = \'Membres\xc3\xadas\'\ndb.auth_membership._singular = \'Membres\xc3\xada\'\n\ndb.auth_group._plural = \'Privilegios\'\ndb.auth_group._singular = \'Privilegio\'\n\ndb.auth_user._plural = \'Usuarios Registrados\'\ndb.auth_user._singular = \'Usuario Registrado\'\n\ndb.define_table(\'t_users_autorizados\',\n    Field(\'f_email\', \'string\', label=T(\'Email\')),\n    Field(\'f_group\', \'string\', label=T(\'Privilegio\'), requires=IS_IN_DB(db, db.auth_group.id, \'%(role)s (%(id)s)\'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))\n\ndb.t_users_autorizados._plural = \'Usuarios Autorizados\'\ndb.t_users_autorizados._singular = \'Usuario Autorizado\'\n\n#db.executesql(\'CREATE OR REPLACE FUNCTION test_trigger() RETURNS trigger AS $$ \\\n#    BEGIN \\\n#        IF (TG_OP = \\\'INSERT\\\') THEN \\\n#            NEW.test_trigger = True; \\\n#        END IF; \\\n#        RETURN NEW; \\\n#    END; \\\n#$$ LANGUAGE plpgsql;\')\n\n#db.executesql(\'DROP TRIGGER IF EXISTS adolfo ON auth_user;\')\n#db.executesql(\'CREATE TRIGGER adolfo BEFORE INSERT ON auth_user FOR EACH ROW EXECUTE PROCEDURE test_trigger();\')\n\ndef check(f):\n    f[\'test_trigger\'] = True\n    return None\n\ndb.auth_user._before_insert.append(check(f))\n\n#####################################################################\n\n########################################\ndb.define_table(\'t_regimenes\',\n    Field(\'f_nombre\',\'string\',label=T(\'Nombre\')),\n    format = \'%(f_nombre)s\')\n\nif db(db.t_regimenes).isempty():\n    db.t_regimenes.insert(f_nombre=\'RL4\')\n    db.t_regimenes.insert(f_nombre=\'RL7\')\n    db.t_regimenes.insert(f_nombre=\'RL4 y RL7\')\n    db.t_regimenes.insert(f_nombre=\'N/A\')\n##########################################\ndb.define_table(\'t_ingresos\',\n    Field(\'f_nombre\',label=T(\'Nombre\')),\n    format=\'%(f_nombre)s\'\n)\nif db(db.t_ingresos).isempty():\n    db.t_ingresos.insert(f_nombre=\'Suministro de Almac\xc3\xa9n\')\n    db.t_ingresos.insert(f_nombre=\'Compra a Proveedor\')\n    db.t_ingresos.insert(f_nombre=\'Pr\xc3\xa9stamo\')\n    db.t_ingresos.insert(f_nombre=\'Donaci\xc3\xb3n\')\n##########################################\ndb.define_table(\'t_consumos\',\n    Field(\'f_nombre\',label=T(\'Nombre\')),\n    format=\'%(f_nombre)s\'\n)\nif db(db.t_consumos).isempty():\n    db.t_consumos.insert(f_nombre=\'Pr\xc3\xa1ctica de Laboratorio\')\n    db.t_consumos.insert(f_nombre=\'Tesis\')\n    db.t_consumos.insert(f_nombre=\'Proyecto de Investigaci\xc3\xb3n\')\n    db.t_consumos.insert(f_nombre=\'Servicio de Laboratorio\')\n#    Field(\'f_permiso\',\'string\',label=T(\'Permiso\')),\n#    format=\'%(f_nombreCar)s\',\n#    migrate=settings.migrate)\n\n#db.define_table(\'t_cargo_archive\',db.t_cargo,Field(\'current_record\',\'reference t_cargo\',readable=False,writable=False))\n########################################\n\n\ndb.define_table(\'t_materiales\',\n               Field(\'f_nombre\',\'string\',requires=IS_NOT_EMPTY()),\n               Field(\'f_cas\',\'string\',requires=IS_NOT_EMPTY()),\n               format=\'%(f_nombre)s\')\ndb.t_materiales.f_cas.requires=IS_NOT_IN_DB(db,db.t_materiales.f_cas)\ndb.t_materiales.f_nombre.requires=IS_NOT_IN_DB(db,db.t_materiales.f_nombre)\n\n########################################\ndb.define_table(\'t_estado\',\n               Field(\'f_estado\',\'string\',readable=False,writable=False),\n               format=\'%(f_estado)s\')\n\nif db(db.t_estado).isempty():\n    db.t_estado.insert(f_estado=\'S\xc3\xb3lido\')\n    db.t_estado.insert(f_estado=\'L\xc3\xadquido\')\n    db.t_estado.insert(f_estado=\'Gaseoso\')\n\n########################################\n\ndb.define_table(\'t_sustancias\',\n    Field(\'f_nombre\', \'string\', label=T(\'Nombre\')),\n    Field(\'f_cas\', \'string\', label=T(\'Cas\')),\n    Field(\'f_pureza\', \'integer\',requires=IS_INT_IN_RANGE(0, 101), label=T(\'Pureza\')),\n    Field(\'f_estado\', \'integer\', requires=IS_IN_DB(db,db.t_estado.id,\'%(f_estado)s\'), label=T(\'Estado\'),\n    represent = lambda value,row: str(db(db.t_estado.id == value).select(db.t_estado.f_estado))[18:] ),\n    Field(\'f_control\', \'integer\', label=T(\'Control\'), requires=IS_IN_DB(db,db.t_regimenes.id,\'%(f_nombre)s\'),\n    represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),\n    Field(\'f_peligrosidad\', \'string\', label=T(\'Peligrosidad\')),\n    format=\'%(f_nombre)s\',\n    migrate=settings.migrate)\ndb.t_sustancias.id.readable=False\ndb.t_sustancias.id.writable=False\ndb.define_table(\'t_sustancias_archive\',db.t_sustancias,Field(\'current_record\',\'reference t_sustancias\',readable=False,writable=False))\n\n\n\n\n##########################################\ndb.define_table(\'t_laboratorio\',\n    Field(\'f_nombre\', \'string\', notnull=True, label=T(\'Nombre\')),\n    Field(\'f_jefe\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Jefe de Laboratorio\')),\n    format=\'%(f_nombre)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_laboratorio_archive\',db.t_laboratorio,Field(\'current_record\',\'reference t_laboratorio\',readable=False,writable=False))\n\n########################################\ndb.define_table(\'t_seccion\',\n    Field(\'f_seccion\',\'string\',requires=IS_NOT_EMPTY(),label=T(\'Secci\xc3\xb3n\')),\n    Field(\'f_laboratorio\',\'string\',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre,\'%(f_nombre)s\'), label=T(\'Laboratorio\')),\n    Field(\'f_jefe\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Jefe de Seccion\')),\n    format=\'%(f_nombre)s\'\n    )\n\n########################################\ndb.define_table(\'t_espaciofisico\',\n    Field(\'f_espacio\', \'string\', requires=IS_NOT_EMPTY(), label=T(\'Espacio\')),\n    Field(\'f_direccion\', \'string\', requires=IS_NOT_EMPTY(), label=T(\'Direccion\')),\n    Field(\'f_seccion\', \'integer\',requires=IS_IN_DB(db,db.t_seccion.id,\'%(f_laboratorio)s, seccion %(f_seccion)s\'), label=T(\'Seccion\')),\n    Field(\'f_tecnico\',\'integer\', requires=IS_IN_DB(db,db.auth_user.id,\'%(first_name)s %(last_name)s\'), label=T(\'Tecnico\')),\n    format=\'%(f_espacio)s\',\n    migrate=settings.migrate)\ndb.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]\n\n########################################\ndb.define_table(\'t_inventario\',\n    Field(\'f_sustancia\', \'integer\', label=T(\'Sustancia\'),requires=IS_IN_DB(db,db.t_sustancias.id,\'%(f_nombre)s\')\\\n    ,represent= lambda name,row: \\\n                A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL(\'sustancias\',\'view_bitacora\',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),\n    Field(\'f_espaciofisico\', \'integer\',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,\'%(f_espacio)s\') ,\n    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],\n    label=T(\'Espaciofisico\')),\n    Field(\'f_cantidadonacion\', \'float\',default=0,label=T(\'Cantidad Donacion\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_cantidadusointerno\', \'float\',default=0,label=T(\'Cantidad Uso Interno\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_total\',\'float\',label=T(\'Cantidad Total\'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_seccion\',\'integer\',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,\'%(f_seccion)s\'),label=T(\'Secci\xc3\xb3n\'),\n    compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),\n    Field(\'f_laboratorio\',\'string\',requires=IS_IN_DB(db,db.t_laboratorio.id,\'%(f_nombre)s\'),readable=False,writable=False,\n    compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_inventario_archive\',db.t_inventario,Field(\'current_record\',\'reference t_inventario\',readable=False,writable=False))\ndb.t_inventario.id.readable = False\n\n########################################\ndb.define_table(\'t_bitacora\',\n    Field(\'f_fechaingreso\',\'datetime\',label=T(\'Fecha\')),\n    Field(\'f_sustancia\', \'integer\',readable=False,writable=False,requires=IS_IN_DB(db,db.t_sustancias.id,\'%(f_nombre)s\'),\n            represent=lambda f_sustancia,row: str(db(db.t_sustancias.id == f_sustancia).select(db.t_sustancias.f_nombre))[22:],\n            notnull=True, label=T(\'Sustancia\')),\n    Field(\'f_proceso\', \'string\', notnull=True, label=T(\'Proceso\')),\n    Field(\'f_ingreso\', \'float\', default=0, label=T(\'Ingreso\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_consumo\', \'float\', default=0,label=T(\'Consumo\'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),\n    Field(\'f_cantidad\', \'float\', label=T(\'Cantidad\'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0,compute=lambda r:\n    r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),\n    Field(\'f_fecha\', \'datetime\', label=T(\'FechaIngreso\'),writable=False,readable=False, default=request.now),\n    Field(\'f_espaciofisico\', \'integer\',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,\'%(f_espacio)s\') ,\n    writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],\n     label=T(\'Espacio Fisico\'),notnull=True),\n    Field(\'f_descripcion\',\'text\',label=T(\'Descripci\xc3\xb3n\'),readable=False),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\ndb.t_bitacora.id.readable = False\n\ndb.define_table(\'t_bitacora_archive\',db.t_bitacora,Field(\'current_record\',\'reference t_bitacora\',readable=False,writable=False))\n\n\n########################################\ndb.define_table(\'t_solicitud\',\n    Field(\'f_sustancia\', \'string\', label=T(\'Sustancia\')),\n    Field(\'f_espaciofisico\', \'string\', label=T(\'Espaciofisico\')),\n    Field(\'f_seccion\', \'string\', label=T(\'Seccion\')),\n    Field(\'f_responsable\', \'string\', label=T(\'Responsable\')),\n    Field(\'f_solicitador\', \'string\', label=T(\'Solicitador\')),\n    Field(\'f_cantidadsolicitada\', \'string\', label=T(\'Cantidadsolicitada\')),\n    Field(\'f_estado\', \'string\', label=T(\'Estado\')),\n    format=\'%(f_sustancia)s\',\n    migrate=settings.migrate)\n\ndb.define_table(\'t_solicitud_archive\',db.t_solicitud,Field(\'current_record\',\'reference t_solicitud\',readable=False,writable=False))\n'
+p7
+sS'snapshot'
+p8
+(dp9
+S'exception'
+p10
+(dp11
+S'__hash__'
+p12
+S"<method-wrapper '__hash__' of exceptions.NameError object>"
+p13
+sS'__setattr__'
+p14
+S"<method-wrapper '__setattr__' of exceptions.NameError object>"
+p15
+sS'__reduce_ex__'
+p16
+S'<built-in method __reduce_ex__ of exceptions.NameError object>'
+p17
+sS'__getslice__'
+p18
+S"<method-wrapper '__getslice__' of exceptions.NameError object>"
+p19
+sS'__getitem__'
+p20
+S"<method-wrapper '__getitem__' of exceptions.NameError object>"
+p21
+sS'__setstate__'
+p22
+S'<built-in method __setstate__ of exceptions.NameError object>'
+p23
+sS'args'
+p24
+S'("name \'f\' is not defined",)'
+p25
+sS'__reduce__'
+p26
+S'<built-in method __reduce__ of exceptions.NameError object>'
+p27
+sS'__str__'
+p28
+S"<method-wrapper '__str__' of exceptions.NameError object>"
+p29
+sS'__format__'
+p30
+S'<built-in method __format__ of exceptions.NameError object>'
+p31
+sS'__getattribute__'
+p32
+S"<method-wrapper '__getattribute__' of exceptions.NameError object>"
+p33
+sS'__class__'
+p34
+S"<type 'exceptions.NameError'>"
+p35
+sS'__unicode__'
+p36
+S'<built-in method __unicode__ of exceptions.NameError object>'
+p37
+sS'__delattr__'
+p38
+S"<method-wrapper '__delattr__' of exceptions.NameError object>"
+p39
+sS'__subclasshook__'
+p40
+S'<built-in method __subclasshook__ of type object>'
+p41
+sS'__repr__'
+p42
+S"<method-wrapper '__repr__' of exceptions.NameError object>"
+p43
+sS'__dict__'
+p44
+S'{}'
+p45
+sS'__sizeof__'
+p46
+S'<built-in method __sizeof__ of exceptions.NameError object>'
+p47
+sS'__doc__'
+p48
+S"'Name not found globally.'"
+p49
+sS'__init__'
+p50
+S"<method-wrapper '__init__' of exceptions.NameError object>"
+p51
+sS'__new__'
+p52
+S'<built-in method __new__ of type object>'
+p53
+ssS'evalue'
+p54
+S"name 'f' is not defined"
+p55
+sS'request'
+p56
+cgluon.html
+XML_unpickle
+p57
+(S's\nX\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">ajax</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">application</td><td style="vertical-align:top;">:</td><td><div>SIGULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">args</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>login</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cid</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">controller</td><td style="vertical-align:top;">:</td><td><div>default</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_admin</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_sigulab</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">env</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_ENCODING</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate, sdch, br</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_ACCEPT_LANGUAGE</td><td style="vertical-align:top;">:</td><td><div>es,en;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CACHE_CONTROL</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_CONNECTION</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_COOKIE</td><td style="vertical-align:top;">:</td><td><div>session_id_admin=127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e; session_id_sigulab=127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_DNT</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_HOST</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_REFERER</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/user/login?_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_UPGRADE_INSECURE_REQUESTS</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">HTTP_USER_AGENT</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">PATH_INFO</td><td style="vertical-align:top;">:</td><td><div>/user/login</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">QUERY_STRING</td><td style="vertical-align:top;">:</td><td><div>_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_ADDR</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REMOTE_PORT</td><td style="vertical-align:top;">:</td><td><div>48290</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">REQUEST_METHOD</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SCRIPT_NAME</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_NAME</td><td style="vertical-align:top;">:</td><td><div>adolfo-PC</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PORT</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_PROTOCOL</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">SERVER_SOFTWARE</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/admin/&#x27;, &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x7f9d57762680: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;adolfo-PC&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/home/adolfo/Desktop/PROYECTO ULAB&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept</td><td style="vertical-align:top;">:</td><td><div>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_encoding</td><td style="vertical-align:top;">:</td><td><div>gzip, deflate, sdch, br</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_accept_language</td><td style="vertical-align:top;">:</td><td><div>es,en;q=0.8</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cache_control</td><td style="vertical-align:top;">:</td><td><div>max-age=0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_connection</td><td style="vertical-align:top;">:</td><td><div>keep-alive</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_cookie</td><td style="vertical-align:top;">:</td><td><div>session_id_admin=127.0.0.1-eb0584ef-b6d4-4547-b804-08344a0a845e; session_id_sigulab=127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_dnt</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_host</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1:8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_referer</td><td style="vertical-align:top;">:</td><td><div>http://127.0.0.1:8000/user/login?_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_upgrade_insecure_requests</td><td style="vertical-align:top;">:</td><td><div>1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">http_user_agent</td><td style="vertical-align:top;">:</td><td><div>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>adolfo-PC</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path_info</td><td style="vertical-align:top;">:</td><td><div>/user/login</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">query_string</td><td style="vertical-align:top;">:</td><td><div>_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_addr</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">remote_port</td><td style="vertical-align:top;">:</td><td><div>48290</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_method</td><td style="vertical-align:top;">:</td><td><div>GET</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">request_uri</td><td style="vertical-align:top;">:</td><td><div>/SIGULAB/default/user/login?_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">script_name</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_name</td><td style="vertical-align:top;">:</td><td><div>adolfo-PC</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_port</td><td style="vertical-align:top;">:</td><td><div>8000</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_protocol</td><td style="vertical-align:top;">:</td><td><div>HTTP/1.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">server_software</td><td style="vertical-align:top;">:</td><td><div>Rocket 1.2.6</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_original_uri</td><td style="vertical-align:top;">:</td><td><div>/user/login?_next=/front_page</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_path</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x7f9d6252e1e0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x7f9d57813120&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x7f9d212fa3d0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi.version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_errors</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;&lt;stderr&gt;&#x27;, mode &#x27;w&#x27; at 0x7f9d6252e1e0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_file_wrapper</td><td style="vertical-align:top;">:</td><td><div>&lt;class wsgiref.util.FileWrapper at 0x7f9d57813120&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_input</td><td style="vertical-align:top;">:</td><td><div>&lt;socket._fileobject object at 0x7f9d212fa3d0&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multiprocess</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_multithread</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_run_once</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_url_scheme</td><td style="vertical-align:top;">:</td><td><div>http</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi_version</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>1</div></td></tr><tr><td><div>0</div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">extension</td><td style="vertical-align:top;">:</td><td><div>html</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">folder</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">function</td><td style="vertical-align:top;">:</td><td><div>user</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">global_settings</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">app_folders</td><td style="vertical-align:top;">:</td><td><div>set([&#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/admin/&#x27;, &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/&#x27;])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">applications_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_args</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cmd_options</td><td style="vertical-align:top;">:</td><td><div>&lt;Values at 0x7f9d57762680: {&#x27;verbose&#x27;: False, &#x27;ip&#x27;: &#x27;127.0.0.1&#x27;, &#x27;debuglevel&#x27;: 30, &#x27;with_scheduler&#x27;: False, &#x27;shutdown_timeout&#x27;: 5, &#x27;taskbar&#x27;: False, &#x27;with_coverage&#x27;: False, &#x27;pid_filename&#x27;: &#x27;httpserver.pid&#x27;, &#x27;maxthreads&#x27;: None, &#x27;softcron&#x27;: False, &#x27;server_name&#x27;: &#x27;adolfo-PC&#x27;, &#x27;bpython&#x27;: False, &#x27;nogui&#x27;: False, &#x27;port&#x27;: 8000, &#x27;print_errors&#x27;: False, &#x27;extcron&#x27;: False, &#x27;runcron&#x27;: False, &#x27;run_system_tests&#x27;: False, &#x27;test&#x27;: None, &#x27;folder&#x27;: &#x27;/home/adolfo/Desktop/PROYECTO ULAB&#x27;, &#x27;config&#x27;: &#x27;&#x27;, &#x27;minthreads&#x27;: None, &#x27;shell&#x27;: None, &#x27;run&#x27;: &#x27;&#x27;, &#x27;log_filename&#x27;: &#x27;httpserver.log&#x27;, &#x27;profiler_dir&#x27;: None, &#x27;args&#x27;: [&#x27;&#x27;], &#x27;socket_timeout&#x27;: 5, &#x27;ssl_ca_certificate&#x27;: None, &#x27;scheduler&#x27;: None, &#x27;interfaces&#x27;: None, &#x27;ssl_private_key&#x27;: &#x27;&#x27;, &#x27;gae&#x27;: None, &#x27;password&#x27;: &#x27;******&#x27;, &#x27;request_queue_size&#x27;: 5, &#x27;ssl_certificate&#x27;: &#x27;&#x27;, &#x27;cronjob&#x27;: False, &#x27;numthreads&#x27;: None, &#x27;quiet&#x27;: False, &#x27;import_models&#x27;: False, &#x27;timeout&#x27;: 10, &#x27;plain&#x27;: False, &#x27;nobanner&#x27;: False}&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">db_sessions</td><td style="vertical-align:top;">:</td><td><div>set([])</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">debugging</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">gluon_parent</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_jython</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_pypy</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_source</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">local_hosts</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>127.0.1.1</div></td></tr><tr><td><div>::1</div></td></tr><tr><td><div>adolfo-PC</div></td></tr><tr><td><div>::ffff:127.0.0.1</div></td></tr><tr><td><div>127.0.0.1</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">web2py_version</td><td style="vertical-align:top;">:</td><td><div>2.14.6-stable+timestamp.2016.05.10.00.21.47</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_https</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_local</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_restful</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_scheduler</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">is_shell</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">now</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 2, 12, 13, 55, 47, 464344)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">url</td><td style="vertical-align:top;">:</td><td><div>/user/login</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">utcnow</td><td style="vertical-align:top;">:</td><td><div>datetime.datetime(2017, 2, 12, 17, 55, 47, 464417)</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">wsgi</td><td style="vertical-align:top;">:</td><td><div>&lt;gluon.main.LazyWSGI object at 0x7f9d2130d510&gt;</div></td></tr></table></div>'
+tRp58
+sS'frames'
+p59
+(lp60
+(dp61
+S'file'
+p62
+S'/home/adolfo/Desktop/PROYECTO ULAB/gluon/restricted.py'
+p63
+sS'dump'
+p64
+(dp65
+S'environment'
+p66
+S"{'A': <class 'gluon.html.A'>, 'ANY_OF': <class 'gluon.validators.ANY_OF'>, 'ASSIGNJS': <function ASSIGNJS>, 'AppConfig': <function AppConfig>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'BUTTON': <class 'gluon.html.BUTTON'>, ...}"
+p67
+sS'ccode'
+p68
+S'<code object <module> at 0x7f9d2014ab30, file "/...lications/SIGULAB/models/tablas_base.py", line 4>'
+p69
+ssS'lnum'
+p70
+I227
+sS'lines'
+p71
+(dp72
+I224
+S'            ccode = code'
+p73
+sI225
+S'        else:'
+p74
+sI226
+S'            ccode = compile2(code, layer)'
+p75
+sI227
+S'        exec ccode in environment'
+p76
+sI228
+S'    except HTTP:'
+p77
+sI229
+S'        raise'
+p78
+sI230
+S'    except RestrictedError:'
+p79
+sI231
+S'        # do not encapsulate (obfuscate) the original RestrictedError'
+p80
+sI222
+S'    try:'
+p81
+sI223
+S'        if isinstance(code, types.CodeType):'
+p82
+ssS'call'
+p83
+S'(code="### we prepend t_ to tablenames and f_ to fieldn...nce t_solicitud\',readable=False,writable=False))\\n", environment={\'A\': <class \'gluon.html.A\'>, \'ANY_OF\': <class \'gluon.validators.ANY_OF\'>, \'ASSIGNJS\': <function ASSIGNJS>, \'AppConfig\': <function AppConfig>, \'Auth\': <class \'gluon.tools.Auth\'>, \'B\': <class \'gluon.html.B\'>, \'BEAUTIFY\': <class \'gluon.html.BEAUTIFY\'>, \'BODY\': <class \'gluon.html.BODY\'>, \'BR\': <class \'gluon.html.BR\'>, \'BUTTON\': <class \'gluon.html.BUTTON\'>, ...}, layer=\'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py\')'
+p84
+sS'func'
+p85
+S'restricted'
+p86
+sa(dp87
+g62
+S'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py'
+p88
+sg64
+(dp89
+S'f'
+S'undefined'
+p90
+sS'db'
+p91
+S'<DAL uri="postgres:******@localhost/sigulab">'
+p92
+sS'db.auth_user._before_insert.append'
+p93
+S'<built-in method append of list object>'
+p94
+sS'db.auth_user'
+p95
+S'<Table auth_user (id, first_name, last_name, ema...set_password_key, registration_id, test_trigger)>'
+p96
+sS'check'
+p97
+S'<function check>'
+p98
+sS'db.auth_user._before_insert'
+p99
+S'[]'
+p100
+ssg70
+I65
+sg71
+(dp101
+I64
+S''
+sI65
+S'db.auth_user._before_insert.append(check(f))'
+p102
+sI66
+S''
+sI67
+S'#####################################################################'
+p103
+sI68
+S''
+sI69
+S'########################################'
+p104
+sI60
+S''
+sI61
+S'def check(f):'
+p105
+sI62
+S"    f['test_trigger'] = True"
+p106
+sI63
+S'    return None'
+p107
+ssg83
+S'()'
+p108
+sg85
+S'<module>'
+p109
+sasS'pyver'
+p110
+S'Python 2.7.12: /usr/bin/python (prefix: /usr)'
+p111
+sS'session'
+p112
+g57
+(S's\xb8\x01\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_orderby</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">last_query</td><td style="vertical-align:top;">:</td><td><div>db.auth_user.id&gt;0</div></td></tr></table></div>'
+tRp113
+sS'etype'
+p114
+S"<type 'exceptions.NameError'>"
+p115
+sS'date'
+p116
+S'Sun Feb 12 13:55:47 2017'
+p117
+sS'response'
+p118
+g57
+(S's\x00\x1b\x00\x00<div><table><tr><td style="font-weight:bold;vertical-align:top;">body</td><td style="vertical-align:top;">:</td><td><div>&lt;cStringIO.StringO object at 0x7f9d21154688&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">cookies</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">session_id_sigulab</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0<table><tr><td style="font-weight:bold;vertical-align:top;">comment</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">domain</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">expires</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">httponly</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">max-age</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">path</td><td style="vertical-align:top;">:</td><td><div>/</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">secure</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">version</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">delimiters</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>{{</div></td></tr><tr><td><div>}}</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">files</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">flash</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">form_label_separator</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">formstyle</td><td style="vertical-align:top;">:</td><td><div>bootstrap3_inline</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">generic_patterns</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>*</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">headers</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">X-Powered-By</td><td style="vertical-align:top;">:</td><td><div>web2py</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">menu</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div><table><tr><td><div>Inicio</div></td></tr><tr><td><div>False</div></td></tr><tr><td><div>/</div></td></tr><tr><td><div><table></table></div></td></tr></table></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">meta</td><td style="vertical-align:top;">:</td><td><div><table><tr><td style="font-weight:bold;vertical-align:top;">author</td><td style="vertical-align:top;">:</td><td><div>Lambda &lt;you@example.com&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">description</td><td style="vertical-align:top;">:</td><td><div></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">keywords</td><td style="vertical-align:top;">:</td><td><div></div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">models_to_run</td><td style="vertical-align:top;">:</td><td><div><table><tr><td><div>^\\w+\\.py$</div></td></tr><tr><td><div>^default/\\w+\\.py$</div></td></tr><tr><td><div>^default/user/\\w+\\.py$</div></td></tr></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">postprocessing</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_client</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_compression_level</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_cookie_expires</td><td style="vertical-align:top;">:</td><td><div>None</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_data_name</td><td style="vertical-align:top;">:</td><td><div>session_data_sigulab</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_file</td><td style="vertical-align:top;">:</td><td><div>&lt;open file &#x27;/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/sessions/134/01e/127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0&#x27;, mode &#x27;rb+&#x27; at 0x7f9d21162a50&gt;</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_filename</td><td style="vertical-align:top;">:</td><td><div>/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/sessions/127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_hash</td><td style="vertical-align:top;">:</td><td><div>437ea7cb4fa7710ef1fb1854525d447c</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id</td><td style="vertical-align:top;">:</td><td><div>127.0.0.1-dae52e92-9f91-4916-807a-e305f855a9a0</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_id_name</td><td style="vertical-align:top;">:</td><td><div>session_id_sigulab</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_locked</td><td style="vertical-align:top;">:</td><td><div>True</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_masterapp</td><td style="vertical-align:top;">:</td><td><div>SIGULAB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_new</td><td style="vertical-align:top;">:</td><td><div>False</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">session_storage_type</td><td style="vertical-align:top;">:</td><td><div>file</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">status</td><td style="vertical-align:top;">:</td><td><div>200</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">subtitle</td><td style="vertical-align:top;">:</td><td><div>Equipo</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">title</td><td style="vertical-align:top;">:</td><td><div>Sistema De Gesti\xc3\xb3n ULAB - USB</div></td></tr><tr><td style="font-weight:bold;vertical-align:top;">view</td><td style="vertical-align:top;">:</td><td><div>default/user.html</div></td></tr></table></div>'
+tRp119
+sS'locals'
+p120
+(dp121
+S'Service'
+p122
+S"<class 'gluon.tools.Service'>"
+p123
+sS'OBJECT'
+p124
+S"<class 'gluon.html.OBJECT'>"
+p125
+sS'SQLDB'
+p126
+S"<class 'pydal.base.DAL'>"
+p127
+sg112
+S"<Storage {'last_orderby': None, 'last_query': 'd...a1cdb', '0f545eb2-a72f-4be2-876d-ea3ba1ffd0bd']}>"
+p128
+sS'LINK'
+p129
+S"<class 'gluon.html.LINK'>"
+p130
+sS'BR'
+p131
+S"<class 'gluon.html.BR'>"
+p132
+sS'local_import'
+p133
+S'<function <lambda>>'
+p134
+sS'OPTGROUP'
+p135
+S"<class 'gluon.html.OPTGROUP'>"
+p136
+sS'LI'
+p137
+S"<class 'gluon.html.LI'>"
+p138
+sS'PRE'
+p139
+S"<class 'gluon.html.PRE'>"
+p140
+sS'IS_INT_IN_RANGE'
+p141
+S"<class 'gluon.validators.IS_INT_IN_RANGE'>"
+p142
+sS'IS_LOWER'
+p143
+S"<class 'gluon.validators.IS_LOWER'>"
+p144
+sS'IS_STRONG'
+p145
+S"<class 'gluon.validators.IS_STRONG'>"
+p146
+sS'cache'
+p147
+S'<gluon.cache.Cache object>'
+p148
+sS'IS_IN_DB'
+p149
+S"<class 'gluon.validators.IS_IN_DB'>"
+p150
+sS'TAG'
+p151
+S'<gluon.html.__TAG__ object>'
+p152
+sS'SQLField'
+p153
+S"<class 'pydal.objects.Field'>"
+p154
+sS'mail'
+p155
+S'<gluon.tools.Mail object>'
+p156
+sS'BODY'
+p157
+S"<class 'gluon.html.BODY'>"
+p158
+sS'IS_DATE_IN_RANGE'
+p159
+S"<class 'gluon.validators.IS_DATE_IN_RANGE'>"
+p160
+sS'TH'
+p161
+S"<class 'gluon.html.TH'>"
+p162
+sS'URL'
+p163
+S'<function URL>'
+p164
+sS'__file__'
+p165
+S"'/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py'"
+p166
+sS'db'
+p167
+S'<DAL uri="postgres:******@localhost/sigulab">'
+p168
+sS'auth'
+p169
+S'<gluon.tools.Auth object>'
+p170
+sS'P'
+S"<class 'gluon.html.P'>"
+p171
+sS'TFOOT'
+p172
+S"<class 'gluon.html.TFOOT'>"
+p173
+sS'XHTML'
+p174
+S"<class 'gluon.html.XHTML'>"
+p175
+sS'ON'
+p176
+S'True'
+p177
+sS'OL'
+p178
+S"<class 'gluon.html.OL'>"
+p179
+sS'TEXTAREA'
+p180
+S"<class 'gluon.html.TEXTAREA'>"
+p181
+sS'settings'
+p182
+S"<Storage {'layout_theme': 'Default', 'subtitle':...l_server': 'localhost', 'login_method': 'local'}>"
+p183
+sS'MENU'
+p184
+S"<class 'gluon.html.MENU'>"
+p185
+sS'LOAD'
+p186
+S'<function LOAD>'
+p187
+sS'CODE'
+p188
+S"<class 'gluon.html.CODE'>"
+p189
+sS'HTTP'
+p190
+S"<class 'gluon.http.HTTP'>"
+p191
+sS'HR'
+p192
+S"<class 'gluon.html.HR'>"
+p193
+sS'IS_DATETIME'
+p194
+S"<class 'gluon.validators.IS_DATETIME'>"
+p195
+sS'Storage'
+p196
+S"<class 'gluon.storage.Storage'>"
+p197
+sS'HEAD'
+p198
+S"<class 'gluon.html.HEAD'>"
+p199
+sS'LABEL'
+p200
+S"<class 'gluon.html.LABEL'>"
+p201
+sS'CLEANUP'
+p202
+S"<class 'gluon.validators.CLEANUP'>"
+p203
+sS'plugins'
+p204
+S'<gluon.tools.PluginManager object>'
+p205
+sS'SELECT'
+p206
+S"<class 'gluon.html.SELECT'>"
+p207
+sS'CENTER'
+p208
+S"<class 'gluon.html.CENTER'>"
+p209
+sS'Crud'
+p210
+S"<class 'gluon.tools.Crud'>"
+p211
+sS'Auth'
+p212
+S"<class 'gluon.tools.Auth'>"
+p213
+sS'__builtins__'
+p214
+S"{'ArithmeticError': <type 'exceptions.ArithmeticError'>, 'AssertionError': <type 'exceptions.AssertionError'>, 'AttributeError': <type 'exceptions.AttributeError'>, 'BaseException': <type 'exceptions.BaseException'>, 'BufferError': <type 'exceptions.BufferError'>, 'BytesWarning': <type 'exceptions.BytesWarning'>, 'DeprecationWarning': <type 'exceptions.DeprecationWarning'>, 'EOFError': <type 'exceptions.EOFError'>, 'Ellipsis': Ellipsis, 'EnvironmentError': <type 'exceptions.EnvironmentError'>, ...}"
+p215
+sS'HTML'
+p216
+S"<class 'gluon.html.HTML'>"
+p217
+sS'SQLFORM'
+p218
+S"<class 'gluon.sqlhtml.SQLFORM'>"
+p219
+sS'EM'
+p220
+S"<class 'gluon.html.EM'>"
+p221
+sS'redirect'
+p222
+S'<function redirect>'
+p223
+sS'check'
+p224
+S'<function check>'
+p225
+sS'FIELDSET'
+p226
+S"<class 'gluon.html.FIELDSET'>"
+p227
+sS'IS_EQUAL_TO'
+p228
+S"<class 'gluon.validators.IS_EQUAL_TO'>"
+p229
+sS'embed64'
+p230
+S'<function embed64>'
+p231
+sS'IS_LIST_OF'
+p232
+S"<class 'gluon.validators.IS_LIST_OF'>"
+p233
+sS'__name__'
+p234
+S"'__restricted__'"
+p235
+sS'EMBED'
+p236
+S"<class 'gluon.html.EMBED'>"
+p237
+sS'FORM'
+p238
+S"<class 'gluon.html.FORM'>"
+p239
+sS'myconf'
+p240
+S"{'forms': {'formstyle': 'bootstrap3_inline', 'se...': {'names': 'localhost:*, 127.0.0.1:*, *:*, *'}}"
+p241
+sS'H2'
+p242
+S"<class 'gluon.html.H2'>"
+p243
+sS'H3'
+p244
+S"<class 'gluon.html.H3'>"
+p245
+sS'AppConfig'
+p246
+S'<function AppConfig>'
+p247
+sS'H1'
+p248
+S"<class 'gluon.html.H1'>"
+p249
+sS'H6'
+p250
+S"<class 'gluon.html.H6'>"
+p251
+sS'H4'
+p252
+S"<class 'gluon.html.H4'>"
+p253
+sS'H5'
+p254
+S"<class 'gluon.html.H5'>"
+p255
+sS'UL'
+p256
+S"<class 'gluon.html.UL'>"
+p257
+sS'IS_UPPER'
+p258
+S"<class 'gluon.validators.IS_UPPER'>"
+p259
+sS'xmlescape'
+p260
+S'<function xmlescape>'
+p261
+sS'IS_TIME'
+p262
+S"<class 'gluon.validators.IS_TIME'>"
+p263
+sS'OPTION'
+p264
+S"<class 'gluon.html.OPTION'>"
+p265
+sS'TITLE'
+p266
+S"<class 'gluon.html.TITLE'>"
+p267
+sS'CRYPT'
+p268
+S"<class 'gluon.validators.CRYPT'>"
+p269
+sS'app'
+p270
+S"'SIGULAB'"
+p271
+sS'IS_EMPTY_OR'
+p272
+S"<class 'gluon.validators.IS_EMPTY_OR'>"
+p273
+sS'MARKMIN'
+p274
+S"<class 'gluon.html.MARKMIN'>"
+p275
+sS'INPUT'
+p276
+S"<class 'gluon.html.INPUT'>"
+p277
+sS'STRONG'
+p278
+S"<class 'gluon.html.STRONG'>"
+p279
+sS'COL'
+p280
+S"<class 'gluon.html.COL'>"
+p281
+sS'service'
+p282
+S'<gluon.tools.Service object>'
+p283
+sS'SCRIPT'
+p284
+S"<class 'gluon.html.SCRIPT'>"
+p285
+sS'TABLE'
+p286
+S"<class 'gluon.html.TABLE'>"
+p287
+sS'IS_IPV4'
+p288
+S"<class 'gluon.validators.IS_IPV4'>"
+p289
+sS'IS_LENGTH'
+p290
+S"<class 'gluon.validators.IS_LENGTH'>"
+p291
+sS'IS_IPV6'
+p292
+S"<class 'gluon.validators.IS_IPV6'>"
+p293
+sS'XML'
+p294
+S"<class 'gluon.html.XML'>"
+p295
+sS'B'
+S"<class 'gluon.html.B'>"
+p296
+sS'IMG'
+p297
+S"<class 'gluon.html.IMG'>"
+p298
+sS'SQLTABLE'
+p299
+S"<class 'gluon.sqlhtml.SQLTABLE'>"
+p300
+sS'IS_MATCH'
+p301
+S"<class 'gluon.validators.IS_MATCH'>"
+p302
+sS'IS_ALPHANUMERIC'
+p303
+S"<class 'gluon.validators.IS_ALPHANUMERIC'>"
+p304
+sS'SPAN'
+p305
+S"<class 'gluon.html.SPAN'>"
+p306
+sS'IS_JSON'
+p307
+S"<class 'gluon.validators.IS_JSON'>"
+p308
+sS'IS_IPADDRESS'
+p309
+S"<class 'gluon.validators.IS_IPADDRESS'>"
+p310
+sS'IS_SLUG'
+p311
+S"<class 'gluon.validators.IS_SLUG'>"
+p312
+sS'BEAUTIFY'
+p313
+S"<class 'gluon.html.BEAUTIFY'>"
+p314
+sS'META'
+p315
+S"<class 'gluon.html.META'>"
+p316
+sS'BUTTON'
+p317
+S"<class 'gluon.html.BUTTON'>"
+p318
+sS'IS_DATE'
+p319
+S"<class 'gluon.validators.IS_DATE'>"
+p320
+sS'IS_EMAIL'
+p321
+S"<class 'gluon.validators.IS_EMAIL'>"
+p322
+sS'IS_NOT_EMPTY'
+p323
+S"<class 'gluon.validators.IS_NOT_EMPTY'>"
+p324
+sS'IS_FLOAT_IN_RANGE'
+p325
+S"<class 'gluon.validators.IS_FLOAT_IN_RANGE'>"
+p326
+sS'TBODY'
+p327
+S"<class 'gluon.html.TBODY'>"
+p328
+sS'CAT'
+p329
+S"<class 'gluon.html.CAT'>"
+p330
+sS'Field'
+p331
+S"<class 'pydal.objects.Field'>"
+p332
+sS'IS_LIST_OF_EMAILS'
+p333
+S"<class 'gluon.validators.IS_LIST_OF_EMAILS'>"
+p334
+sS'DIV'
+p335
+S"<class 'gluon.html.DIV'>"
+p336
+sS'LEGEND'
+p337
+S"<class 'gluon.html.LEGEND'>"
+p338
+sS'COLGROUP'
+p339
+S"<class 'gluon.html.COLGROUP'>"
+p340
+sS'DAL'
+p341
+S"<class 'pydal.base.DAL'>"
+p342
+sS'ASSIGNJS'
+p343
+S'<function ASSIGNJS>'
+p344
+sS'TR'
+p345
+S"<class 'gluon.html.TR'>"
+p346
+sS'__package__'
+p347
+S'None'
+p348
+sS'IFRAME'
+p349
+S"<class 'gluon.html.IFRAME'>"
+p350
+sS'TD'
+p351
+S"<class 'gluon.html.TD'>"
+p352
+sS'PluginManager'
+p353
+S"<class 'gluon.tools.PluginManager'>"
+p354
+sS'IS_URL'
+p355
+S"<class 'gluon.validators.IS_URL'>"
+p356
+sS'A'
+S"<class 'gluon.html.A'>"
+p357
+sS'STYLE'
+p358
+S"<class 'gluon.html.STYLE'>"
+p359
+sS'IS_DATETIME_IN_RANGE'
+p360
+S"<class 'gluon.validators.IS_DATETIME_IN_RANGE'>"
+p361
+sS'IS_IMAGE'
+p362
+S"<class 'gluon.validators.IS_IMAGE'>"
+p363
+sS'I'
+S"<class 'gluon.html.I'>"
+p364
+sS'crud'
+p365
+S'<gluon.tools.Crud object>'
+p366
+sS'IS_NOT_IN_DB'
+p367
+S"<class 'gluon.validators.IS_NOT_IN_DB'>"
+p368
+sg118
+S"<Storage {'body': <cStringIO.StringO object at 0...at 0x7f9d214b3a28>, 'view': 'default/user.html'}>"
+p369
+sS'THEAD'
+p370
+S"<class 'gluon.html.THEAD'>"
+p371
+sS'ANY_OF'
+p372
+S"<class 'gluon.validators.ANY_OF'>"
+p373
+sS'IS_NULL_OR'
+p374
+S"<class 'gluon.validators.IS_EMPTY_OR'>"
+p375
+sg56
+S"<Storage {'_vars': None, 'function': 'user', 'co...fo/Desktop/PROYECTO ULAB/applications/SIGULAB/'}>"
+p376
+sS'IS_EXPR'
+p377
+S"<class 'gluon.validators.IS_EXPR'>"
+p378
+sS'IS_IN_SET'
+p379
+S"<class 'gluon.validators.IS_IN_SET'>"
+p380
+sS'IS_UPLOAD_FILENAME'
+p381
+S"<class 'gluon.validators.IS_UPLOAD_FILENAME'>"
+p382
+sS'IS_DECIMAL_IN_RANGE'
+p383
+S"<class 'gluon.validators.IS_DECIMAL_IN_RANGE'>"
+p384
+sS'TT'
+p385
+S"<class 'gluon.html.TT'>"
+p386
+sS'T'
+S'<gluon.languages.translator object>'
+p387
+sssS'traceback'
+p388
+S'Traceback (most recent call last):\n  File "/home/adolfo/Desktop/PROYECTO ULAB/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/adolfo/Desktop/PROYECTO ULAB/applications/SIGULAB/models/tablas_base.py", line 65, in <module>\n    db.auth_user._before_insert.append(check(f))\nNameError: name \'f\' is not defined\n'
+p389
+s.
