@@ -174,7 +174,6 @@ db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Dirección')),
     Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'), label=T('Sección')),
-    #Field('f_tecnico', 'integer',notnull=False, requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Tecnico')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion']
@@ -182,11 +181,11 @@ db.t_espaciofisico._plural = 'Espacios Físicos'
 db.t_espaciofisico._singular = 'Espacio Físico'
 
 db.define_table('t_tecs_esp',
-    Field('t_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
-    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s - %(email)s'), label=T('Técnico')),
+    Field('f_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
+    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Técnico')),
     migrate=settings.migrate)
-db.t_tecs_esp.t_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_espacio']
-#db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['first_name'] + " " + lambda value,row: db(db.auth_user.id == value).select().first()['last_name']
+db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_espacio']
+db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['email']
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
@@ -198,7 +197,8 @@ db.define_table('t_inventario',
     ,represent= lambda name,row: \
                 A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),
     Field('f_espaciofisico', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
-    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],
+    represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
+    str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
     label=T('Espaciofisico')),
     Field('f_cantidadonacion', 'float',default=0,label=T('Cantidad Donacion'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
@@ -291,7 +291,8 @@ db.define_table('v_seccion',
     )
 db.v_seccion.id.readable=False
 db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2]   )))
-db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
+db.v_seccion.f_seccion.represent= lambda name,row: A( str(db(db.t_seccion.id == name).select(db.t_seccion.f_seccion))[21:-2],
+_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
 
 
 ########################################

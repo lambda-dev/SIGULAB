@@ -5,7 +5,7 @@
 <h3>Espacios Fisicos:</h3>
 {{for espacio in espacios:}}
 <a = href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}"
-<p>Seccion: {{=espacio.f_seccion}}, {{=espacio.f_espacio}}</p>
+<p>Seccion: {{=espacio.f_seccion}}, {{=espacio.f_espacio}} - {{=espacio.f_direccion}}</p>
 {{pass}}
 </a>
 
