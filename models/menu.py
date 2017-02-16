@@ -12,7 +12,7 @@ response.menu = [
     [T('Home'),URL('default','index')==URL(),URL('default','index')]
     ]
 #tec, jefes y gestor
-if not auth.has_membership('Usuario Normal') and auth.is_logged_in():
+if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
     response.menu += [
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
@@ -23,7 +23,7 @@ if not auth.has_membership('Usuario Normal') and auth.is_logged_in():
     		]]
     ]
 #dir o admin user
-if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal'):
+if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal')) and (not auth.has_membership('Usuario Normal')):
     response.menu += [
     [T('Gestión Usuarios'),False, None,[
       [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
@@ -38,7 +38,7 @@ if auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.h
     ]]
     ]
 #superuser
-if auth.has_membership('WebMaster'):
+if auth.has_membership('WebMaster') and (not auth.has_membership('Usuario Normal')):
     response.menu += [
     [T('Editar'), False, URL('admin', 'default', 'design/%s' % app)]
     ]
