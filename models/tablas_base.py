@@ -144,12 +144,13 @@ db.define_table('t_sustancias',
     Field('f_control', 'integer', label=T('Control'), requires=IS_IN_DB(db,db.t_regimenes.id,'%(f_nombre)s'),
     represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),
     Field('f_peligrosidad', 'string', label=T('Peligrosidad'),requires=IS_IN_SET(['Inflamable','Tóxico','Tóxico para el ambiente','Corrosivo','Comburente','Nocivo','Explosivo','Irritante'],multiple = True), widget=SQLFORM.widgets.checkboxes.widget ),
+    Field('f_reporte','upload',label=T('Reporte')),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 db.t_sustancias.id.readable=False
 db.t_sustancias.id.writable=False
 db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','reference t_sustancias',readable=False,writable=False))
-
+db.t_sustancias.f_reporte.readable=(auth.has_membership('Gestor de Sustancias')or auth.has_membership('WebMaster'))
 
 ##########################################
 db.define_table('t_laboratorio',
