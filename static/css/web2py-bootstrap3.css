@@ -105,8 +105,10 @@ select.autocomplete {
     margin: 20px;
 }
 .background {
-    background: url(../images/background.jpg) no-repeat center center;
+    background: url(../images/logo-usb.png) no-repeat center center !important;
 }
+
+
 body {
     padding-top: 60px;
     margin-bottom: 60px;

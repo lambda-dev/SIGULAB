@@ -36,7 +36,7 @@ def pendientes():
     confirmar_usuario = lambda row: A('Confirmar', _href=URL(c='gestion',f='confirmar', args=[row.f_email, row.f_group]))
     eliminar_p = lambda row: A('Eliminar', _href=URL(c='gestion',f='eliminar_p', args=[row.f_email, row.f_group]))
     links = [confirmar_usuario, eliminar_p]
-    form = SQLFORM.smartgrid(db.t_users_pendientes,onupdate=auth.archive,csv=False,details=False,deletable = False, links=links)
+    form = SQLFORM.smartgrid(db.t_users_pendientes,onupdate=auth.archive,csv=False,create =False,details=False,deletable = False, links=links)
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
