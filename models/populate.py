@@ -149,6 +149,13 @@ def populate_db():
         db.auth_user.insert(first_name="Yumaiti Yarilis", last_name="Ortega Perez",email='yortega@usb.ve', cargo=4, autorizado=True)
         db.auth_user.insert(first_name="Militza Madeleine", last_name="Macias Molina",email='mmacias@usb.ve', cargo=3, autorizado=True)
 
+        db.auth_user.insert(first_name="Técnico", last_name="ULAB",email='tecnico@usb.ve', cargo=7, autorizado=True)
+        db.auth_user.insert(first_name="Jefe de Sección", last_name="ULAB",email='jefsecc@usb.ve', cargo=6, autorizado=True)
+        db.auth_user.insert(first_name="Jefe de Laboratorio", last_name="ULAB",email='jeflab@usb.ve', cargo=5, autorizado=True)
+        db.auth_user.insert(first_name="Gestor de Sustancias", last_name="ULAB",email='gestor@usb.ve', cargo=4, autorizado=True)
+        db.auth_user.insert(first_name="Admin User", last_name="ULAB",email='adminuser@usb.ve', cargo=3, autorizado=True)
+        db.auth_user.insert(first_name="Director", last_name="ULAB",email='director@usb.ve', cargo=2, autorizado=True)
+
     if db(db.t_users_autorizados).isempty():
         id_tec = db(db.auth_group.role == "Técnico").select(db.auth_group.id).first()
 
@@ -204,7 +211,6 @@ def populate_db():
         db.t_users_autorizados.insert(f_email='seijascarla@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='fabiolarojas@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='gjean@usb.ve',f_group=id_tec)
-        db.t_users_autorizados.insert(f_email='mbolivar@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='mbolivar@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='scovino@usb.ve',f_group=id_tec)
         db.t_users_autorizados.insert(f_email='tomasgrt@usb.ve',f_group=id_tec)
