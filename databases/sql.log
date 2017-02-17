@@ -1,4 +1,4 @@
-timestamp: 2017-02-12T09:05:09.363250
+timestamp: 2017-02-15T10:23:48.706000
 CREATE TABLE auth_user(
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(128),
@@ -10,21 +10,21 @@ CREATE TABLE auth_user(
     registration_id VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:10.021340
+timestamp: 2017-02-15T10:23:48.965000
 CREATE TABLE auth_group(
     id SERIAL PRIMARY KEY,
     role VARCHAR(512),
     description TEXT
 );
 success!
-timestamp: 2017-02-12T09:05:10.099359
+timestamp: 2017-02-15T10:23:49.096000
 CREATE TABLE auth_membership(
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
     group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:10.235650
+timestamp: 2017-02-15T10:23:49.215000
 CREATE TABLE auth_permission(
     id SERIAL PRIMARY KEY,
     group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  ,
@@ -33,7 +33,7 @@ CREATE TABLE auth_permission(
     record_id INTEGER
 );
 success!
-timestamp: 2017-02-12T09:05:10.290239
+timestamp: 2017-02-15T10:23:49.344000
 CREATE TABLE auth_event(
     id SERIAL PRIMARY KEY,
     time_stamp TIMESTAMP,
@@ -43,7 +43,7 @@ CREATE TABLE auth_event(
     description TEXT
 );
 success!
-timestamp: 2017-02-12T09:05:10.363880
+timestamp: 2017-02-15T10:23:49.485000
 CREATE TABLE auth_cas(
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
@@ -53,7 +53,7 @@ CREATE TABLE auth_cas(
     renew CHAR(1)
 );
 success!
-timestamp: 2017-02-12T09:05:10.581313
+timestamp: 2017-02-15T10:23:49.719000
 CREATE TABLE table_solicitud(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -67,7 +67,7 @@ CREATE TABLE table_solicitud(
     f_respuesta VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:10.634908
+timestamp: 2017-02-15T10:23:49.815000
 CREATE TABLE table_solicitud_archive(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -82,45 +82,38 @@ CREATE TABLE table_solicitud_archive(
     current_record INTEGER REFERENCES table_solicitud (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:10.941865
+timestamp: 2017-02-15T10:23:49.974000
 CREATE TABLE t_users_autorizados(
     id SERIAL PRIMARY KEY,
     f_email VARCHAR(512),
     f_group VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:10.979696
+timestamp: 2017-02-15T10:23:50.238000
 CREATE TABLE t_regimenes(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.087183
+timestamp: 2017-02-15T10:23:50.396000
 CREATE TABLE t_ingresos(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.201710
+timestamp: 2017-02-15T10:23:50.546000
 CREATE TABLE t_consumos(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.306810
-CREATE TABLE t_materiales(
-    id SERIAL PRIMARY KEY,
-    f_nombre VARCHAR(512),
-    f_cas VARCHAR(512)
-);
-success!
-timestamp: 2017-02-12T09:05:11.358477
+timestamp: 2017-02-15T10:23:50.699000
 CREATE TABLE t_estado(
     id SERIAL PRIMARY KEY,
     f_estado VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.462009
+timestamp: 2017-02-15T10:23:50.939000
 CREATE TABLE t_sustancias(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512),
@@ -131,7 +124,7 @@ CREATE TABLE t_sustancias(
     f_peligrosidad VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.517150
+timestamp: 2017-02-15T10:23:51.331000
 CREATE TABLE t_sustancias_archive(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512),
@@ -143,14 +136,14 @@ CREATE TABLE t_sustancias_archive(
     current_record INTEGER REFERENCES t_sustancias (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:11.587792
+timestamp: 2017-02-15T10:23:51.562000
 CREATE TABLE t_laboratorio(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512) NOT NULL,
     f_jefe INTEGER
 );
 success!
-timestamp: 2017-02-12T09:05:11.644919
+timestamp: 2017-02-15T10:23:51.715000
 CREATE TABLE t_laboratorio_archive(
     id SERIAL PRIMARY KEY,
     f_nombre VARCHAR(512) NOT NULL,
@@ -158,7 +151,7 @@ CREATE TABLE t_laboratorio_archive(
     current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:11.860867
+timestamp: 2017-02-15T10:23:51.853000
 CREATE TABLE t_seccion(
     id SERIAL PRIMARY KEY,
     f_seccion VARCHAR(512),
@@ -166,7 +159,7 @@ CREATE TABLE t_seccion(
     f_jefe INTEGER
 );
 success!
-timestamp: 2017-02-12T09:05:11.899502
+timestamp: 2017-02-15T10:23:52.049000
 CREATE TABLE t_espaciofisico(
     id SERIAL PRIMARY KEY,
     f_espacio VARCHAR(512),
@@ -175,7 +168,7 @@ CREATE TABLE t_espaciofisico(
     f_tecnico INTEGER
 );
 success!
-timestamp: 2017-02-12T09:05:11.935810
+timestamp: 2017-02-15T10:23:52.177000
 CREATE TABLE t_inventario(
     id SERIAL PRIMARY KEY,
     f_sustancia INTEGER,
@@ -187,7 +180,7 @@ CREATE TABLE t_inventario(
     f_laboratorio VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:11.973624
+timestamp: 2017-02-15T10:23:52.304000
 CREATE TABLE t_inventario_archive(
     id SERIAL PRIMARY KEY,
     f_sustancia INTEGER,
@@ -200,7 +193,7 @@ CREATE TABLE t_inventario_archive(
     current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:12.011993
+timestamp: 2017-02-15T10:23:52.405000
 CREATE TABLE t_bitacora(
     id SERIAL PRIMARY KEY,
     f_fechaingreso TIMESTAMP,
@@ -214,7 +207,7 @@ CREATE TABLE t_bitacora(
     f_descripcion TEXT
 );
 success!
-timestamp: 2017-02-12T09:05:12.050609
+timestamp: 2017-02-15T10:23:52.557000
 CREATE TABLE t_bitacora_archive(
     id SERIAL PRIMARY KEY,
     f_fechaingreso TIMESTAMP,
@@ -229,7 +222,7 @@ CREATE TABLE t_bitacora_archive(
     current_record INTEGER REFERENCES t_bitacora (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:05:12.091847
+timestamp: 2017-02-15T10:23:52.750000
 CREATE TABLE t_solicitud(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -241,7 +234,7 @@ CREATE TABLE t_solicitud(
     f_estado VARCHAR(512)
 );
 success!
-timestamp: 2017-02-12T09:05:12.142809
+timestamp: 2017-02-15T10:23:52.975000
 CREATE TABLE t_solicitud_archive(
     id SERIAL PRIMARY KEY,
     f_sustancia VARCHAR(512),
@@ -254,11 +247,16 @@ CREATE TABLE t_solicitud_archive(
     current_record INTEGER REFERENCES t_solicitud (id) ON DELETE CASCADE  
 );
 success!
-timestamp: 2017-02-12T09:09:55.219903
-CREATE TABLE auth_membership_archive(
-    current_record INTEGER REFERENCES auth_membership (id) ON DELETE CASCADE  ,
+timestamp: 2017-02-15T10:30:16.972000
+CREATE TABLE auth_user_archive(
+    current_record INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
-    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
+    first_name VARCHAR(128),
+    last_name VARCHAR(128),
+    email VARCHAR(512),
+    password VARCHAR(512),
+    registration_key VARCHAR(512),
+    reset_password_key VARCHAR(512),
+    registration_id VARCHAR(512)
 );
 success!

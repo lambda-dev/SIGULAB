@@ -481,3 +481,4 @@
 [2017-01-28 16:16:43] EDIT SistemaDesechos/views/front_page/sustancias.html: 0
 [2017-02-08 18:47:57] CREATE gestion.py: 0
 [2017-02-10 20:54:15] DELETE SIGULAB/views/gestion/users.html: -2
+[2017-02-15 01:35:23] DELETE SIGULAB/views/plugin_layouts/layouts/KeepitSimple.html: -55
