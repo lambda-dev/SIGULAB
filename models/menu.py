@@ -17,11 +17,16 @@ if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
             (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
-            ]],
-    [T('Solicitudes'),False, None,[
-    	(T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
-    		]]
+            ]]
     ]
+
+if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Ténico') and auth.is_logged_in():
+    response.menu += [
+      [T('Solicitudes'),False, None,[
+      (T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
+        ]]
+      ]
+      
 #dir o admin user
 if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal')) and (not auth.has_membership('Usuario Normal')):
     response.menu += [
