@@ -1,5 +1,6 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
+#editado por adolfo
 if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
@@ -22,10 +23,12 @@ if db(db.auth_permission).isempty():
     db.auth_permission.insert(name='jefelab',table_name='t_inventario',
                             group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
 
+###############################################
+#editado por adolfo
 if db(db.auth_user).isempty():
         db.auth_user.insert(first_name='Super',last_name='Usuario',email='webmaster@sigulab.com',password=db.auth_user.password.validate('0000')[0])
         db.auth_membership.insert(user_id=(db(db.auth_user.email == 'webmaster@sigulab.com').select(db.auth_user.id).first()),\
-            group_id=db(db.auth_group.role == "WebMaster").select(db.auth_group.id).first());
+            group_id=auth.id_group(role="WebMaster"));
 
 db.auth_membership._plural = 'Membresías'
 db.auth_membership._singular = 'Membresía'
@@ -37,11 +40,48 @@ db.auth_user._plural = 'Usuarios Registrados'
 db.auth_user._singular = 'Usuario Registrado'
 
 db.define_table('t_users_autorizados',
-    Field('f_email', 'string', label=T('Email')),
-    Field('f_group', 'string', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]))
+    Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
+    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
+    migrate=settings.migrate)
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
 db.t_users_autorizados._singular = 'Usuario Autorizado'
+
+db.t_users_pendientes._plural = 'Usuarios que requieren autorización'
+db.t_users_pendientes._singular = 'Usuario que requiere autorización'
+
+def check_autorizado(f, uid):
+    row = db(db.t_users_autorizados.f_email == f['email']).select().first()
+
+    usuario = db(db.auth_user.id==uid).select().first()
+    if usuario.autorizado:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+        auth.add_membership(f['cargo'], usuario.id)
+    elif (row is not None) and row.f_group == f['cargo']:
+        auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
+        auth.add_membership(row.f_group, usuario.id)
+        db(db.t_users_autorizados.f_email == usuario.email).delete()
+        usuario.update_record(autorizado = True)
+        return
+    else:
+        db.t_users_pendientes.insert(f_email=f['email'], f_group=f['cargo'])
+        auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
+        usuario.update_record(autorizado = False)
+
+    usuario.update_record(autorizado = False)
+
+def actualizar_privilegio(f, uid):
+    usuario = db(db.auth_user.id==f['user_id']).select().first()
+
+    if usuario.autorizado:
+        auth.del_membership(auth.id_group(role='Usuario Normal'), usuario.id)
+
+
+db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
+db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
+
+#####################################################################
+
 ########################################
 db.define_table('t_regimenes',
     Field('f_nombre','string',label=T('Nombre')),
@@ -52,6 +92,8 @@ if db(db.t_regimenes).isempty():
     db.t_regimenes.insert(f_nombre='RL7')
     db.t_regimenes.insert(f_nombre='RL4 y RL7')
     db.t_regimenes.insert(f_nombre='N/A')
+
+
 ##########################################
 db.define_table('t_ingresos',
     Field('f_nombre',label=T('Nombre')),
@@ -62,6 +104,8 @@ if db(db.t_ingresos).isempty():
     db.t_ingresos.insert(f_nombre='Compra a Proveedor')
     db.t_ingresos.insert(f_nombre='Préstamo')
     db.t_ingresos.insert(f_nombre='Donación')
+
+
 ##########################################
 db.define_table('t_consumos',
     Field('f_nombre',label=T('Nombre')),
@@ -72,12 +116,9 @@ if db(db.t_consumos).isempty():
     db.t_consumos.insert(f_nombre='Tesis')
     db.t_consumos.insert(f_nombre='Proyecto de Investigación')
     db.t_consumos.insert(f_nombre='Servicio de Laboratorio')
-#    Field('f_permiso','string',label=T('Permiso')),
-#    format='%(f_nombreCar)s',
-#    migrate=settings.migrate)
 
 #db.define_table('t_cargo_archive',db.t_cargo,Field('current_record','reference t_cargo',readable=False,writable=False))
-
+########################################
 ########################################
 db.define_table('t_estado',
                Field('f_estado','string',readable=False,writable=False),
@@ -88,8 +129,8 @@ if db(db.t_estado).isempty():
     db.t_estado.insert(f_estado='Líquido')
     db.t_estado.insert(f_estado='Gaseoso')
 
-########################################
 
+########################################
 db.define_table('t_sustancias',
     Field('f_nombre', 'string', label=T('Nombre')),
     Field('f_cas', 'string', label=T('Cas')),
@@ -108,30 +149,47 @@ db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','r
 
 ##########################################
 db.define_table('t_laboratorio',
-    Field('f_nombre', 'string', notnull=True, label=T('Nombre')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Jefe de Laboratorio')),
-    format='%(f_nombre)s',
+    Field('f_nombre', 'string', notnull=True, label=T('Nombre'), requires=IS_NOT_EMPTY()),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Laboratorio')),
     migrate=settings.migrate)
 
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
+db.t_laboratorio._plural = 'Laboratorios'
+db.t_laboratorio._singular = 'Laboratorio'
+db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
 
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
-    Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.f_nombre,'%(f_nombre)s'), label=T('Laboratorio')),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Jefe de Seccion')),
-    format='%(f_nombre)s'
-    )
+    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'), label=T('Laboratorio')),
+    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Sección')),
+    migrate=settings.migrate)
+db.t_seccion._plural = 'Secciones'
+db.t_seccion._singular = 'Sección'
+db.t_seccion.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre']
+db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
 
 ########################################
 db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
-    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Direccion')),
-    Field('f_seccion', 'integer',requires=IS_IN_DB(db,db.t_seccion.id,'%(f_laboratorio)s, seccion %(f_seccion)s'), label=T('Seccion')),
-    Field('f_tecnico','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s'), label=T('Tecnico')),
+    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Dirección')),
+    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'), label=T('Sección')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
-db.t_espaciofisico.id.represent= lambda value,row: str(row.f_espacio)[27:]
+db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion']
+db.t_espaciofisico._plural = 'Espacios Físicos'
+db.t_espaciofisico._singular = 'Espacio Físico'
+
+db.define_table('t_tecs_esp',
+    Field('f_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
+    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Técnico')),
+    migrate=settings.migrate)
+db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']
+db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['email']
+db.t_tecs_esp._plural = 'Técnicos'
+db.t_tecs_esp._singular = 'Técnicos'
+
+
 
 ########################################
 db.define_table('t_inventario',
@@ -139,7 +197,8 @@ db.define_table('t_inventario',
     ,represent= lambda name,row: \
                 A(str(db(db.t_sustancias.id==name).select(db.t_sustancias.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),
     Field('f_espaciofisico', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
-    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:],
+    represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
+    str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
     label=T('Espaciofisico')),
     Field('f_cantidadonacion', 'float',default=0,label=T('Cantidad Donacion'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
@@ -154,17 +213,17 @@ db.define_table('t_inventario',
 db.define_table('t_inventario_archive',db.t_inventario,Field('current_record','reference t_inventario',readable=False,writable=False))
 db.t_inventario.id.readable = False
 
+
 ########################################
 db.define_table('t_bitacora',
-    Field('f_fechaingreso','datetime',label=T('Fecha')),
+    Field('f_fechaingreso','date',label=T('Fecha'),notnull=True),
     Field('f_sustancia', 'integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_sustancias.id,'%(f_nombre)s'),
             represent=lambda f_sustancia,row: str(db(db.t_sustancias.id == f_sustancia).select(db.t_sustancias.f_nombre))[22:],
             notnull=True, label=T('Sustancia')),
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
-    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),#compute=lambda r:
-    #r.f_ingreso-r.f_consumo+float ( str ( db( (db.t_inventario.f_sustancia == r.f_sustancia) & (db.t_inventario.f_espaciofisico == r.f_espaciofisico) ).select(db.t_inventario.f_cantidadusointerno) )[33:]) ),
+    Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
@@ -177,6 +236,7 @@ db.t_bitacora.id.readable = False
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 
+########################################
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
 db.executesql(
   'create or replace view v_laboratorio as\
@@ -200,8 +260,11 @@ db.define_table('v_laboratorio',
     )
 db.v_laboratorio.id.readable=False
 db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
-lab= int(str(db(db.t_laboratorio.f_nombre == row.f_laboratorio).select(db.t_laboratorio.id))[18:-2]),
-sust=row.f_sustancia)))
+lab= row.f_laboratorio,
+sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
+
+
+########################################
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
 db.executesql(
 'create or replace view v_seccion as\
@@ -227,8 +290,9 @@ db.define_table('v_seccion',
     migrate=False
     )
 db.v_seccion.id.readable=False
-db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
-db.v_seccion.f_seccion.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=row.f_sustancia)))
+db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2]   )))
+db.v_seccion.f_seccion.represent= lambda name,row: A( str(db(db.t_seccion.id == name).select(db.t_seccion.f_seccion))[21:-2],
+_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust=str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2])))
 
 
 ########################################
@@ -245,4 +309,5 @@ db.define_table('t_solicitud',
 
 db.define_table('t_solicitud_archive',db.t_solicitud,Field('current_record','reference t_solicitud',readable=False,writable=False))
 
-#########################################
+#Por arreglar
+populate_db()
