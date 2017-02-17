@@ -272,6 +272,7 @@
 'Key': 'Llave',
 'Laboratorio': 'Laboratorio',
 'Laboratorios': 'Laboratorios',
+'LAMBDA DEV': 'LAMBDA DEV',
 'language file "%(filename)s" created/updated': 'archivo de lenguaje "%(filename)s" creado/actualizado',
 'Language files (static strings) updated': 'Archivos de lenguaje (cadenas estáticas) actualizados',
 'languages': 'lenguajes',

@@ -184,7 +184,7 @@ db.define_table('t_tecs_esp',
     Field('f_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
     Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Técnico')),
     migrate=settings.migrate)
-db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_espacio']
+db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']
 db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['email']
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
