@@ -1,0 +1,30 @@
+{{extend 'layout.html'}}
+<div class="container">
+	<ol class="breadcrumb" style="background-color:#E0F2F1">
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+	  <li class="breadcrumb-item active">Espacios Físicos</li>
+	</ol>
+
+{{if labs:}}
+<h3 style="color:#455A64">{{=labs}}</h3>
+{{pass}}
+
+{{if seccion:}}
+<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
+{{pass}}
+
+{{if sustancia:}}
+<h3 style="color:#455A64">Sustancia: {{=sustancia}}</h3>
+{{pass}}
+
+{{if espFisico:}}
+<h2>Espacio Fisico: {{=espFisico}}</h2>
+{{pass}}
+
+<p>{{=table}}</p>
+<a  href="{{=URL('sustancias','select_inventario')}}">
+<button class="btn btn-default">Atras</button>
+</a>
+</div>
