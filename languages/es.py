@@ -154,7 +154,6 @@
 'DESIGN': 'DISEÑO',
 'Design for': 'Diseño por',
 'detecting': 'detectando',
-'Direccion': 'Direccion',
 'Dirección': 'Dirección',
 'DISK': 'DISCO',
 'Disk Cache Keys': 'Llaves de Caché en Disco',
