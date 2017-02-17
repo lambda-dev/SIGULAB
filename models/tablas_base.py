@@ -57,6 +57,7 @@ def check_autorizado(f, uid):
     if usuario.autorizado:
         auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
         auth.add_membership(f['cargo'], usuario.id)
+        return
     elif (row is not None) and row.f_group == f['cargo']:
         auth.del_membership(auth.id_group(role="Usuario Normal"), usuario.id)
         auth.add_membership(row.f_group, usuario.id)
@@ -156,7 +157,7 @@ db.define_table('t_laboratorio',
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
-db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
+db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
 
 ########################################
 db.define_table('t_seccion',
@@ -167,7 +168,7 @@ db.define_table('t_seccion',
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
 db.t_seccion.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre']
-db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select(db.auth_user.email).first()['email']
+db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
 
 ########################################
 db.define_table('t_espaciofisico',
@@ -182,10 +183,10 @@ db.t_espaciofisico._singular = 'Espacio Físico'
 
 db.define_table('t_tecs_esp',
     Field('f_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
-    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id,'%(email)s'), label=T('Técnico')),
+    Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s - %(email)s'), label=T('Técnico')),
     migrate=settings.migrate)
 db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']
-db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['email']
+db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
