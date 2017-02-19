@@ -188,6 +188,10 @@ db.define_table('t_inventario',
     compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),
     Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'),readable=False,writable=False,
     compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),
+    Field('f_unidad','string',requires=IS_IN_SET(['mL','L','g','Kg','cm'+chr(0x00B3)]),
+    compute= lambda r: 'mL' if str( db( (db.t_sustancias.id == r.f_sustancia)&(db.t_estado.id == db.t_sustancias.f_estado) ).select(db.t_estado.f_estado) )[19:-2] == 'Líquido' else 'cm'+chr(0x00B3)
+    if str( db( (db.t_sustancias.id == r.f_sustancia)&(db.t_estado.id == db.t_sustancias.f_estado) ).select(db.t_estado.f_estado) )[19:-2] == 'Gaseoso' else 'g',
+    label=T('Unidad')),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
@@ -207,6 +211,7 @@ db.define_table('t_bitacora',
     Field('f_proceso', 'string', notnull=True, label=T('Proceso')),
     Field('f_ingreso', 'float', default=0, label=T('Ingreso'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
+    Field('f_unidad','string',readable=False),
     Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),
     Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
@@ -231,9 +236,10 @@ db.executesql(
         SUM(i.f_cantidadonacion) as f_cantidadonacion, \
         SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
         SUM(i.f_total) as f_total,\
-        i.f_laboratorio as f_laboratorio\
+        i.f_laboratorio as f_laboratorio,\
+        i.f_unidad as f_unidad\
     from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
-    group by s.f_nombre,i.f_laboratorio')
+    group by s.f_nombre,i.f_laboratorio,i.f_unidad')
 
 db.define_table('v_laboratorio',
     Field('f_laboratorio',readable=False),
@@ -242,6 +248,7 @@ db.define_table('v_laboratorio',
     Field('f_cantidadonacion',label=T('Cantidad Donacion')),
     Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
     Field('f_total',label=T('Total')),
+    Field('f_unidad',label=T('Unidad')),
     migrate=False
     )
 db.v_laboratorio.id.readable=False
@@ -262,9 +269,10 @@ db.executesql(
       SUM(i.f_cantidadusointerno) as f_cantidadusointerno, \
       SUM(i.f_total) as f_total,\
       i.f_laboratorio as f_laboratorio,\
-      i.f_seccion as f_seccion\
+      i.f_seccion as f_seccion,\
+      i.f_unidad as f_unidad\
   from t_inventario i inner join t_sustancias s on (i.f_sustancia = s.id)\
-  group by s.f_nombre,i.f_seccion,i.f_laboratorio\
+  group by s.f_nombre,i.f_seccion,i.f_laboratorio,i.f_unidad\
   order by f_laboratorio,f_nombre,f_seccion;')
 
 db.define_table('v_seccion',
@@ -275,6 +283,7 @@ db.define_table('v_seccion',
     Field('f_cantidadonacion',label=T('Cantidad Donacion')),
     Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
     Field('f_total',label=T('Total')),
+    Field('f_unidad',label=T('Unidad')),
     migrate=False
     )
 db.v_seccion.id.readable=False
@@ -305,7 +314,7 @@ db.define_table('t_facturas',
     Field('f_numero','string',label=T('Numero de Factura'),requires=IS_NOT_EMPTY()),
     Field('f_fecha','date',label=T('Fecha de Compra'),notnull=True,requires=IS_DATE_IN_RANGE(maximum=request.now.date(),error_message='Debe introducir una fecha menor a la actual.')),
     Field('f_proveedor','string',label=T('Proveedor'),requires=IS_NOT_EMPTY()),
-    )
+    migrate=settings.migrate)
 db.t_facturas.id.readable=False
 db.t_facturas._singular='Facturas'
 db.t_facturas._plural='Facturas'

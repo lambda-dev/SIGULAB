@@ -3,6 +3,9 @@
 <h1>Bitacora</h1>
 <h2>Sustancia: {{=name}}</h2>
 <h2>Espacio Fisico: {{=espacio}}</h2>
+{{if not 'new' in request.args:}}
+<h3>Unidades: {{=unid}}</h3>
+{{pass}}
 <p>{{=table}}</p>
 <p>Cantidad Disponible: {{=total}}</p>
 <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">

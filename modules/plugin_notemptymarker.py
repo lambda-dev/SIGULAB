@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # This plugins is licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 # Authors: Kenji Hosoda <hosoda@s-cubism.jp>
+# https://github.com/scubism/sqlabs
 from gluon import *
 
 

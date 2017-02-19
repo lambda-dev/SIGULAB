@@ -2,12 +2,14 @@
 ### Branch de Arnaldo
 ******************
 ## TODOs:
-+ Agregar unidades de medidas las sustancias y vistas.
 + El cliente quiere ver la fecha de la transaccion en bitacora, especificar quien puede verlo, hablar con el cliente.
++ Permitir cambiar cantidades de donacion a uso interno a los jefes de seccion.
 
 ******************
 
 ## 19 Febrero:
+
++ Agregar unidades de medidas las sustancias y vistas.
 
 + Eliminadas tablas `t_consumos` y `t_ingresos`, no utilizadas.
 

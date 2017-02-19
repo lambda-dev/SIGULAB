@@ -5,14 +5,23 @@ from plugin_notemptymarker import mark_not_empty
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def validar_bitacora(form):
-    #estado = form.vars.extra
-
-    #if estado in ['L','Kg']:
-    #    form.vars.f_cantidad = form.vars.f_cantidad*1000
 
     espF = request.vars['esp']
     sust = request.vars['sust']
     total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[33:-2])
+
+    if form.vars.f_unidad == 'Kg':
+        form.vars.f_cantidad = form.vars.f_cantidad*1000
+        form.vars.f_unidad = 'g'
+    elif form.vars.f_unidad == 'L':
+        form.vars.f_cantidad = form.vars.f_cantidad*1000
+        if db( db.t_inventario.f_sustancia == sust ).select(db.t_inventario.ALL).first().f_unidad == 'mL':
+            form.vars.f_unidad = 'mL'
+        else:
+            form.vars.f_unidad = 'cm'+chr(0x00B3)
+
+    if form.vars.f_unidad == 'cm3':
+        form.vars.f_unidad = 'cm'+chr(0x00B3)
 
     if form.vars.f_cantidad == 0:
         form.errors.f_cantidad = T('Introduzca un ingreso o consumo')
@@ -203,8 +212,9 @@ def inventario_manage():
     query = db.t_inventario.f_espaciofisico == espF
     db.t_inventario.f_espaciofisico.default = espF
 
-    if 'edit' in request.vars or 'new' in request.args:
+    if 'new' in request.args:
         mark_not_empty(db.t_inventario)
+        db.t_inventario.f_cantidadusointerno.comment = "Unidades en: g - mL - cm3"
 
     if request.vars['esp']:
         seccion = str(db((db.t_espaciofisico.id == request.vars['esp'])&(db.t_seccion.id == db.t_espaciofisico.f_seccion)).select(db.t_seccion.f_seccion))[21:-2]
@@ -243,6 +253,7 @@ def view_bitacora():
     db.t_bitacora.f_espaciofisico.default = espF
     db.t_bitacora.f_espaciofisico.readable = False
     query = (db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)
+    unid = db(db.t_inventario.f_sustancia == sust).select(db.t_inventario.f_unidad).first().f_unidad
 
     if ('new' in request.args):
         db.t_bitacora.f_consumo.readable = False
@@ -250,6 +261,12 @@ def view_bitacora():
         db.t_bitacora.f_ingreso.readable = False
         db.t_bitacora.f_ingreso.writable = False
         db.t_bitacora.f_cantidad.writable = True
+        if unid == 'g':
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['g','Kg'])
+        elif unid == 'mL':
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['mL','L'])
+        else:
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['cm3','L'])
         mark_not_empty(db.t_bitacora)
 
     if ('view' in request.args):
@@ -263,6 +280,8 @@ def view_bitacora():
         db.t_bitacora.f_ingreso.writable = False
         db.t_bitacora.f_cantidad.writable = True
         db.t_bitacora.f_proceso.writable = False
+        db.t_bitacora.f_unidad.readable = True
+        db.t_bitacora.f_unidad.writable = False
         mark_not_empty(db.t_bitacora)
         row = db(db.t_bitacora.id == request.args[3]).select().first()
         if row.f_ingreso == 0:
@@ -273,14 +292,5 @@ def view_bitacora():
     table = SQLFORM.smartgrid(db.t_bitacora,constraints=dict(t_bitacora=query),oncreate=insert_bitacora,
     orderby=[~db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha],csv=False,links_in_grid=False,deletable=False,
     user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=insert_bitacora)
-
-    #if ('new' in request.args):
-    #    estado  = str(db((db.t_sustancias.id == sust)&(db.t_estado.id == db.t_sustancias.f_estado)).select(db.t_estado.f_estado))[19:-2]
-    #    if estado == 'Sólido':
-    #        extra = CENTER('Unidades:',SELECT('g','Kg'))
-    #else:
-    #        extra = CENTER('Unidades:',SELECT('mL','L'))
-    #    table[0].insert(1,extra)
-
 
     return locals()
