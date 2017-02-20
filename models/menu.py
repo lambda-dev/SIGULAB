@@ -17,7 +17,8 @@ if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
             (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
-            ]]
+            ]],
+    [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')]
     ]
 
 if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Técnico')) and auth.is_logged_in():
@@ -33,7 +34,7 @@ if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.
     [T('Gestión Usuarios'),False, None,[
       [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
       [T('Lista de Autorizados'), False, URL('gestion','autorizados')],
-      [T('Usuarios Registrados'), False, URL('gestion','usuarios')], 
+      [T('Usuarios Registrados'), False, URL('gestion','usuarios')],
       [T('Privilegios'), False, URL('gestion','privilegios')]
       ]],
     [T('Gestión Espacios'), False, None, [
@@ -45,6 +46,5 @@ if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.
 #superuser
 if auth.has_membership('WebMaster') and (not auth.has_membership('Usuario Normal')):
     response.menu += [
-    [T('Editar'), False, URL('admin', 'default', 'design/%s' % app)]
+    [T('Editar'), False, URL(c='appadmin')]
     ]
-

@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
+from plugin_notemptymarker import mark_not_empty
 
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def validar_bitacora(form):
-    #estado = form.vars.extra
-
-    #if estado in ['L','Kg']:
-    #    form.vars.f_cantidad = form.vars.f_cantidad*1000
 
     espF = request.vars['esp']
     sust = request.vars['sust']
     total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[33:-2])
+
+    if form.vars.f_unidad == 'Kg':
+        form.vars.f_cantidad = form.vars.f_cantidad*1000
+        form.vars.f_unidad = 'g'
+    elif form.vars.f_unidad == 'L':
+        form.vars.f_cantidad = form.vars.f_cantidad*1000
+        if db( db.t_inventario.f_sustancia == sust ).select(db.t_inventario.ALL).first().f_unidad == 'mL':
+            form.vars.f_unidad = 'mL'
+        else:
+            form.vars.f_unidad = 'cm'+chr(0x00B3)
+
+    if form.vars.f_unidad == 'cm3':
+        form.vars.f_unidad = 'cm'+chr(0x00B3)
 
     if form.vars.f_cantidad == 0:
         form.errors.f_cantidad = T('Introduzca un ingreso o consumo')
@@ -57,6 +67,15 @@ def validar_inventario(form):
 ###################################################
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
+def view_compras():
+    if 'edit' in request.args or 'new' in request.args:
+        mark_not_empty(db.t_facturas)
+    table = SQLFORM.smartgrid(db.t_facturas,csv=False,deletable=False)
+    return locals()
+
+###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
@@ -64,6 +83,9 @@ def insert_bitacora(form):
     row = db((db.t_inventario.f_espaciofisico == espF)&(db.t_inventario.f_sustancia == sust)).select().first()
     row.update_record(f_cantidadusointerno=new)
     row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
+    if form.vars.f_proceso == 'Compra':
+        redirect(URL('view_compras', args=['t_facturas', 'new', 't_facturas'],
+ user_signature=True))
 
 
 ###################################################
@@ -82,15 +104,33 @@ def insert_inventario(form):
 
 
 ###################################################
+def peligr(v):
+    y = re.search('(\|([^\|]*))|(\w*)',v).group(0)
+    x = re.findall('(\|([^\|]*))|(\w*)',v)
+    if y[0] != '|':
+        return y
+    else:
+        x = x[:-2]
+        return ', '.join(str(w[1]) for w in x)
+
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def sustanciapeligrosa_manage():
+
+    if not 'view' in request.args:
+        db.t_sustancias.f_peligrosidad.represent = lambda v,r: v[0]
+
+    if 'edit' in request.args or 'new' in request.args:
+        mark_not_empty(db.t_sustancias)
+
     if(auth.has_membership('Gestor de Sustancias') or \
     auth.has_membership('Director') or\
     auth.has_membership('WebMaster')):
-        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,details=False,links_in_grid=False,csv=False,user_signature=True)
+
+
+        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True)
     else:
-        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
+        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False,onvalidation=sustancias_validate)
     return locals()
 
 
@@ -172,6 +212,10 @@ def inventario_manage():
     query = db.t_inventario.f_espaciofisico == espF
     db.t_inventario.f_espaciofisico.default = espF
 
+    if 'new' in request.args:
+        mark_not_empty(db.t_inventario)
+        db.t_inventario.f_cantidadusointerno.comment = "Unidades en: g - mL - cm3"
+
     if request.vars['esp']:
         seccion = str(db((db.t_espaciofisico.id == request.vars['esp'])&(db.t_seccion.id == db.t_espaciofisico.f_seccion)).select(db.t_seccion.f_seccion))[21:-2]
         labs = str( db((db.t_seccion.f_seccion == seccion)&(db.t_laboratorio.id == db.t_seccion.f_laboratorio) ).select(db.t_laboratorio.f_nombre) )[24:-2]
@@ -184,6 +228,8 @@ def inventario_manage():
         if (request.vars['sust']):
             sustancia = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:]
             query = (db.t_inventario.f_seccion == request.vars['secc'])&(db.t_inventario.f_sustancia == request.vars['sust'])
+            db.t_inventario.f_espaciofisico.represent = lambda value, row: A(str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))
+            db.t_inventario.f_sustancia.readable = False
         else:
             query = (db.t_inventario.f_seccion == request.vars['secc'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=False,
@@ -207,6 +253,7 @@ def view_bitacora():
     db.t_bitacora.f_espaciofisico.default = espF
     db.t_bitacora.f_espaciofisico.readable = False
     query = (db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)
+    unid = db(db.t_inventario.f_sustancia == sust).select(db.t_inventario.f_unidad).first().f_unidad
 
     if ('new' in request.args):
         db.t_bitacora.f_consumo.readable = False
@@ -214,6 +261,13 @@ def view_bitacora():
         db.t_bitacora.f_ingreso.readable = False
         db.t_bitacora.f_ingreso.writable = False
         db.t_bitacora.f_cantidad.writable = True
+        if unid == 'g':
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['g','Kg'])
+        elif unid == 'mL':
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['mL','L'])
+        else:
+            db.t_bitacora.f_unidad.requires=IS_IN_SET(['cm3','L'])
+        mark_not_empty(db.t_bitacora)
 
     if ('view' in request.args):
         db.t_bitacora.f_descripcion.readable = True
@@ -226,6 +280,9 @@ def view_bitacora():
         db.t_bitacora.f_ingreso.writable = False
         db.t_bitacora.f_cantidad.writable = True
         db.t_bitacora.f_proceso.writable = False
+        db.t_bitacora.f_unidad.readable = True
+        db.t_bitacora.f_unidad.writable = False
+        mark_not_empty(db.t_bitacora)
         row = db(db.t_bitacora.id == request.args[3]).select().first()
         if row.f_ingreso == 0:
             row.update_record(f_cantidad = row.f_consumo)
@@ -235,14 +292,5 @@ def view_bitacora():
     table = SQLFORM.smartgrid(db.t_bitacora,constraints=dict(t_bitacora=query),oncreate=insert_bitacora,
     orderby=[~db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha],csv=False,links_in_grid=False,deletable=False,
     user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=insert_bitacora)
-
-    #if ('new' in request.args):
-    #    estado  = str(db((db.t_sustancias.id == sust)&(db.t_estado.id == db.t_sustancias.f_estado)).select(db.t_estado.f_estado))[19:-2]
-    #    if estado == 'Sólido':
-    #        extra = CENTER('Unidades:',SELECT('g','Kg'))
-    #else:
-    #        extra = CENTER('Unidades:',SELECT('mL','L'))
-    #    table[0].insert(1,extra)
-
 
     return locals()
