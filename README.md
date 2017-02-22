@@ -2,10 +2,19 @@
 ### Branch de Arnaldo
 ******************
 ## TODOs:
-+ El cliente quiere ver la fecha de la transaccion en bitacora, especificar quien puede verlo, hablar con el cliente.
+
++ Quitar boton de back en `view_compras`
 + Permitir cambiar cantidades de donacion a uso interno a los jefes de seccion.
++ Jquery, bloquear descripcion al hacer una compra
 
 ******************
+## 22 Febrero:
+
++ Agregadas sustancias pertenecientes a cada factura.
+
++ Creada vista para seleccionar si es una factura existente, o si se desea crear una nueva.
+
++ Al gestor, al ver la bitacora, se ve la fecha y hora en la cual fue hecha la transaccion.
 
 ## 19 Febrero:
 

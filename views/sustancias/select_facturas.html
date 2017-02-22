@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+<br><br>
+{{=table}}
+<a  href="{{=URL('view_compras', args=['t_facturas', 'new', 't_facturas'],user_signature=True)}}">
+<button class='btn btn-default center-block'>Agregar Una Nueva Factura</button>
+</a>

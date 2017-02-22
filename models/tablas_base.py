@@ -1,5 +1,4 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
-
 #editado por adolfo
 if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
@@ -81,7 +80,6 @@ def actualizar_privilegio(f, uid):
 db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
 db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
 
-#####################################################################
 
 ########################################
 db.define_table('t_regimenes',
@@ -107,7 +105,6 @@ if db(db.t_estado).isempty():
 
 
 ########################################
-#required = SPAN('*', _class='required'), comment=required
 db.define_table('t_sustancias',
     Field('f_nombre', 'string', label=T('Nombre'),requires=IS_NOT_EMPTY()),
     Field('f_cas', 'string', label=T('Cas'),requires=IS_NOT_EMPTY()),
@@ -121,12 +118,14 @@ db.define_table('t_sustancias',
     Field('f_reporte','upload',label=T('Reporte'),requires=IS_NULL_OR(IS_UPLOAD_FILENAME(extension='pdf'))),
     format='%(f_nombre)s',
     migrate=settings.migrate)
+
 db.t_sustancias.id.readable=False
 db.t_sustancias.id.writable=False
 db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','reference t_sustancias',readable=False,writable=False))
 db.t_sustancias.f_reporte.readable=(auth.has_membership('Gestor de Sustancias')or auth.has_membership('WebMaster'))
 db.t_sustancias._singular='Listado de Sustancias'
 db.t_sustancias._plural='Listado de Sustancias'
+
 
 ##########################################
 db.define_table('t_laboratorio',
@@ -139,16 +138,19 @@ db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
 db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
 
+
 ########################################
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
     Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'), label=T('Laboratorio')),
     Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Sección')),
     migrate=settings.migrate)
+
 db.t_seccion._plural = 'Secciones'
 db.t_seccion._singular = 'Sección'
 db.t_seccion.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre']
 db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
+
 
 ########################################
 db.define_table('t_espaciofisico',
@@ -157,19 +159,22 @@ db.define_table('t_espaciofisico',
     Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'), label=T('Sección')),
     format='%(f_espacio)s',
     migrate=settings.migrate)
+
 db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion']
 db.t_espaciofisico._plural = 'Espacios Físicos'
 db.t_espaciofisico._singular = 'Espacio Físico'
 
+
+########################################
 db.define_table('t_tecs_esp',
     Field('f_espaciofisico', 'reference t_espaciofisico', label=T('Espacio')),
     Field('f_tecnico', 'integer', requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s - %(email)s'), label=T('Técnico')),
     migrate=settings.migrate)
+
 db.t_tecs_esp.f_espaciofisico.represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']
 db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
-
 
 
 ########################################
@@ -213,13 +218,14 @@ db.define_table('t_bitacora',
     Field('f_consumo', 'float', default=0,label=T('Consumo'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_unidad','string',readable=False),
     Field('f_cantidad', 'float', label=T('Cantidad'),requires=IS_FLOAT_IN_RANGE(0,1e1000),writable=False,default=0),
-    Field('f_fecha', 'datetime', label=T('FechaIngreso'),writable=False,readable=False, default=request.now),
+    Field('f_fecha', 'datetime', label=T('Fecha de Transacción'),writable=False,readable=False, default=request.now),
     Field('f_espaciofisico', 'integer',readable=False, requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     writable=False, represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[26:],
      label=T('Espacio Fisico'),notnull=True),
     Field('f_descripcion','text',label=T('Descripción'),readable=False),
     format='%(f_sustancia)s',
     migrate=settings.migrate)
+
 db.t_bitacora.id.readable = False
 db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
@@ -249,8 +255,8 @@ db.define_table('v_laboratorio',
     Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
     Field('f_total',label=T('Total')),
     Field('f_unidad',label=T('Unidad')),
-    migrate=False
-    )
+    migrate=False)
+
 db.v_laboratorio.id.readable=False
 db.v_laboratorio.f_sustancia.represent= lambda name,row: A(name,_href=URL('sustancias','inventario_seccion',vars=dict(secc='t',
 lab= row.f_laboratorio,
@@ -284,8 +290,8 @@ db.define_table('v_seccion',
     Field('f_cantidadusointerno',label=T('Cantidad Uso Interno')),
     Field('f_total',label=T('Total')),
     Field('f_unidad',label=T('Unidad')),
-    migrate=False
-    )
+    migrate=False)
+
 db.v_seccion.id.readable=False
 db.v_seccion.f_sustancia.represent = lambda name,row: A(name,_href=URL('sustancias','inventario_manage',vars=dict(secc=row.f_seccion,sust= str(db(db.t_sustancias.f_nombre == row.f_sustancia).select(db.t_sustancias.id))[17:-2]   )))
 db.v_seccion.f_seccion.represent= lambda name,row: A( str(db(db.t_seccion.id == name).select(db.t_seccion.f_seccion))[21:-2],
@@ -314,9 +320,11 @@ db.define_table('t_facturas',
     Field('f_numero','string',label=T('Numero de Factura'),requires=IS_NOT_EMPTY()),
     Field('f_fecha','date',label=T('Fecha de Compra'),notnull=True,requires=IS_DATE_IN_RANGE(maximum=request.now.date(),error_message='Debe introducir una fecha menor a la actual.')),
     Field('f_proveedor','string',label=T('Proveedor'),requires=IS_NOT_EMPTY()),
+        Field('f_sustancia','list:string',label=T('Sustancias'),readable=False,writable=False,default=""),
     migrate=settings.migrate)
 db.t_facturas.id.readable=False
 db.t_facturas._singular='Facturas'
 db.t_facturas._plural='Facturas'
+
 #Por arreglar
 populate_db()

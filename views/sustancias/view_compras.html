@@ -1,7 +1,4 @@
 {{extend 'layout.html'}}
 
 <h1>Facturas:</h1>
-<p>{{=table}}</p>
-<a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
-<button class="btn btn-default">Atras</button>
-</a>
+{{=table}}
