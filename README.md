@@ -1,6 +1,11 @@
 # SIGULAB
 Branch de Adolfo
 ******************
+21 Febrero
++ Servicio de email activo con la cuenta ulab-smdp@usb.ve
+  + Email para verificar registro
+  + Email se envia cuando se añade user en lista de pendientes a los AdminUser
+
 20 Febrero:
 
 + Añadidos (*) a todos los formularios de gestion de usuarios/espacios
