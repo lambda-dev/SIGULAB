@@ -113,7 +113,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False #True cuando tengamos email activo
+auth.settings.registration_requires_verification = False #True cuando hagamos deploy o al final de todo
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 
@@ -154,11 +154,6 @@ crud = Crud(db)
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
 # auth.enable_record_versioning(db)
-
-mail.settings.server = settings.email_server
-mail.settings.sender = settings.email_sender
-mail.settings.login = settings.email_login
-
 
 # Se define aqui para poder usarla en 
 db.define_table('t_users_pendientes',

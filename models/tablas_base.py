@@ -69,6 +69,18 @@ def check_autorizado(f, uid):
         auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
         usuario.update_record(autorizado = False)
 
+        to = []
+        id_admin_u = auth.id_group(role='Administrador Personal')
+        admins = db(db.auth_membership.group_id == id_admin_u).select(db.auth_user.email, \
+        join=db.auth_user.on(db.auth_membership.user_id == db.auth_user.id))
+
+        for admin in admins:
+            to.append(admin['email'])
+
+        s = 'Nuevo usuario pendiente por confirmar'
+        m = 'Se ha registrado un nuevo usuario en SIGULAB, pero está pendiente de confirmación por un Administrador de Usuarios'
+        mail.send(to=to, subject=s, message=m)
+
     usuario.update_record(autorizado = False)
 
 def actualizar_privilegio(f, uid):
