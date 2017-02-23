@@ -23,7 +23,22 @@
 <h2>Espacio Fisico: {{=espFisico}}</h2>
 {{pass}}
 
+{{if 'edit' in request.args:}}
+<p>{{=table[1]}}</p>
+<h2 class='text-center'>Sustancia: {{=str(sust)}}</h2>
+<h2 class='text-center'>Cantidad De Donación Disponible: {{=donac}} {{=unid}}</h2>
+<h2 class='text-center'>Cantidad De Uso Interno Disponible: {{=usoint}} {{=unid}}</h2>
+<p>{{=form}}</p>
+
+{{else:}}
+
 <p>{{=table}}</p>
+
+{{pass}}
+
+
+
+
 <a  href="{{=URL('sustancias','select_inventario')}}">
 <button class="btn btn-default">Atras</button>
 </a>

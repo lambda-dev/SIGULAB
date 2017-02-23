@@ -100,7 +100,7 @@ def insert_inventario(form):
     espFS = str(db(db.t_espaciofisico.id == espF).select(db.t_espaciofisico.f_espacio))[27:-2]
     db.t_bitacora.insert(f_fechaingreso=request.now,
                                     f_sustancia=form.vars.f_sustancia,
-                                    f_proceso="Suministro de Almacen",
+                                    f_proceso="Ingreso Inicial",
                                     f_ingreso=form.vars.f_cantidadusointerno,
                                     f_consumo=0,
                                     f_cantidad=form.vars.f_cantidadusointerno,
@@ -254,8 +254,38 @@ def inventario_manage():
         db.t_inventario.f_cantidadusointerno.comment = "Unidades en: g - mL - cm3"
 
     if 'edit' in request.args:
+
         db.t_inventario.f_sustancia.writable = False
+        db.t_inventario.f_sustancia.readable = False
         db.t_inventario.f_cantidadusointerno.writable = False
+        db.t_inventario.f_cantidadusointerno.readable = False
+
+        row = db((db.t_inventario.id == request.args[3])&(db.t_sustancias.id == db.t_inventario.f_sustancia))
+        inv = row.select(db.t_inventario.ALL).first()
+        sust = row.select(db.t_sustancias.ALL).first().f_nombre
+        usoint = inv.f_cantidadusointerno
+        unid = inv.f_unidad
+        donac = inv.f_cantidadonacion
+
+        form = SQLFORM.factory(Field('cantidad','float',requires=IS_NULL_OR(IS_FLOAT_IN_RANGE(0,donac,
+        error_message='Por favor introduzca una cantidad menor o igual a su cantidad de donacion disponible (%s %s)' % (donac, unid) )),
+        default=0, label=T('Cantidad A Trasladar'),comment='Ingrese la cantidad de donación que desea trasladar a uso interno.'))
+
+        if form.process().accepted:
+            upd = db(db.t_inventario.id == request.args[3]).select().first()
+            upd.update_record(f_cantidadonacion = upd.f_cantidadonacion - form.vars.cantidad)
+            upd.update_record(f_cantidadusointerno = upd.f_cantidadusointerno + form.vars.cantidad)
+
+            db.t_bitacora.insert(f_fechaingreso = request.now,
+                                f_sustancia = row.select(db.t_inventario.ALL).first().f_sustancia,
+                                f_proceso = "Traslado Donación - Uso Interno",
+                                f_ingreso = form.vars.cantidad,
+                                f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
+                                f_cantidad = upd.f_cantidadusointerno,
+                                f_espaciofisico = request.vars['esp'],
+                                )
+
+            redirect(URL('inventario_manage',vars=dict(esp=request.vars['esp'])))
 
     if request.vars['esp']:
         seccion = str(db((db.t_espaciofisico.id == request.vars['esp'])&(db.t_seccion.id == db.t_espaciofisico.f_seccion)).select(db.t_seccion.f_seccion))[21:-2]

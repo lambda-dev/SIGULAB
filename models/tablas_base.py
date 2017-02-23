@@ -183,8 +183,7 @@ db.define_table('t_inventario',
     ,represent= lambda name,row: \
                 A(str(db(db.t_sustancias.id==row.f_sustancia).select(db.t_sustancias.f_nombre))[22:],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))),
     Field('f_espaciofisico', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
-    represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
-    str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
+    represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
     label=T('Espaciofisico')),
     Field('f_cantidadonacion', 'float',default=0,label=T('Cantidad Donacion'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),

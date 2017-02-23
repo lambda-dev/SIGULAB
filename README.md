@@ -3,10 +3,13 @@
 ******************
 ## TODOs:
 
-+ Permitir cambiar cantidades de donacion a uso interno a los jefes de seccion.
 + Jquery, bloquear descripcion al hacer una compra
 
 ******************
+## 23 Febrero:
+
++ Se permite realizar cambios de cantidad de donación a cantidad de uso interno, desde la vista de el inventario, mediante el botón `edit`.
+
 ## 22 Febrero:
 
 + Agregadas sustancias pertenecientes a cada factura.
