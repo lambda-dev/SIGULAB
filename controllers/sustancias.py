@@ -90,9 +90,6 @@ def insert_bitacora(form):
     row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
     if form.vars.f_proceso == 'Compra':
         redirect(URL('sustancias','select_facturas',vars=dict(sust=sust,esp=espF)))
-    #if form.vars.f_proceso == 'Compra':
-    #    redirect(URL('view_compras', args=['t_facturas', 'new', 't_facturas'],
- #user_signature=True))
 
 
 ###################################################
@@ -220,6 +217,27 @@ def select_facturas():
 ###################################################
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
+def new_facturas():
+    table = SQLFORM.factory(Field('f_numero',label=T('Numero de Factura *'),requires=IS_NOT_EMPTY()),
+                            Field('f_fecha','date',requires=IS_DATE_IN_RANGE(maximum=request.now.date(),error_message='Debe introducir una fecha menor a la actual.'),label=T('Fecha de Compra *')),
+                            Field('f_proveedor','string',label=T('Proveedor *'),requires=IS_NOT_EMPTY())
+                                )
+    if table.process().accepted:
+        fact = table.vars.f_numero
+        fecha = table.vars.f_fecha
+        proov = table.vars.f_proveedor
+
+        sust = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:-2]
+        db.t_facturas.insert(f_numero=fact,f_fecha=fecha,f_proveedor=proov,f_sustancia=[sust])
+        redirect(URL('sustancias','view_bitacora',vars=dict(esp=request.vars['esp'],sust=request.vars['sust'] )))
+    return locals()
+
+
+
+
+###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
 def inventario_manage():
 
     sustancia = False
@@ -236,8 +254,8 @@ def inventario_manage():
         db.t_inventario.f_cantidadusointerno.comment = "Unidades en: g - mL - cm3"
 
     if 'edit' in request.args:
-        #buscar widget para que la cantidad sea movible
-        pass
+        db.t_inventario.f_sustancia.writable = False
+        db.t_inventario.f_cantidadusointerno.writable = False
 
     if request.vars['esp']:
         seccion = str(db((db.t_espaciofisico.id == request.vars['esp'])&(db.t_seccion.id == db.t_espaciofisico.f_seccion)).select(db.t_seccion.f_seccion))[21:-2]
@@ -255,12 +273,12 @@ def inventario_manage():
             db.t_inventario.f_sustancia.readable = False
         else:
             query = (db.t_inventario.f_seccion == request.vars['secc'])
-        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=False,
+        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),
         orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
         return locals()
 
-    table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),deletable=False,oncreate=insert_inventario,
-    onvalidation=validar_inventario)
+    table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,deletable=False,oncreate=insert_inventario,
+    onvalidation=validar_inventario,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')))
     return locals()
 
 

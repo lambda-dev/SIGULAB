@@ -3,7 +3,6 @@
 ******************
 ## TODOs:
 
-+ Quitar boton de back en `view_compras`
 + Permitir cambiar cantidades de donacion a uso interno a los jefes de seccion.
 + Jquery, bloquear descripcion al hacer una compra
 

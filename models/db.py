@@ -160,8 +160,14 @@ mail.settings.sender = settings.email_sender
 mail.settings.login = settings.email_login
 
 
-# Se define aqui para poder usarla en 
+# Se define aqui para poder usarla en
 db.define_table('t_users_pendientes',
     Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
     Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
     migrate=settings.migrate)
+
+##UNCOMMENT ON PRODUCTION####
+####FORCE CONNECTION OVER SSL####
+#session.secure()
+#if not request.is_https:
+#    redirect('https://%s/%s' % (request.env.http_host,request.application))

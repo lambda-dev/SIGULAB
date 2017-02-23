@@ -320,7 +320,7 @@ db.define_table('t_facturas',
     Field('f_numero','string',label=T('Numero de Factura'),requires=IS_NOT_EMPTY()),
     Field('f_fecha','date',label=T('Fecha de Compra'),notnull=True,requires=IS_DATE_IN_RANGE(maximum=request.now.date(),error_message='Debe introducir una fecha menor a la actual.')),
     Field('f_proveedor','string',label=T('Proveedor'),requires=IS_NOT_EMPTY()),
-        Field('f_sustancia','list:string',label=T('Sustancias'),readable=False,writable=False,default=""),
+    Field('f_sustancia','list:string',label=T('Sustancias'),readable=False,writable=False,default=""),
     migrate=settings.migrate)
 db.t_facturas.id.readable=False
 db.t_facturas._singular='Facturas'

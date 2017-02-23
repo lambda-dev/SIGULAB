@@ -46,5 +46,5 @@ if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.
 #superuser
 if auth.has_membership('WebMaster') and (not auth.has_membership('Usuario Normal')):
     response.menu += [
-    [T('Editar'), False, URL(c='appadmin')]
+    [T('Editar'), False, URL(c='appadmin',f='index')]
     ]
