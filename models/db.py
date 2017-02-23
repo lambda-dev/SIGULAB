@@ -113,7 +113,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False
+auth.settings.registration_requires_verification = False #True cuando hagamos deploy o al final de todo
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 
@@ -155,12 +155,7 @@ crud = Crud(db)
 # -------------------------------------------------------------------------
 # auth.enable_record_versioning(db)
 
-mail.settings.server = settings.email_server
-mail.settings.sender = settings.email_sender
-mail.settings.login = settings.email_login
-
-
-# Se define aqui para poder usarla en
+# Se define aqui para poder usarla en 
 db.define_table('t_users_pendientes',
     Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
     Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
