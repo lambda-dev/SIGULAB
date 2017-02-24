@@ -104,7 +104,7 @@ db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s')
 # configure email
 # -------------------------------------------------------------------------
 mail = auth.settings.mailer
-mail.settings.server = 'logging' if request.is_local else myconf.get('smtp.server')
+mail.settings.server = myconf.get('smtp.server')
 mail.settings.sender = myconf.get('smtp.sender')
 mail.settings.login = myconf.get('smtp.login')
 mail.settings.tls = myconf.get('smtp.tls') or False
@@ -155,7 +155,7 @@ crud = Crud(db)
 # -------------------------------------------------------------------------
 # auth.enable_record_versioning(db)
 
-# Se define aqui para poder usarla en 
+# Se define aqui para poder usarla en
 db.define_table('t_users_pendientes',
     Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
     Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
