@@ -21,11 +21,14 @@ if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
     [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')]
     ]
 
-if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Técnico')) and auth.is_logged_in():
+if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Ténico')) and auth.is_logged_in():
     response.menu += [
-      [T('Solicitudes'),False, None,[
-      (T('Entrada'), URL('s_entrada','entrada'), URL('s_entrada','entrada')),(T('Salida'), URL('s_entrada','salida'), URL('s_entrada','salida'))
-        ]]
+    [T('Solicitudes'),False, None,[
+      [T('Hacer Solicitud'), False, URL('solicitud','select_solicitud')],
+      [T('Solicitudes Recibidas'), False, URL('solicitud','view_h')],
+      [T('Prestamos'), False, URL('solicitud','view_k')],
+      [T('Deudas'), False, URL('solicitud','view_o')]
+      ]]
       ]
 
 #dir o admin user
