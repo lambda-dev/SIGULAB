@@ -1,0 +1,17 @@
+a.btn:link{
+    color:gray;
+    text-decoration:none;
+    background-color:#E0F2F1;
+    white-space: normal; 
+}
+a.btn:hover{
+    color: white;
+    background-color:gray;
+    box-shadow: none;
+}
+a.btn:focus{
+    color: white;
+    background-color:gray;
+    box-shadow: none;
+}
+

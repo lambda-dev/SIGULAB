@@ -1,0 +1,266 @@
+timestamp: 2017-02-27T13:58:47.042738
+CREATE TABLE auth_user(
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(128),
+    last_name VARCHAR(128),
+    email VARCHAR(512),
+    password VARCHAR(512),
+    registration_key VARCHAR(512),
+    reset_password_key VARCHAR(512),
+    registration_id VARCHAR(512),
+    autorizado CHAR(1),
+    cargo INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:47.152163
+CREATE TABLE auth_group(
+    id SERIAL PRIMARY KEY,
+    role VARCHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2017-02-27T13:58:47.241826
+CREATE TABLE auth_membership(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:47.308436
+CREATE TABLE auth_permission(
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  ,
+    name VARCHAR(512),
+    table_name VARCHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:47.496795
+CREATE TABLE auth_event(
+    id SERIAL PRIMARY KEY,
+    time_stamp TIMESTAMP,
+    client_ip VARCHAR(512),
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    origin VARCHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2017-02-27T13:58:47.596920
+CREATE TABLE auth_cas(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    created_on TIMESTAMP,
+    service VARCHAR(512),
+    ticket VARCHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2017-02-27T13:58:47.699959
+CREATE TABLE t_users_pendientes(
+    id SERIAL PRIMARY KEY,
+    f_email VARCHAR(512),
+    f_group INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:47.826983
+CREATE TABLE table_solicitud(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    f_solicitud VARCHAR(512),
+    f_respuesta VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:47.908823
+CREATE TABLE table_solicitud_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    f_solicitud VARCHAR(512),
+    f_respuesta VARCHAR(512),
+    current_record INTEGER REFERENCES table_solicitud (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:48.022131
+CREATE TABLE t_users_autorizados(
+    id SERIAL PRIMARY KEY,
+    f_email VARCHAR(512),
+    f_group INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:48.107614
+CREATE TABLE t_regimenes(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:48.221623
+CREATE TABLE t_ingresos(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:48.321332
+CREATE TABLE t_consumos(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:48.432850
+CREATE TABLE t_estado(
+    id SERIAL PRIMARY KEY,
+    f_estado VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:48.532580
+CREATE TABLE t_sustancias(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado INTEGER,
+    f_control INTEGER,
+    f_peligrosidad VARCHAR(512),
+    f_reporte VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:48.608037
+CREATE TABLE t_sustancias_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512),
+    f_cas VARCHAR(512),
+    f_pureza INTEGER,
+    f_estado INTEGER,
+    f_control INTEGER,
+    f_peligrosidad VARCHAR(512),
+    f_reporte VARCHAR(512),
+    current_record INTEGER REFERENCES t_sustancias (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:48.720277
+CREATE TABLE t_laboratorio(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:48.874297
+CREATE TABLE t_laboratorio_archive(
+    id SERIAL PRIMARY KEY,
+    f_nombre VARCHAR(512) NOT NULL,
+    f_jefe INTEGER,
+    current_record INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:49.010298
+CREATE TABLE t_seccion(
+    id SERIAL PRIMARY KEY,
+    f_seccion VARCHAR(512),
+    f_laboratorio INTEGER REFERENCES t_laboratorio (id) ON DELETE CASCADE  ,
+    f_jefe INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:49.110068
+CREATE TABLE t_espaciofisico(
+    id SERIAL PRIMARY KEY,
+    f_espacio VARCHAR(512),
+    f_direccion VARCHAR(512),
+    f_seccion INTEGER REFERENCES t_seccion (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:49.209916
+CREATE TABLE t_tecs_esp(
+    id SERIAL PRIMARY KEY,
+    f_espaciofisico INTEGER REFERENCES t_espaciofisico (id) ON DELETE CASCADE  ,
+    f_tecnico INTEGER
+);
+success!
+timestamp: 2017-02-27T13:58:49.277017
+CREATE TABLE t_inventario(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER,
+    f_espaciofisico INTEGER,
+    f_cantidadonacion FLOAT,
+    f_cantidadusointerno FLOAT,
+    f_total FLOAT,
+    f_seccion INTEGER,
+    f_laboratorio VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:49.377674
+CREATE TABLE t_inventario_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia INTEGER,
+    f_espaciofisico INTEGER,
+    f_cantidadonacion FLOAT,
+    f_cantidadusointerno FLOAT,
+    f_total FLOAT,
+    f_seccion INTEGER,
+    f_laboratorio VARCHAR(512),
+    current_record INTEGER REFERENCES t_inventario (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:49.488802
+CREATE TABLE t_bitacora(
+    id SERIAL PRIMARY KEY,
+    f_fechaingreso DATE NOT NULL,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso FLOAT,
+    f_consumo FLOAT,
+    f_cantidad FLOAT,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER NOT NULL,
+    f_descripcion TEXT
+);
+success!
+timestamp: 2017-02-27T13:58:49.588177
+CREATE TABLE t_bitacora_archive(
+    id SERIAL PRIMARY KEY,
+    f_fechaingreso DATE NOT NULL,
+    f_sustancia INTEGER NOT NULL,
+    f_proceso VARCHAR(512) NOT NULL,
+    f_ingreso FLOAT,
+    f_consumo FLOAT,
+    f_cantidad FLOAT,
+    f_fecha TIMESTAMP,
+    f_espaciofisico INTEGER NOT NULL,
+    f_descripcion TEXT,
+    current_record INTEGER REFERENCES t_bitacora (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2017-02-27T13:58:49.718245
+CREATE TABLE t_solicitud(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512)
+);
+success!
+timestamp: 2017-02-27T13:58:49.810978
+CREATE TABLE t_solicitud_archive(
+    id SERIAL PRIMARY KEY,
+    f_sustancia VARCHAR(512),
+    f_espaciofisico VARCHAR(512),
+    f_seccion VARCHAR(512),
+    f_responsable VARCHAR(512),
+    f_solicitador VARCHAR(512),
+    f_cantidadsolicitada VARCHAR(512),
+    f_estado VARCHAR(512),
+    current_record INTEGER REFERENCES t_solicitud (id) ON DELETE CASCADE  
+);
+success!
