@@ -2,6 +2,7 @@
 <style>
 .button {
     white-space: normal;
+    font-size: 30px;
 }
 </style>
 <h2>
@@ -36,7 +37,7 @@ else T('Log In')
 
 {{block page_js}}
 <script>
-    jQuery('input[type=submit]').addClass('btn-lg btn-block');
+    jQuery('input[type=submit]').addClass('button btn-lg btn-block');
     jQuery('.checkbox').css("text-align","center");
     jQuery("#web2py_user_form input:visible:enabled:first").focus();
 {{if request.args(0)=='register':}}
