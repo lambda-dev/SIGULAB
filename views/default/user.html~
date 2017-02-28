@@ -1,8 +1,9 @@
 {{extend 'layout.html'}}
+
 <style>
 .button {
     white-space: normal;
-    font-size: 30px;
+    font-size: 20px;
 }
 </style>
 <h2>
@@ -28,7 +29,6 @@ else T('Log In')
             pass
         pass
         =form
-        form.elements('#auth_user_email__row')[0] ['_placeholder'] = "Email"
         }}
         </div>
     </div>
@@ -37,6 +37,7 @@ else T('Log In')
 
 {{block page_js}}
 <script>
+
     jQuery('input[type=submit]').addClass('button btn-lg btn-block');
     jQuery('.checkbox').css("text-align","center");
     jQuery("#web2py_user_form input:visible:enabled:first").focus();

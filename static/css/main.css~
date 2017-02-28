@@ -1,6 +1,4 @@
-.sigulab-img{
-	background-color:transparent;
-}
+<<<<<<< HEAD
 a.btn:link{
     color:gray;
     text-decoration:none;
@@ -18,3 +16,8 @@ a.btn:focus{
     box-shadow: none;
 }
 
+=======
+.sigulab-img{
+	background-color:transparent;
+}
+>>>>>>> fc71f2848b97a900ce5a7bac333c4783455684d6

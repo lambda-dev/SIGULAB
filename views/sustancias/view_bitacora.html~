@@ -7,9 +7,10 @@
 <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
 <button class="btn btn-default">Atras</button>
 </a>
+<<<<<<< HEAD
 <script>
 jQuery('#t_bitacora_f_proceso').change(function(){
     if (jQuery('#t_bitacora_f_proceso :selected').text() == "Compra") jQuery('#t_bitacora_f_descripcion__row').slideUp();
-    else jQuery('t_bitacora_f_descripcion__row').slideDown();
+    else jQuery('#t_bitacora_f_descripcion__row').slideDown();
 });
 </script>
