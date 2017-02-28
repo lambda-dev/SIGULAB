@@ -45,14 +45,11 @@
     middle_column = {0: mc0, 1: mc1, 2: mc2}[
     (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
     }}
-<<<<<<< HEAD
     <style type="text/css">
     body{
     background-image:url("{{=URL('static','images/logo-usb.png')}}"));
     }
   </style>
-=======
->>>>>>> origin/Nacho
   </head>
   <body>
     <!--[if lt IE 8]><p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
@@ -80,7 +77,7 @@
         </div>
       </div>
     </nav>
-    <!-- Masthead ===================================== -->    
+    <!-- Masthead ===================================== -->
     {{block header}}
     {{end}}
     <!-- Main ========================================= -->
@@ -111,7 +108,7 @@
       {{pass}}
 
     </div>
-    {{block footer}} <!-- this is default footer -->      
+    {{block footer}} <!-- this is default footer -->
     <footer class="footer" style="background-color:white;color:black">
       <div class="container-fluid">
         <div class="copyright pull-left">{{=T('SIGULAB')}} &#169; {{=request.now.year}}</div>
