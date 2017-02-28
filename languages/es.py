@@ -439,6 +439,7 @@
 'session expired': 'sesión expirada',
 'shell': 'terminal',
 'Sign Up': 'Registrarse',
+'SIGULAB': 'SIGULAB',
 'site': 'sitio',
 'Size of cache:': 'Tamaño de la Caché:',
 'SMyDP': 'SMyDP',

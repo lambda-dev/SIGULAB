@@ -127,7 +127,7 @@ db.define_table('t_sustancias',
     represent = lambda value,row: str(db(db.t_regimenes.id == value).select(db.t_regimenes.f_nombre))[21:] ),
     Field('f_peligrosidad', 'list:string', label=T('Peligrosidad'),requires=IS_IN_SET(['Inflamable','Tóxico','Tóxico para el ambiente','Corrosivo','Comburente','Nocivo','Explosivo','Irritante'],multiple = True),
     widget=SQLFORM.widgets.checkboxes.widget),
-    Field('f_reporte','upload',label=T('Reporte'),requires=IS_NULL_OR(IS_UPLOAD_FILENAME(extension='pdf'))),
+    Field('f_reporte','upload',label=T('MSDS'),requires=IS_NULL_OR(IS_UPLOAD_FILENAME(extension='pdf'))),
     format='%(f_nombre)s',
     migrate=settings.migrate)
 

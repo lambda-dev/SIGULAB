@@ -3,9 +3,17 @@
 ******************
 ## TODOs:
 
-+ Jquery, bloquear descripcion al hacer una compra
++ Eliminar boton de `view` en la tabla de sustancias y vincularlo al nombre de la sustancia.
+
++ Eliminar botones `view` y `delete` de la tabla de sustancias. Agregarlos a la vista de `view`.
 
 ******************
+## 28 Febrero:
+
++ Se bloquea el campo `Descripción` al selecionar una compra en la bitacora.
+
++ Se cambio el campo `reporte` por `MSDS` en la tabla de sustancias.
+
 ## 23 Febrero:
 
 + Se permite realizar cambios de cantidad de donación a cantidad de uso interno, desde la vista de el inventario, mediante el botón `edit`.
