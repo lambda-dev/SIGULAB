@@ -45,20 +45,12 @@
     middle_column = {0: mc0, 1: mc1, 2: mc2}[
     (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
     }}
-<<<<<<< HEAD
-    <style type="text/css">
-    body{
-    background-image:url("{{=URL('static','images/logo-usb.png')}}"));
-    }
-  </style>
-=======
->>>>>>> origin/Nacho
   </head>
   <body>
     <!--[if lt IE 8]><p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
     <div class="w2p_flash alert alert-dismissable">{{=response.flash or ''}}</div>
     <!-- Navbar ======================================= -->
-    <nav class="navbar navbar-default navbar-fixed-top" id="header" role="navigation">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -121,6 +113,10 @@
           </div>
       </div>
     </footer>
+=======
+
+    {{block footer}} <!-- this is default footer -->      
+>>>>>>> fc71f2848b97a900ce5a7bac333c4783455684d6
     {{end}}
     <!-- The javascript =============================== -->
     <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
