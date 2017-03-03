@@ -7,7 +7,7 @@
     <h1 align="center" style="color:#455A64">PERSONAL</h1>
     <br>
     <div class="row">
-        <div class="panel col-md-6 text-center">
+        <div class="panel col-md-4 text-center">
 	        <a href="{{=URL('gestion','usuarios')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
 		            <i class="fa fa-address-book fa-3x" aria-hidden="true"></i>
@@ -18,7 +18,7 @@
 	        </a>
         </div>
 
-        <div class="panel col-md-6 text-center">
+        <div class="panel col-md-4 text-center">
             <a href="{{=URL('gestion','autorizados')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
 		            <i class="fa fa-users fa-3x" aria-hidden="true"></i>
@@ -29,7 +29,7 @@
 	        </a>
         </div>
 
-        <!-- <div class="panel col-md-4 text-center">
+        <div class="panel col-md-4 text-center">
             <a href="{{=URL('gestion','membresia')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
 		            <i class="fa fa-bookmark fa-3x" aria-hidden="true"></i>
@@ -38,8 +38,8 @@
 		            Gestion de Membresias (privilegios)
 		        </h4>
 	        </a>
-        </div> -->
-
+        </div>
+        
         <div class="panel col-md-6 text-center">
             <a href="{{=URL('gestion','privilegios')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
@@ -50,7 +50,7 @@
 		        </h4>
 	        </a>
         </div>
-
+        
         <div class="panel col-md-6 text-center">
             <a href="{{=URL('gestion','pendientes')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
@@ -63,3 +63,10 @@
         </div>
     </div>
 </div>
+=======
+<li><a href="{{=URL('gestion','usuarios')}}">Gestion de Usuarios Registrados</a></li>
+<li><a href="{{=URL('gestion','autorizados')}}">Gestion de Usuarios Autorizados</a></li>
+<li><a href="{{=URL('gestion','membresia')}}">Gestion de Membresias (privilegios)</a></li>
+<li><a href="{{=URL('gestion','privilegios')}}">Lista de Privilegios</a></li>
+<li><a href="{{=URL('gestion','pendientes')}}">Lista de Usuario por Confirmar ({{=users_pen}})</a></li>
+>>>>>>> fc71f2848b97a900ce5a7bac333c4783455684d6

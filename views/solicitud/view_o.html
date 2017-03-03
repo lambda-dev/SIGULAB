@@ -1,0 +1,78 @@
+{{extend 'layout.html'}}
+
+<div class="container">
+	<ol class="breadcrumb" style="background-color:#E0F2F1">
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+	  <li class="breadcrumb-item active">Inventario</li>
+	</ol>
+
+<p>{{str(auth.has_membership('Técnico'))}}</p>
+
+{{if espacios:}}
+  <br>
+  <div class="row">
+    <div class="col-sm-4 text-center">
+		<div class="breadcrumb" style="background-color:#E0F2F1">
+			<img  class="img-thumbnail img-fluid" src="/SIGULAB/static/images/laboratorio.png"  style="width:228px;height:228px;background-color:transparent;"/>
+			<div class="card-block">
+			<h4 style="color:#607D8B">Laboratorios:</h4>
+			</div>
+		</div>
+		{{if labs:}}
+
+		{{for lab in labs:}}
+		<div class="breadcrumb"  style="background-color:#E0F2F1">
+			<a = href="{{=URL('solicitud','view_q',vars=dict(lab=lab.id))}}">
+			<h5>{{=lab.f_nombre}}</h5></a>
+		</div>
+		{{pass}}
+		<br>
+		{{pass}}
+		</div>
+
+    <div class="col-sm-4 text-center">
+		<div class="breadcrumb" style="background-color:#E0F2F1">
+			<img  class="img-thumbnail img-fluid" src="/SIGULAB/static/images/seccion.ico" style="width:228px;height:228px;background-color:transparent;"/>
+			<div class="card-block">
+			<h4 style="color:#607D8B">Secciones:</h4>
+			</div>
+		</div>
+		{{if secciones:}}
+		{{for seccion in secciones:}}
+		<div class="breadcrumb"  style="background-color:#E0F2F1">
+			<a  href="{{=URL('solicitud','view_p',vars=dict(secc=seccion.id))}}">
+			<h5>{{=str(db(db.t_laboratorio.id == seccion.f_laboratorio).select(db.t_laboratorio.f_nombre))[22:-2]}}, {{=seccion.f_seccion}}</h5></a>
+		</div>
+		{{pass}}
+		<br>
+		{{pass}}
+    </div>
+
+    <div class="col-sm-4 text-center">
+		<div class="breadcrumb" style="background-color:#E0F2F1">
+			<img class="img-thumbnail img-fluid" src="/SIGULAB/static/images/espacio.png"  style="width:228px;height:228px;background-color:transparent;"/>
+			<div class="card-block">
+			<h4 style="color:#607D8B">Esp. Fisicos:</h4>
+			</div>
+		</div>
+		{{if espacios:}}
+
+		{{for espacio in espacios:}}
+		<div class="breadcrumb"  style="background-color:#E0F2F1">
+			<a href="{{=URL('solicitud','view_r', vars=dict(esp=espacio.id))}}">
+			<h5>Seccion: {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}}, {{=espacio.f_espacio}}</h5></a>
+		</div>
+		{{pass}}
+
+
+		{{pass}}
+  </div>
+
+
+{{else:}}
+
+{{pass}}
+<br>
+<br>
+</div>
