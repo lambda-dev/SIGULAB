@@ -133,7 +133,7 @@ def populate_db():
         db.auth_user.insert(first_name="Manuel", last_name="Rivas",email='mrivas@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(first_name="Nancy", last_name="Magdaleno",email='nmagdaleno@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(first_name="Ángela", last_name="Di Serio",email='adiserio@usb.ve', cargo=id_jefe_s, autorizado=True)
-        db.auth_user.insert(first_name="Marlene", last_name="Goncalves",email='mgoncalves@usb.ve', cargo=id_jefe_s, autorizado=True)
+        db.auth_user.insert(first_name="Marlene", last_name="Goncalves",email='mgoncalves@ldc.usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(first_name="Maria S", last_name=" Cemborain",email='mscembo@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(first_name="Alberto", last_name="Mendoza",email='jacob@usb.ve', cargo=id_jefe_s, autorizado=True)
         db.auth_user.insert(first_name="Isabel", last_name="Llatas",email='isabel.llatas@gmail.com', cargo=id_jefe_s, autorizado=True)

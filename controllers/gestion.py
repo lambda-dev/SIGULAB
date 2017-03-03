@@ -15,7 +15,7 @@ def index():
 def usuarios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.auth_user)
-    form = SQLFORM.smartgrid(db.auth_user,onupdate=auth.archive,csv=False,details=False,linked_tables=['auth_membership'], create=auth.has_membership('WebMaster'))
+    form = SQLFORM.smartgrid(db.auth_user,csv=False,details=False,linked_tables=['auth_membership'], create=auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -24,7 +24,7 @@ def usuarios():
 def privilegios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.auth_group)
-    form = SQLFORM.smartgrid(db.auth_group,onupdate=auth.archive,csv=False,details=False,linked_tables=['auth_membership'],deletable = auth.has_membership('WebMaster'), searchable=auth.has_membership('WebMaster'))
+    form = SQLFORM.smartgrid(db.auth_group,csv=False,details=False,linked_tables=['auth_membership'],deletable = auth.has_membership('WebMaster'), searchable=auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -33,7 +33,7 @@ def privilegios():
 def autorizados():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_users_autorizados)
-    form = SQLFORM.smartgrid(db.t_users_autorizados,onupdate=auth.archive,csv=False,details=False)
+    form = SQLFORM.smartgrid(db.t_users_autorizados,csv=False,details=False)
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -45,7 +45,7 @@ def pendientes():
     confirmar_usuario = lambda row: A('Confirmar', _href=URL(c='gestion',f='confirmar', args=[row.f_email, row.f_group]))
     eliminar_p = lambda row: A('Eliminar', _href=URL(c='gestion',f='eliminar_p', args=[row.f_email, row.f_group]))
     links = [confirmar_usuario, eliminar_p]
-    form = SQLFORM.smartgrid(db.t_users_pendientes,onupdate=auth.archive,csv=False,create =False,details=False,deletable = False, links=links)
+    form = SQLFORM.smartgrid(db.t_users_pendientes,csv=False,create =False,details=False,deletable = False, links=links)
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -86,7 +86,7 @@ def eliminar_p():
 def laboratorios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_laboratorio)
-    form = SQLFORM.smartgrid(db.t_laboratorio,onupdate=auth.archive,csv=False,details=False, linked_tables=['t_seccion'], deletable = auth.has_membership('WebMaster'))
+    form = SQLFORM.smartgrid(db.t_laboratorio,csv=False,details=False, linked_tables=['t_seccion'], deletable = auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -95,7 +95,7 @@ def laboratorios():
 def secciones():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_seccion)
-    form = SQLFORM.smartgrid(db.t_seccion,onupdate=auth.archive, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
+    form = SQLFORM.smartgrid(db.t_seccion, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -105,5 +105,5 @@ def espacios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_espaciofisico)
     db.t_tecs_esp.f_espaciofisico.writable = False
-    form = SQLFORM.smartgrid(db.t_espaciofisico,onupdate=auth.archive,csv=False,details=False, linked_tables=['t_tecs_esp'])
+    form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'])
     return locals()

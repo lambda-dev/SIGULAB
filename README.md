@@ -1,6 +1,27 @@
 # SIGULAB
 Branch de Adolfo
 ******************
+3 Marzo:
+
+[FIXED] En la membresía “Técnicos” no aparecen registros. 
+
+[FIXED] ¿Se puede eliminar del campo “Jefe de Sección” el correo? O ¿Tiene alguna función el correo incluido en ese campo?. Preferiblemente, dejar solo el nombre. Si es para mostrar la información, debería estar en un campo separado. 
+
+[FIXED] Página 5 y Pág 6 presentan error, aunque la información está completa para las Secciones
+
+[FIXED] En el menú debe aparecer “Usuarios autorizados”, para que sea congruente con el título en la página (NO: Lista de autorizados)
+
+[FIXED] Se agrega a la tabla de “usuarios registrados” y se debería eliminar de la lista de “usuarios autorizados” para no embasurar el sistema de información duplicada. 
+
+[FIXED] Solicitar la Dependencia cuando se hace el registro es importante, porque aun habiéndose registrado con el privilegio correcto (por ejemplo Jefe de Laboratorio) no puede consultar nada pues no se sabe a cuál Laboratorio o Sección está asociado. 
+
+[FIXED] Se debe establecer seguridad para confirmar la identidad de quien realiza el registro, a través del envío de un correo personalizado al propietario de la cuenta de correo, por ejemplo.
+
+[FIXED] El formulario debería contener los campos “Laboratorio” y “Sección”, porque si el usuario no está autorizado, el administrador debe saber dónde buscar información para confirmar su vínculo con la ULAB.
+
+[FIXED] Sustituir el nombre del campo “Cargo” por “Rol” (para un mismo rol, pueden haber muchos cargos. Por ejemplo, un Ingeniero Jefe no va a querer colocar que su cargo es técnico, pero puede entender que es el rol que desempeña dentro de la Sección).  
+
+*********************************************
 
 21 Febrero
 + Servicio de email activo con la cuenta ulab-smdp@usb.ve

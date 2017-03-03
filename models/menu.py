@@ -4,7 +4,7 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
-pen = db(db.t_users_pendientes).count()
+#pen = db(db.t_users_pendientes).count()
 
 # Editado por Adolfo
 # user basico
@@ -35,8 +35,9 @@ if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Té
 if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal')) and (not auth.has_membership('Usuario Normal')):
     response.menu += [
     [T('Gestión Usuarios'),False, None,[
-      [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
-      [T('Lista de Autorizados'), False, URL('gestion','autorizados')],
+      #[T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
+      [T('Pendientes de confirmación'), False, URL('gestion','pendientes')],
+      [T('Usuarios Autorizados'), False, URL('gestion','autorizados')],
       [T('Usuarios Registrados'), False, URL('gestion','usuarios')],
       [T('Privilegios'), False, URL('gestion','privilegios')]
       ]],
