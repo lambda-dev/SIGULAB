@@ -93,9 +93,8 @@ plugins = PluginManager()
 auth.settings.extra_fields['auth_user'] = [
    Field('autorizado', type='boolean', default=False, writable=False, readable=False),
    Field('cargo', 'integer', readable = False),
-   #Field('f_espaciofisico'),
-   #Field('f_seccion'),
-   #Field('f_laboratorio')
+   Field('f_seccion', 'integer', readable=False),
+   Field('f_laboratorio', 'integer', readable=False)
 ]
 
 auth.define_tables(username=False, signature=False)

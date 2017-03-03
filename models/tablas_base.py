@@ -182,6 +182,8 @@ db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
+db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s')
+db.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s')
 
 
 ########################################
