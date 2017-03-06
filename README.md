@@ -1,11 +1,15 @@
 # SIGULAB
+
 ### Branch de Arnaldo
+
 ******************
-## TODOs:
+## 6 Marzo:
 
-+ Eliminar boton de `view` en la tabla de sustancias y vincularlo al nombre de la sustancia.
++ Eliminados botones en la tabla de sustancias peligrosas. Se agrega link sobre el nombre de la sustancias para ver detalles. Boton de `editar` luego de detalles. Boton de `eliminar` dentro de `editar`.
 
-+ Eliminar botones `view` y `delete` de la tabla de sustancias. Agregarlos a la vista de `view`.
++ Agregada opcion de cambiar de cantidades de uso interno a donacion.
+
++ En la vista por espacio fisico, al colocar el cursor sobre el link del codigo del espacio fisico, se ,muestra el nombre del mismo.
 
 ******************
 ## 28 Febrero:

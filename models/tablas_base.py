@@ -118,7 +118,8 @@ if db(db.t_estado).isempty():
 
 ########################################
 db.define_table('t_sustancias',
-    Field('f_nombre', 'string', label=T('Nombre'),requires=IS_NOT_EMPTY()),
+    Field('f_nombre', 'string', label=T('Nombre'),requires=IS_NOT_EMPTY(),
+    represent = lambda v,r: A(v,_href=URL( 'sustancias','sustanciapeligrosa_manage',args=['t_sustancias','view','t_sustancias',r.id],user_signature=True ))),
     Field('f_cas', 'string', label=T('Cas'),requires=IS_NOT_EMPTY()),
     Field('f_pureza', 'integer',requires=IS_INT_IN_RANGE(0, 101), label=T('Pureza')),
     Field('f_estado', 'integer', requires=IS_IN_DB(db,db.t_estado.id,'%(f_estado)s'), label=T('Estado'),
@@ -133,7 +134,6 @@ db.define_table('t_sustancias',
 
 db.t_sustancias.id.readable=False
 db.t_sustancias.id.writable=False
-db.define_table('t_sustancias_archive',db.t_sustancias,Field('current_record','reference t_sustancias',readable=False,writable=False))
 db.t_sustancias.f_reporte.readable=(auth.has_membership('Gestor de Sustancias')or auth.has_membership('WebMaster'))
 db.t_sustancias._singular='Listado de Sustancias'
 db.t_sustancias._plural='Listado de Sustancias'
@@ -145,7 +145,6 @@ db.define_table('t_laboratorio',
     Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s - %(email)s'), label=T('Jefe de Laboratorio')),
     migrate=settings.migrate)
 
-db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
 db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name']
@@ -211,7 +210,6 @@ db.define_table('t_inventario',
     format='%(f_sustancia)s',
     migrate=settings.migrate)
 
-db.define_table('t_inventario_archive',db.t_inventario,Field('current_record','reference t_inventario',readable=False,writable=False))
 db.t_inventario.id.readable = False
 db.t_inventario._plural='Inventario'
 db.t_inventario._singular='Inventario'
@@ -238,7 +236,6 @@ db.define_table('t_bitacora',
     migrate=settings.migrate)
 
 db.t_bitacora.id.readable = False
-db.define_table('t_bitacora_archive',db.t_bitacora,Field('current_record','reference t_bitacora',readable=False,writable=False))
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 db.t_bitacora._singular='Bitacora'
 db.t_bitacora._plural='Bitacora'
