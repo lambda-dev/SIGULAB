@@ -92,14 +92,14 @@ plugins = PluginManager()
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = [
    Field('autorizado', type='boolean', default=False, writable=False, readable=False),
-   Field('cargo', 'integer', readable = False),
-   #Field('f_espaciofisico'),
-   #Field('f_seccion'),
-   #Field('f_laboratorio')
+   Field('cargo', 'integer', readable = False, label='Rol'),
+   Field('f_seccion', 'integer', readable=False, label='Sección'),
+   Field('f_laboratorio', 'integer', readable=False, label='Laboratorio')
 ]
 
 auth.define_tables(username=False, signature=False)
-db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s')
+db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s', zero=None)
+
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
@@ -156,10 +156,7 @@ crud = Crud(db)
 # auth.enable_record_versioning(db)
 
 # Se define aqui para poder usarla en
-db.define_table('t_users_pendientes',
-    Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
-    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
-    migrate=settings.migrate)
+
 
 ##UNCOMMENT ON PRODUCTION####
 ####FORCE CONNECTION OVER SSL####

@@ -6,13 +6,10 @@ response.meta.keywords = settings.keywords
 response.meta.description = settings.description
 pen = db(db.t_users_pendientes).count()
 
-# Editado por Adolfo
 # user basico
-response.menu = [
-    [T('Home'),URL('default','index')==URL(),URL('default','index')]
-    ]
+response.menu = []
 #tec, jefes y gestor
-if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
+if (not auth.has_membership('Usuario Normal') and (not auth.has_membership('Administrador Personal')) and auth.is_logged_in()):
     response.menu += [
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
@@ -21,7 +18,7 @@ if (not auth.has_membership('Usuario Normal')) and auth.is_logged_in():
     [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')]
     ]
 
-if (not auth.has_membership('Usuario Normal')) and (not auth.has_membership('Técnico')) and auth.is_logged_in():
+if not auth.has_membership('Usuario Normal') and not auth.has_membership('Técnico') and not auth.has_membership('Administrador Personal') and auth.is_logged_in():
     response.menu += [
     [T('Solicitudes'),False, None,[
       [T('Hacer Solicitud'), False, URL('solicitud','select_solicitud')],
@@ -36,7 +33,7 @@ if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.
     response.menu += [
     [T('Gestión Usuarios'),False, None,[
       [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
-      [T('Lista de Autorizados'), False, URL('gestion','autorizados')],
+      [T('Usuarios Autorizados'), False, URL('gestion','autorizados')],
       [T('Usuarios Registrados'), False, URL('gestion','usuarios')],
       [T('Privilegios'), False, URL('gestion','privilegios')]
       ]],
