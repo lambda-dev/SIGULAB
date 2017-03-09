@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from gluon.tools import Crud
 from plugin_notemptymarker import mark_not_empty
+import json
 
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
@@ -53,6 +54,15 @@ def validar_bitacora(form):
                 else:
                     form.vars.f_consumo = form.vars.f_cantidad
                     form.vars.f_cantidad = total - form.vars.f_consumo
+
+
+###################################################
+@auth.requires(not auth.has_membership('Usuario Normal'))
+@auth.requires_login()
+def delete_sustancias():
+    db(db.t_sustancias.id == request.vars['d']).delete()
+    redirect(URL('sustancias','sustanciapeligrosa_manage'))
+
 
 
 ###################################################
@@ -243,6 +253,7 @@ def inventario_manage():
     labs = False
     seccion = False
     espFisico = False
+    js = dict()
 
     espF = request.vars['esp']
     query = db.t_inventario.f_espaciofisico == espF
@@ -266,24 +277,42 @@ def inventario_manage():
         unid = inv.f_unidad
         donac = inv.f_cantidadonacion
 
-        form = SQLFORM.factory(Field('cantidad','float',requires=IS_NULL_OR(IS_FLOAT_IN_RANGE(0,donac,
-        error_message='Por favor introduzca una cantidad menor o igual a su cantidad de donacion disponible (%s %s)' % (donac, unid) )),
-        default=0, label=T('Cantidad A Trasladar'),comment='Ingrese la cantidad de donación que desea trasladar a uso interno.'))
+        form = SQLFORM.factory(Field('tipo','string',requires=IS_IN_SET(['Traslado de Donación a Uso Interno','Traslado de Uso Intero a Donación']),
+        label=T('Tipo de Transacción')),
+        Field('cantidad','float',requires= IS_NULL_OR(IS_FLOAT_IN_RANGE(0,donac,
+        error_message='Por favor introduzca una cantidad menor o igual a su cantidad de donacion disponible (%s %s)' % (donac, unid) ) ) if request.post_vars.tipo == 'Traslado de Donación a Uso Interno' else IS_NULL_OR(IS_FLOAT_IN_RANGE(0,usoint,
+        error_message='Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (%s %s)' % (usoint, unid) ) ),
+        default=0, label=T('Cantidad A Trasladar')))
 
         if form.process().accepted:
+
             upd = db(db.t_inventario.id == request.args[3]).select().first()
-            upd.update_record(f_cantidadonacion = upd.f_cantidadonacion - form.vars.cantidad)
-            upd.update_record(f_cantidadusointerno = upd.f_cantidadusointerno + form.vars.cantidad)
 
-            db.t_bitacora.insert(f_fechaingreso = request.now,
-                                f_sustancia = row.select(db.t_inventario.ALL).first().f_sustancia,
-                                f_proceso = "Traslado Donación - Uso Interno",
-                                f_ingreso = form.vars.cantidad,
-                                f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
-                                f_cantidad = upd.f_cantidadusointerno,
-                                f_espaciofisico = request.vars['esp'],
-                                )
+            if form.vars.tipo == 'Traslado de Donación a Uso Interno':
+                upd.update_record(f_cantidadonacion = upd.f_cantidadonacion - form.vars.cantidad)
+                upd.update_record(f_cantidadusointerno = upd.f_cantidadusointerno + form.vars.cantidad)
 
+                db.t_bitacora.insert(f_fechaingreso = request.now,
+                                    f_sustancia = row.select(db.t_inventario.ALL).first().f_sustancia,
+                                    f_proceso = "Traslado Donación -> Uso Interno",
+                                    f_ingreso = form.vars.cantidad,
+                                    f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
+                                    f_cantidad = upd.f_cantidadusointerno,
+                                    f_espaciofisico = request.vars['esp'],
+                                    )
+
+            else:
+                upd.update_record(f_cantidadonacion = upd.f_cantidadonacion + form.vars.cantidad)
+                upd.update_record(f_cantidadusointerno = upd.f_cantidadusointerno - form.vars.cantidad)
+
+                db.t_bitacora.insert(f_fechaingreso = request.now,
+                                    f_sustancia = row.select(db.t_inventario.ALL).first().f_sustancia,
+                                    f_proceso = "Traslado Uso Interno -> Donación",
+                                    f_consumo = form.vars.cantidad,
+                                    f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
+                                    f_cantidad = upd.f_cantidadusointerno,
+                                    f_espaciofisico = request.vars['esp'],
+                                    )
             redirect(URL('inventario_manage',vars=dict(esp=request.vars['esp'])))
 
     if request.vars['esp']:
@@ -300,10 +329,15 @@ def inventario_manage():
             query = (db.t_inventario.f_seccion == request.vars['secc'])&(db.t_inventario.f_sustancia == request.vars['sust'])
             db.t_inventario.f_espaciofisico.represent = lambda value, row: A(str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],_href=URL('sustancias','view_bitacora',vars=dict(sust=row.f_sustancia,esp=row.f_espaciofisico)))
             db.t_inventario.f_sustancia.readable = False
+            datas = db((db.t_inventario.f_seccion == request.vars['secc'])&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico)).select(db.t_espaciofisico.f_espacio, db.t_espaciofisico.f_direccion)
+            for data in datas:
+                js[data.f_direccion]=data.f_espacio
+            js = XML(json.dumps(js))
         else:
             query = (db.t_inventario.f_seccion == request.vars['secc'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),
         orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
+
         return locals()
 
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,deletable=False,oncreate=insert_inventario,
@@ -346,6 +380,7 @@ def view_bitacora():
         db.t_bitacora.f_fecha.readable = auth.has_membership('Gestor de Sustancias') or auth.has_membership('WebMaster')
 
     if 'edit' in request.args:
+        row = db(db.t_bitacora.id == request.args[3]).select().first()
         db.t_bitacora.f_consumo.readable = False
         db.t_bitacora.f_consumo.writable = False
         db.t_bitacora.f_ingreso.readable = False
@@ -354,6 +389,8 @@ def view_bitacora():
         db.t_bitacora.f_proceso.writable = False
         db.t_bitacora.f_unidad.readable = True
         db.t_bitacora.f_unidad.writable = False
+        if not row.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio']:
+            db.t_bitacora.f_cantidad.writable = False
         mark_not_empty(db.t_bitacora)
         row = db(db.t_bitacora.id == request.args[3]).select().first()
         if row.f_ingreso == 0:

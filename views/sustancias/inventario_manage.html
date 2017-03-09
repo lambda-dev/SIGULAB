@@ -36,10 +36,18 @@
 
 {{pass}}
 
-
-
-
 <a  href="{{=URL('sustancias','select_inventario')}}">
 <button class="btn btn-default">Atras</button>
 </a>
 </div>
+
+<script>
+    var js = {{=js}};
+    $('tr').each(function(){
+      x = $(this).find('td').first().find('a');
+      x.attr('data-toggle','tooltip');
+      y = x.text();
+      x.attr('title',js[y]);
+    });
+    $('[data-toggle="tooltip"]').tooltip();
+</script>
