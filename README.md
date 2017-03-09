@@ -1,5 +1,26 @@
 # SIGULAB
 Branch de Adolfo
+*************************************
+9 Marzo:
++ [NEW] Al REGISTRARSE un usuario AUTORIZADO (JEFELAB O JEFESEC) automaticamente se es añadido a la Jefatura que especifico y puede acceder al inventario
+
++ [NEW] Al CONFIRMAR un usuario PENDIENTE (JEFELAB O JEFESEC) automaticamente se es añadido a la Jefatura que especifico y puede acceder al inventario
+
++ [TODO] Aplicar mismo mecanismo a TECNICOS.
+
+
++ [FIXED] En la opción “editar” un usuario registrado, si se modifica el privilegio y se envía, no se modifica el privilegio en el vínculo de membresías del usuario.  En el ejemplo anterior, se modificó el privilegio del usuario “Gestión Sustancias y Desechos Peligrosos” y al presionar el vínculo “membresías” asociadas a este usuario no realizó el cambio y aparece “Usuario Normal”
+
++ [FIXED] Solo puede haber 1 único Director y tendrá ese privilegio usando el correo ulab@usb.ve. Se debe restringir la posibilidad de agregar más Directores 
+
++ [FIXED] Se debe restringir la posibilidad de agregar más Jefes de Laboratorios de los siete (7) que existen. 
+
++ [FIXED] Solo puede haber 1 único Jefe de Laboratorio (para cada Laboratorio) y NO hay jefes que ocupen más de una Jefatura de Laboratorio.
+
++ [FIXED] Director solo puede hacer operaciones de consulta
+
++ [FIXED] administrador de usuarios le debería aparecer ese nuevo registro en “Pendientes de Confirmación” y NO aparecer en la tabla de “usuarios registrados” hasta tanto no haya sido confirmado.
+
 *********************************
 7 Marzo:
 + [FIXED] Gestor Users solo puede entrar a modulo de gestión
@@ -9,7 +30,6 @@ Branch de Adolfo
 + Pendiente:
   + [TODO] Director solo puede hacer operaciones de consulta
   + [TODO] administrador de usuarios le debería aparecer ese nuevo registro en “Pendientes de Confirmación” y NO aparecer en la tabla de “usuarios registrados” hasta tanto no haya sido confirmado.
-  +[TRIGGERS] En la opción “editar” un usuario registrado, si se modifica el privilegio y se envía, no se modifica el privilegio en el vínculo de membresías del usuario.  En el ejemplo anterior, se modificó el privilegio del usuario “Gestión Sustancias y Desechos Peligrosos” y al presionar el vínculo “membresías” asociadas a este usuario no realizó el cambio y aparece “Usuario Normal”
   + [TODO] Solo puede haber 1 único Director y tendrá ese privilegio usando el correo ulab@usb.ve. Se debe restringir la posibilidad de agregar más Directores 
   + [TODO] Solo puede haber 1 único Jefe de Laboratorio (para cada Laboratorio) y NO hay jefes que ocupen más de una Jefatura de Laboratorio.  Se debe restringir la posibilidad de agregar más Jefes de Laboratorios de los siete (7) que existen. 
 

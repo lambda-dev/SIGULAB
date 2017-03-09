@@ -119,11 +119,10 @@ def sustanciapeligrosa_manage():
         mark_not_empty(db.t_sustancias)
 
     if(auth.has_membership('Gestor de Sustancias') or \
-    auth.has_membership('Director') or\
     auth.has_membership('WebMaster')):
         table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True)
     else:
-        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False,onvalidation=sustancias_validate)
+        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
     return locals()
 
 

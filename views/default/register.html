@@ -29,7 +29,6 @@
 							<input type="text" class="inputStyle" name="email">
 					</div>
 					<div class="invalidSession">{{=form.errors.email or ''}}</div>	
-				  <br>
 					Contraseña:<br>
 				   <div class="formStyle">
 							<input type="password" class="inputStyle" name="password">
@@ -43,28 +42,50 @@
 
 					<div class="invalidSession">{{=response.flash or ''}}</div>
 
-
-					Cargo:<br>
+					Rol:<br>
 					<div class="formStyle">
 						<select  class="inputStyle" name="cargo">
 							{{ rows = db().select(db.auth_group.ALL) }}
 							{{if len(rows):}}
-
 							{{ for r in rows: }}
 									<option value="{{=r.id}}">{{=r.role}}</option>					
 							{{pass}}
-
 						{{pass}}
 						</select>
 					</div>	
 					<div class="invalidSession">{{=form.errors.cargo or ''}}</div>
+
+					Laboratorio:<br>
+					<div class="formStyle">
+						<select  class="inputStyle" name="f_laboratorio">
+							{{ rows = db().select(db.t_laboratorio.ALL) }}
+							{{if len(rows):}}
+							{{ for r in rows: }}
+									<option value="{{=r.id}}">{{=r.f_nombre}}</option>					
+							{{pass}}
+						{{pass}}
+						</select>
+					</div>	
+					<div class="invalidSession">{{=form.errors.f_laboratorio or ''}}</div>
+					Sección:<br>
+					<div class="formStyle">
+						<select  class="inputStyle" name="f_seccion">
+							{{ rows = db().select(db.t_seccion.ALL) }}
+							{{if len(rows):}}
+							{{ for r in rows: }}
+									<option value="{{=r.id}}">{{=r.f_seccion}}</option>					
+							{{pass}}
+						{{pass}}
+						</select>
+					</div>	
+					<div class="invalidSession">{{=form.errors.f_seccion or ''}}</div>
 			</td>
 			<td class="side" rowspan="4"></td>
 		  </tr>
 		  
 		  <tr>
 			<td class="box3">
-				 			<a href="{{=URL('default','login')}}">Ingresar</a>
+				 			<a href="{{=URL('default','login')}}"><< Atrás</a>
 			</td>
 			<td class="box3 box35">
 			<button class="buttonZ btn btn-default" type="submit">	ENVIAR</button>

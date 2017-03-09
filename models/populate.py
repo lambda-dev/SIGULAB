@@ -1,3 +1,4 @@
+
 def populate_db():
     if db(db.t_sustancias).isempty():
         db.t_sustancias.insert(f_nombre='Acetato de Etilo', f_cas='141-78-6', f_pureza='99', f_estado='2', f_control='1', f_peligrosidad=['Inflamable','Irritante'])
@@ -227,6 +228,7 @@ def populate_db():
         db.t_laboratorio.insert(f_nombre='Laboratorio E',f_jefe=db(db.auth_user.email == 'eprato@usb.ve').select(db.auth_user.id).first())
         db.t_laboratorio.insert(f_nombre='Laboratorio F',f_jefe=db(db.auth_user.email == 'wsequera@usb.ve').select(db.auth_user.id).first())
         db.t_laboratorio.insert(f_nombre='Laboratorio G',f_jefe=db(db.auth_user.email == 'chickani@usb.ve').select(db.auth_user.id).first())
+        db.t_laboratorio.insert(f_nombre='Ninguno',f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
 
     ##Secciones
     if db(db.t_seccion).isempty():
@@ -351,11 +353,13 @@ def populate_db():
         db.t_seccion.insert(f_seccion='Digitales (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Intrumentación y Control (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'dleal@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Biomédica (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'kgomez@usb.ve').select(db.auth_user.id).first())
-        db.t_seccion.insert(f_seccion='Tecnologías de la Información (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chikhani@usb.ve').select(db.auth_user.id).first())
+        db.t_seccion.insert(f_seccion='Tecnologías de la Información (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'chickani@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Telemática (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'jgutierr@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Comunicaciones (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'oescobar@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Idiomas (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'adenisraga@usb.ve').select(db.auth_user.id).first())
         db.t_seccion.insert(f_seccion='Alimentos y Bebidas (Litoral)',f_laboratorio=id_g,f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+
+        db.t_seccion.insert(f_seccion='Ninguna',f_laboratorio=db(db.t_laboratorio.f_nombre == 'Ninguno').select(db.t_laboratorio.id).first(), f_jefe=db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
 
     if db(db.t_espaciofisico).isempty():
         db.t_espaciofisico.insert(f_direccion="ALT-001A",f_espacio="Sala de equipos de interconexion a internet",f_seccion=(db(db.t_seccion.f_seccion == "Alta Tensión").select(db.t_seccion.id).first()))
@@ -589,3 +593,5 @@ def populate_db():
     if db(db.t_inventario).isempty():
         for i in range(1,25):
             db.t_inventario.insert(f_sustancia=2,f_espaciofisico=i,f_cantidadonacion=0,f_cantidadusointerno=0,f_total=0)
+
+populate_db()

@@ -98,7 +98,7 @@ auth.settings.extra_fields['auth_user'] = [
 ]
 
 auth.define_tables(username=False, signature=False)
-db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s')
+db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s', zero=None)
 
 # -------------------------------------------------------------------------
 # configure email

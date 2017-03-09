@@ -114,4 +114,13 @@ a{
     }   
 .footer2{ 
     font-size:11px;
-}   
+}
+#auth_user_cargo__row {
+    display: none;
+}
+#auth_user_f_laboratorio__row {
+    display: none;
+}
+#auth_user_f_seccion__row {
+    display: none;
+}  
