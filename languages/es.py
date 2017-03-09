@@ -326,6 +326,7 @@
 'Modified On': 'Modificado En',
 'Modules': 'Módulos',
 'modules': 'módulos',
+'MSDS': 'MSDS',
 'must be YYYY-MM-DD HH:MM:SS!': '¡debe ser DD/MM/YYYY HH:MM:SS!',
 'must be YYYY-MM-DD!': '¡debe ser DD/MM/YYYY!',
 'My Sites': 'Mis Sitios',

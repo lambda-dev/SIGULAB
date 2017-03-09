@@ -1,0 +1,89 @@
+        <link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
+
+     <title>{{=response.title or request.application}}</title>
+<div id="reset_password">
+ 
+
+ {{=form.custom.begin}}
+	<table class="box">
+		  <tr>
+			<td class="logo" colspan="2"></td>
+			<td class="tg-yw4l"></td>
+		  </tr>
+		  <tr class="up1">
+			
+			
+			<td class="box2 center0" colspan="2">
+				      Nombres:<br>
+				      <div class="formStyle">
+							<input type="text" class="inputStyle" name="first_name">
+					</div>
+						<div class="invalidSession">{{=form.errors.first_name or ''}}</div>	
+					  Apellidos:<br>
+				      <div class="formStyle">
+							<input type="text" class="inputStyle" name="last_name">
+					</div>
+					<div class="invalidSession">{{=form.errors.last_name or ''}}</div>	
+				    Correo Electronico:<br>
+				      <div class="formStyle">
+							<input type="text" class="inputStyle" name="email">
+					</div>
+					<div class="invalidSession">{{=form.errors.email or ''}}</div>	
+				  <br>
+					Contraseña:<br>
+				   <div class="formStyle">
+							<input type="password" class="inputStyle" name="password">
+					</div>	
+					<div class="invalidSession">{{=form.errors.password or ''}}</div>	
+						Repetir Contraseña:<br>
+				   <div class="formStyle">
+							<input type="password" class="inputStyle" name="password_two">
+					</div>	
+					<div class="invalidSession">{{=form.errors.password_two or ''}}</div>	
+
+					<div class="invalidSession">{{=response.flash or ''}}</div>
+
+
+					Cargo:<br>
+					<div class="formStyle">
+						<select  class="inputStyle" name="cargo">
+							{{ rows = db().select(db.auth_group.ALL) }}
+							{{if len(rows):}}
+
+							{{ for r in rows: }}
+									<option value="{{=r.id}}">{{=r.role}}</option>					
+							{{pass}}
+
+						{{pass}}
+						</select>
+					</div>	
+					<div class="invalidSession">{{=form.errors.cargo or ''}}</div>
+			</td>
+			<td class="side" rowspan="4"></td>
+		  </tr>
+		  
+		  <tr>
+			<td class="box3">
+				 			<a href="{{=URL('default','login')}}">Ingresar</a>
+			</td>
+			<td class="box3 box35">
+			<button class="buttonZ btn btn-default" type="submit">	ENVIAR</button>
+
+		  </tr>
+		  <tr>
+			<td class="box4" colspan="2">	<a href="{{=URL('default','reset')}}">Contraseña olvidada</a></td>
+		  </tr>
+		  <tr>
+			<td class="box5" colspan="2">SIGULAB</td>
+		  </tr>
+		  <tr>
+			<td  colspan="3">Contactanos:Correo@sigulab.com</td>
+		  </tr>
+		</table> 
+
+
+{{ =form.custom.end}}
+
+</div>
+
+

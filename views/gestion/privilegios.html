@@ -1,5 +1,12 @@
 {{extend 'layout.html'}}
+<div class="container style="background-color:#E0F2F1">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index')}}">Gestión</a></li>
+    <li class="breadcrumb-item active">Privilegios</li>
+  </ol>
 
 <h2>Gestión de Privilegios</h2>
 <p>Desde aquí se pueden consultar los privilegios disponibles en el sistema y quienes están asociados.</p>
 <p>{{=form}}</p>
+</div>
