@@ -108,11 +108,19 @@ def insert_bitacora(form):
 def insert_inventario(form):
     espF = request.vars['esp']
     espFS = str(db(db.t_espaciofisico.id == espF).select(db.t_espaciofisico.f_espacio))[27:-2]
+    estado = db((db.t_sustancias.id == form.vars.f_sustancia)&(db.t_estado.id == db.t_sustancias.f_estado)).select(db.t_estado.ALL).first().f_estado
+    if estado == 'Sólido':
+        unidad = 'g'
+    elif estado == 'Líquido':
+        unidad = 'mL'
+    else:
+        unidad = 'cm3'
     db.t_bitacora.insert(f_fechaingreso=request.now,
                                     f_sustancia=form.vars.f_sustancia,
                                     f_proceso="Ingreso Inicial",
                                     f_ingreso=form.vars.f_cantidadusointerno,
                                     f_consumo=0,
+                                    f_unidad = unidad,
                                     f_cantidad=form.vars.f_cantidadusointerno,
                                     f_espaciofisico = espF)
 

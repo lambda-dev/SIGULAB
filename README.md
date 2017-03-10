@@ -3,6 +3,9 @@
 ### Branch de Arnaldo
 
 ******************
+## 10 Marzo:
++ Fix en la base de datos.
+******************
 ## 6 Marzo:
 
 + Eliminados botones en la tabla de sustancias peligrosas. Se agrega link sobre el nombre de la sustancias para ver detalles. Boton de `editar` luego de detalles. Boton de `eliminar` dentro de `editar`.
