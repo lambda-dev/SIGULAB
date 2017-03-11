@@ -111,8 +111,8 @@ db.define_table('t_users_autorizados',
     Field('f_seccion', 'integer', label=T('Sección'), requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s', zero=None)),
     migrate=settings.migrate)
 
-#db.t_users_pendientes.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
-#db.t_users_pendientes.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
+db.t_users_pendientes.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else 'Vacio'
+db.t_users_pendientes.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else 'Vacio'
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
 db.t_users_autorizados._singular = 'Usuario Autorizado'
