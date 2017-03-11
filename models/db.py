@@ -113,7 +113,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False #True cuando hagamos deploy o al final de todo
+auth.settings.registration_requires_verification = True #True cuando hagamos deploy o al final de todo
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 
@@ -160,6 +160,6 @@ crud = Crud(db)
 
 ##UNCOMMENT ON PRODUCTION####
 ####FORCE CONNECTION OVER SSL####
-#session.secure()
-#if not request.is_https:
+session.secure()
+if not request.is_https:
 #    redirect('https://%s/%s' % (request.env.http_host,request.application))

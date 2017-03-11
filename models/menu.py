@@ -21,7 +21,7 @@ if (not auth.has_membership('Usuario Normal') and (not auth.has_membership('Admi
 if not auth.has_membership('Usuario Normal') and not auth.has_membership('Técnico') and not auth.has_membership('Administrador Personal') and auth.is_logged_in():
     response.menu += [
     [T('Solicitudes'),False, None,[
-      [T('Hacer Solicitud'), False, URL('solicitud','select_solicitud')],
+      [T('Mis Solicitudes'), False, URL('solicitud','select_solicitud')],
       [T('Solicitudes Recibidas'), False, URL('solicitud','view_h')],
       [T('Prestamos'), False, URL('solicitud','view_k')],
       [T('Deudas'), False, URL('solicitud','view_o')]
