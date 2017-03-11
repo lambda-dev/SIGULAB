@@ -34,9 +34,8 @@
 
 <p>{{=table}}</p>
 {{if 'new' in request.args:}}
-<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+<p class="help-block">Los campos marcados con (*) son obligatorios</p>
 {{pass}}
-
 
 {{pass}}
 

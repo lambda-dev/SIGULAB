@@ -23,7 +23,7 @@ def usuarios():
     if auth.has_membership('Director'):  
         form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=False, editable=False, deletable=False)
     else:
-        form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=False)
+        form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -207,4 +207,3 @@ def espacios():
     else:
         form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'])
     return locals()
-

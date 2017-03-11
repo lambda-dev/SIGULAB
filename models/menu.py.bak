@@ -18,7 +18,7 @@ if (not auth.has_membership('Usuario Normal') and (not auth.has_membership('Admi
     [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')]
     ]
 
-if not auth.has_membership('Usuario Normal') and not auth.has_membership('Administrador Personal') and auth.is_logged_in():
+if not auth.has_membership('Usuario Normal') and not auth.has_membership('Técnico') and not auth.has_membership('Administrador Personal') and auth.is_logged_in():
     response.menu += [
     [T('Solicitudes'),False, None,[
       [T('Mis Solicitudes'), False, URL('solicitud','select_solicitud')],

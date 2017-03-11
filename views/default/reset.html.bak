@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
+        <link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
 
      <title>{{=response.title or request.application}}</title>
 <div id="reset_password">
@@ -43,7 +43,7 @@
 			<td class="box5" colspan="2">SIGULAB</td>
 		  </tr>
 		  <tr>
-			<td  colspan="3">Contactanos: ulab-smdp@usb.ve</td>
+			<td  colspan="3">Contactanos:Correo@sigulab.com</td>
 		  </tr>
 		</table> 
 
@@ -51,3 +51,6 @@
 {{ =form.custom.end}}
 
 </div>
+
+
+
