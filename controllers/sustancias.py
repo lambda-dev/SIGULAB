@@ -137,7 +137,6 @@ def sustanciapeligrosa_manage():
         mark_not_empty(db.t_sustancias)
 
     if(auth.has_membership('Gestor de Sustancias') or \
-    auth.has_membership('Director') or\
     auth.has_membership('WebMaster')):
         table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True)
     else:

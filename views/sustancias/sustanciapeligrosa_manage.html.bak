@@ -1,8 +1,57 @@
 {{extend 'layout.html'}}
+<div class="container">
 
-<h2>Manage sustanciapeligrosa</h2>
+	<div>
+		<ol class="breadcrumb" style="background-color:#E0F2F1">
+		  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+		  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+		  <li class="breadcrumb-item active">Listado de sustancias</li>
+		</ol>
+	</div>
 
-<p>{{=table}}</p>
-<a  href="{{=URL('front_page','sustancias')}}">
-<button class="btn btn-default">Atras</button>
-</a>
+	<br>
+
+	<h2 style="color:#455A64">Listado de Sustancias Peligrosas</h2>
+
+	<div class="row">
+		<p>{{=table}}</p>
+	</div>
+    {{if 'new' in request.args:}}
+    <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+    {{pass}}
+
+</div>
+
+<script>
+	{{if 'edit' in request.args:}}
+		var r=false
+		var text = '\
+		<a href="{{=URL('sustancias','delete_sustancias',vars=dict(d=request.args[3]) ) }}">\
+			<button class="btn btn-danger" type="button">\
+				<span class="icon trash icon-trash glyphicon glyphicon-trash"></span>\
+				 Eliminar\
+			</button>\
+		</a>'
+
+		jQuery('.checkbox').html(text);
+
+		jQuery('.checkbox').on('click',function(e){
+			r = confirm("Desea Eliminar Esta Sustancia?")
+			if (!r){
+				e.preventDefault();
+				alert("Sustancia no eliminada.")
+			}
+		});
+	{{pass}}
+
+	{{if not ('view' in request.args or 'edit' in request.args):}}
+		jQuery('.row_buttons').hide();
+	{{pass}}
+
+</script>
+
+<style>
+	tr {
+		height: 38px;
+	}
+</style>

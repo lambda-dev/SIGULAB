@@ -1,0 +1,5 @@
+{{extend 'layout.html'}}
+<h3>No puedes aceptar mas respuestas pues ya se recolectó la cantidad de material solicitado</h3>
+<a  href="{{=URL('solicitud','view_e', vars=request.vars)}}">
+<button class="btn btn-default">Atras</button>
+</a>
