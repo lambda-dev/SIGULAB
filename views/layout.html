@@ -21,9 +21,9 @@
     <meta name="google-site-verification" content="">
     <!-- include stylesheets -->
     <link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/font-awesome.min.css')}}"/>
     <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
     <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
     <link rel="shortcut icon" href="{{=URL('static','images/favicon.ico')}}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
     <!-- All JavaScript at the bottom, except for Modernizr which enables
@@ -51,8 +51,7 @@
     }
   </style>
   </head>
-  <body >
-  <section id="main" class="main row" style="background-image:'/SIGULAB/static/images/logo-usb.png'">
+  <body>
     <!--[if lt IE 8]><p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
     <div class="w2p_flash alert alert-dismissable">{{=response.flash or ''}}</div>
     <!-- Navbar ======================================= -->
@@ -65,6 +64,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <a class="navbar-brand" href="{{=URL('front_page','index')}}">SIGULAB</a>
           {{=response.logo or ''}}
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -77,7 +77,7 @@
         </div>
       </div>
     </nav>
-    <!-- Masthead ===================================== -->    
+    <!-- Masthead ===================================== -->
     {{block header}}
     {{end}}
     <!-- Main ========================================= -->
@@ -108,9 +108,25 @@
       {{pass}}
 
     </div>
-
-
-    {{block footer}} <!-- this is default footer -->      
+    <br>
+    {{block footer}} <!-- this is default footer -->
+    <!--<footer class="footer" style="background-color:white;color:black">
+      <div class="container-fluid">
+        <div class="copyright pull-left">{{=T('SIGULAB')}} &#169; {{=request.now.year}}</div>
+          <div class="pull-right">
+              <img src="{{=URL('static','images/usb.png')}}" class="img-responsive" height="30" width="30" alt="USB" align="left">
+              &nbsp;&nbsp;Universidad Simón Bolívar
+          </div>
+      </div>-->
+<table align="center" class="footer2" border="0" cellpadding="1" cellspacing="1"><tbody><tr><td valign="bottom" width="95">
+        <a href="http://www.usb.ve"><img width="70" height="45"alt="" src="{{=URL('static','images/usb.png')}}"></a></td>
+<td valign="bottom">
+        <a href="http://www.usb.ve/home/node/68">e-virtual</a> | <a href="https://webmail.usb.ve/" target="_blank">Correo</a> |<a href="http://www.usb.ve/buscador.php" target="_blank"> </a><a href="https://esopo.usb.ve">esopo</a> |<a href="http://www.usb.ve/buscador.php" target="_blank"> </a><a href="http://www.youtube.com/canalusb" target="_blank">canalUSB</a> | <a href="http://www.usb.ve/agenda.php" target="_blank">Agenda Cultural</a> | <a href="http://usbnoticias.info/" target="_blank">USBnoticias</a> |<span> </span><span> </span><a href="http://www.usb.ve/home/node/55">Calendario</a> |<br>
+        Sede Sartenejas, Baruta, Edo. Miranda - Apartado 89000 - Cable Unibolivar - Caracas Venezuela. Teléfono +58 0212-9063111<br>
+        Sede Litoral, Camurí Grande, Edo. Vargas Parroquia Naiguatá. Teléfono +58 0212-9069000<br>
+        Diseñada y desarrollada por Lambda (Sistemas de Información I) <a href="mailto:ulab-smdp@usb.ve">ulab-smdp@usb.ve</a></td>
+</tr></tbody></table>
+    </footer>
     {{end}}
     <!-- The javascript =============================== -->
     <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>

@@ -1,0 +1,33 @@
+{{extend 'layout.html'}}
+<div class="container">
+	<ol class="breadcrumb" style="background-color:#E0F2F1">
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','view_k')}}">Préstamo</a></li>
+	  <li class="breadcrumb-item active">Espacio Físico</li>
+	</ol>
+
+{{if labs:}}
+<h3 style="color:#455A64">{{=labs}}</h3>
+{{pass}}
+
+{{if seccion:}}
+<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
+{{pass}}
+
+{{if espFisico:}}
+<h2>Espacio Fisico: {{=espFisico}}</h2>
+{{pass}}
+
+<h2>Préstamos</h2>
+
+<p>{{=table}}</p>
+<a  href="{{=URL('solicitud','view_k')}}">
+<button class="btn btn-default">Atras</button>
+</a>
+
+<script>
+  $('.row_buttons').each(function(){
+    x = $(this).find('a');
+    x.find('span').first().hide();
+  });
+</script> 

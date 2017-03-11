@@ -92,19 +92,19 @@ plugins = PluginManager()
 # -------------------------------------------------------------------------
 auth.settings.extra_fields['auth_user'] = [
    Field('autorizado', type='boolean', default=False, writable=False, readable=False),
-   Field('cargo', 'integer', readable = False),
-   #Field('f_espaciofisico'),
-   #Field('f_seccion'),
-   #Field('f_laboratorio')
+   Field('cargo', 'integer', readable = False, label='Rol'),
+   Field('f_seccion', 'integer', readable=False, label='Sección'),
+   Field('f_laboratorio', 'integer', readable=False, label='Laboratorio')
 ]
 
 auth.define_tables(username=False, signature=False)
-db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s')
+db.auth_user.cargo.requires = IS_IN_DB(db, db.auth_group.id, '%(role)s', zero=None)
+
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
 mail = auth.settings.mailer
-mail.settings.server = 'logging' if request.is_local else myconf.get('smtp.server')
+mail.settings.server = myconf.get('smtp.server')
 mail.settings.sender = myconf.get('smtp.sender')
 mail.settings.login = myconf.get('smtp.login')
 mail.settings.tls = myconf.get('smtp.tls') or False
@@ -113,7 +113,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False
+auth.settings.registration_requires_verification = False #True cuando hagamos deploy o al final de todo
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 
@@ -155,13 +155,11 @@ crud = Crud(db)
 # -------------------------------------------------------------------------
 # auth.enable_record_versioning(db)
 
-mail.settings.server = settings.email_server
-mail.settings.sender = settings.email_sender
-mail.settings.login = settings.email_login
+# Se define aqui para poder usarla en
 
 
-# Se define aqui para poder usarla en 
-db.define_table('t_users_pendientes',
-    Field('f_email', 'string', label=T('Email'), requires = IS_EMAIL(error_message='Email inválido')),
-    Field('f_group', 'integer', label=T('Privilegio'), requires=IS_IN_DB(db, db.auth_group.id, '%(role)s (%(id)s)'), represent = lambda value,row: str(db(db.auth_group.id == value).select(db.auth_group.role))[17:]),
-    migrate=settings.migrate)
+##UNCOMMENT ON PRODUCTION####
+####FORCE CONNECTION OVER SSL####
+#session.secure()
+#if not request.is_https:
+#    redirect('https://%s/%s' % (request.env.http_host,request.application))

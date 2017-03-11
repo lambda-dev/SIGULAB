@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+<br><br>
+{{=table}}
+<a  href="{{=URL('new_facturas',vars=dict(esp=request.vars['esp'],sust=request.vars['sust']))}}">
+<button class='btn btn-default center-block'>Agregar Una Nueva Factura</button>
+</a>

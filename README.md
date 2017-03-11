@@ -1,6 +1,83 @@
 # SIGULAB
+
 Branch de Adolfo
+*************************************
+9 Marzo:
++ [NEW] Al REGISTRARSE un usuario AUTORIZADO (JEFELAB O JEFESEC) automaticamente se es añadido a la Jefatura que especifico y puede acceder al inventario
+
++ [NEW] Al CONFIRMAR un usuario PENDIENTE (JEFELAB O JEFESEC) automaticamente se es añadido a la Jefatura que especifico y puede acceder al inventario
+
++ [TODO] Aplicar mismo mecanismo a TECNICOS.
+
+
++ [FIXED] En la opción “editar” un usuario registrado, si se modifica el privilegio y se envía, no se modifica el privilegio en el vínculo de membresías del usuario.  En el ejemplo anterior, se modificó el privilegio del usuario “Gestión Sustancias y Desechos Peligrosos” y al presionar el vínculo “membresías” asociadas a este usuario no realizó el cambio y aparece “Usuario Normal”
+
++ [FIXED] Solo puede haber 1 único Director y tendrá ese privilegio usando el correo ulab@usb.ve. Se debe restringir la posibilidad de agregar más Directores 
+
++ [FIXED] Se debe restringir la posibilidad de agregar más Jefes de Laboratorios de los siete (7) que existen. 
+
++ [FIXED] Solo puede haber 1 único Jefe de Laboratorio (para cada Laboratorio) y NO hay jefes que ocupen más de una Jefatura de Laboratorio.
+
++ [FIXED] Director solo puede hacer operaciones de consulta
+
++ [FIXED] administrador de usuarios le debería aparecer ese nuevo registro en “Pendientes de Confirmación” y NO aparecer en la tabla de “usuarios registrados” hasta tanto no haya sido confirmado.
+
+*********************************
+7 Marzo:
++ [FIXED] Gestor Users solo puede entrar a modulo de gestión
+
++ [FIXED] Breadcrums en paginas de gestion + acomodos visuales
+
++ Pendiente:
+  + [TODO] Director solo puede hacer operaciones de consulta
+  + [TODO] administrador de usuarios le debería aparecer ese nuevo registro en “Pendientes de Confirmación” y NO aparecer en la tabla de “usuarios registrados” hasta tanto no haya sido confirmado.
+  + [TODO] Solo puede haber 1 único Director y tendrá ese privilegio usando el correo ulab@usb.ve. Se debe restringir la posibilidad de agregar más Directores 
+  + [TODO] Solo puede haber 1 único Jefe de Laboratorio (para cada Laboratorio) y NO hay jefes que ocupen más de una Jefatura de Laboratorio.  Se debe restringir la posibilidad de agregar más Jefes de Laboratorios de los siete (7) que existen. 
+
+
 ******************
+3 Marzo:
+
+[FIXED] En la membresía “Técnicos” no aparecen registros. 
+
+[FIXED] ¿Se puede eliminar del campo “Jefe de Sección” el correo? O ¿Tiene alguna función el correo incluido en ese campo?. Preferiblemente, dejar solo el nombre. Si es para mostrar la información, debería estar en un campo separado. 
+
+[FIXED] Página 5 y Pág 6 presentan error, aunque la información está completa para las Secciones
+
+[FIXED] En el menú debe aparecer “Usuarios autorizados”, para que sea congruente con el título en la página (NO: Lista de autorizados)
+
+[FIXED] Se agrega a la tabla de “usuarios registrados” y se debería eliminar de la lista de “usuarios autorizados” para no embasurar el sistema de información duplicada. 
+
+[FIXED] Solicitar la Dependencia cuando se hace el registro es importante, porque aun habiéndose registrado con el privilegio correcto (por ejemplo Jefe de Laboratorio) no puede consultar nada pues no se sabe a cuál Laboratorio o Sección está asociado. 
+
+[FIXED] Se debe establecer seguridad para confirmar la identidad de quien realiza el registro, a través del envío de un correo personalizado al propietario de la cuenta de correo, por ejemplo.
+
+[FIXED] El formulario debería contener los campos “Laboratorio” y “Sección”, porque si el usuario no está autorizado, el administrador debe saber dónde buscar información para confirmar su vínculo con la ULAB.
+
+[FIXED] Sustituir el nombre del campo “Cargo” por “Rol” (para un mismo rol, pueden haber muchos cargos. Por ejemplo, un Ingeniero Jefe no va a querer colocar que su cargo es técnico, pero puede entender que es el rol que desempeña dentro de la Sección).  
+
+*********************************************
+
+21 Febrero
++ Servicio de email activo con la cuenta ulab-smdp@usb.ve
+  + Email para verificar registro
+  + Email se envia cuando se añade user en lista de pendientes a los AdminUser
+
+20 Febrero:
+
++ Añadidos (*) a todos los formularios de gestion de usuarios/espacios
+
+TODO:
++ Aclarar con el cliente: 
+  + Boton de eliminar que no les gusto y nunca encontramos en la presentacion
+  + Eliminar cargo desde usuario
+
++ Habilitar emails para confirmar registro **IMPORTANTE**
+  + Activar servidor smtp en private/appconfig.ini
+  + Pedir un email de ulab para esto?
++ Emails para avisar que alguien se registró
+
+
 14 Febrero:
 
 + Arreglado error en el registro [Se mantenía Usuario Normal+Otro cargo en usuario autorizados]

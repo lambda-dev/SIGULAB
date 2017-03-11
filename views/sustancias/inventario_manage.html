@@ -23,8 +23,34 @@
 <h2>Espacio Fisico: {{=espFisico}}</h2>
 {{pass}}
 
+{{if 'edit' in request.args:}}
+<p>{{=table[1]}}</p>
+<h2 class='text-center'>Sustancia: {{=str(sust)}}</h2>
+<h2 class='text-center'>Cantidad De Donación Disponible: {{=donac}} {{=unid}}</h2>
+<h2 class='text-center'>Cantidad De Uso Interno Disponible: {{=usoint}} {{=unid}}</h2>
+<p>{{=form}}</p>
+
+{{else:}}
+
 <p>{{=table}}</p>
+{{if 'new' in request.args:}}
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+{{pass}}
+
+{{pass}}
+
 <a  href="{{=URL('sustancias','select_inventario')}}">
 <button class="btn btn-default">Atras</button>
 </a>
 </div>
+
+<script>
+    var js = {{=js}};
+    $('tr').each(function(){
+      x = $(this).find('td').first().find('a');
+      x.attr('data-toggle','tooltip');
+      y = x.text();
+      x.attr('title',js[y]);
+    });
+    $('[data-toggle="tooltip"]').tooltip();
+</script>

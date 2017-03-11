@@ -1,51 +1,65 @@
 {{extend 'layout.html'}}
-
-{{if auth.has_membership('Director') \
-  or auth.has_membership('Administrador Personal') \
-  or auth.has_membership('WebMaster')\
-  or auth.has_membership('Jefe de Laboratorio') \
-  or auth.has_membership('Jefe de Sección') \
-  or auth.has_membership('Técnico')\
-  or auth.has_membership('Gestor de Sustancias'):}}
 <div class="container">
-	<ol class="breadcrumb" style="background-color:#E0F2F1">
-	  <li class="breadcrumb-item active">Home</li>
-	</ol>
-  <h2 style="color:#455A64">Gestión</h2>
-  <br>
-  <div class="row">
-    <div class="col-sm-4 text-center">
-		<div class="breadcrumb"  style="background-color:#E0F2F1">
-			<a href="{{=URL('front_page','sustancias')}}">
-			<img class="img-thumbnail img-fluid sigulab-img" src="/SIGULAB/static/images/chemical.png" alt="Sustancias" style="width:228px;height:228px;background-color:transparent"/>
-			</a>
-			<div class="card-block">
-				<h4 class="card-title"><a style="color:#607D8B" href="{{=URL('front_page','sustancias')}}">Sustancias</a></h4>
+    <ol class="breadcrumb" style="background-color:#E0F2F1">
+      <li class="breadcrumb-item active">Home</li>
+    </ol>
+    <h1 align="center" style="color:#455A64">SIGULAB</h1>
+    <br>
+    <div class="row">
 
-			</div>
-		</div>
-	</div>
+        {{if auth.has_membership('Director') \
+          or auth.has_membership('WebMaster')\
+          or auth.has_membership('Jefe de Laboratorio') \
+          or auth.has_membership('Jefe de Sección') \
+          or auth.has_membership('Técnico')\
+          or auth.has_membership('Gestor de Sustancias'):}}
+        <div class="panel col-md-6 text-center">
+	        <a href="{{=URL('front_page','sustancias')}}" class="btn btn-lg btn-block" role="button">
+		        <h4>
+		            <i class="fa fa-flask fa-3x" aria-hidden="true"></i>
+		        </h4>
+		        <h4>
+		            Sustancias
+		        </h4>
+	        </a>
+        </div>
 
-    <div class="col-sm-4 text-center">
-    	<div class="breadcrumb" style="background-color:#E0F2F1">
-	    	<a href="{{=URL('front_page','desechos')}}">
-	  		<img class="img-thumbnail img-fluid" src="/SIGULAB/static/images/desechos.png" alt="Sustancias" style="width:228px;height:228px;background-color:transparent"/>
-			</a>
-			<div class="card-block">
-			<h4><a style="color:#607D8B" href="{{=URL('front_page','desechos')}}">Desechos</a></h4>
-			</div>
-		</div>
+        <div class="panel col-md-6 text-center">
+            <a href="{{=URL('front_page','desechos')}}" class="btn btn-lg btn-block" role="button">
+		        <h4>
+		            <i class="fa fa-trash-o fa-3x" aria-hidden="true"></i>
+		        </h4>
+		        <h4>
+		            Desechos
+		        </h4>
+	        </a>
+        </div>
+        {{pass}}
+
+        {{if auth.has_membership('Administrador Personal') \
+            or auth.has_membership('WebMaster')\
+            or auth.has_membership('Director'): }}
+        <div class="panel col-md-6 text-center">
+            <a href="{{=URL('gestion','index')}}" class="btn btn-lg btn-block" role="button">
+		        <h4>
+		            <i class="fa fa-user-o fa-3x" aria-hidden="true"></i>
+		        </h4>
+		        <h4>
+		            Personal
+		        </h4>
+	        </a>
+        </div>
+
+        <div class="panel col-md-6 text-center">
+            <a href="{{=URL('gestion','index_e')}}" class="btn btn-lg btn-block" role="button">
+            <h4>
+                <i class="fa fa-building-o fa-3x" aria-hidden="true"></i>
+            </h4>
+            <h4>
+                Espacios
+            </h4>
+          </a>
+        </div>
+        {{pass}}
     </div>
-    <div class="col-sm-4 text-center">
-	    <div class="breadcrumb" style="background-color:#E0F2F1">
-			<a href="{{=URL('gestion','index')}}" >
-			  <img class="img-thumbnail img-fluid" src="/SIGULAB/static/images/personal.png" alt="Sustancias" style="width:228px;height:228px;background-color:transparent"/>
-			</a>
-			<div class="card-block">
-			<h4><a style="color:#607D8B" href="{{=URL('gestion','index')}}">Personal</a></h4>
-			</div>
-	    </div>
-  </div>
 </div>
-{{else:}}
-{{pass}}
