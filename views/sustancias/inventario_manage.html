@@ -29,6 +29,7 @@
 <h2 class='text-center'>Cantidad De Donación Disponible: {{=donac}} {{=unid}}</h2>
 <h2 class='text-center'>Cantidad De Uso Interno Disponible: {{=usoint}} {{=unid}}</h2>
 <p>{{=form}}</p>
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
 
 {{else:}}
 
@@ -39,9 +40,11 @@
 
 {{pass}}
 
+{{if not('edit' in request.args or 'new' in request.args):}}
 <a  href="{{=URL('sustancias','select_inventario')}}">
 <button class="btn btn-default">Atras</button>
 </a>
+{{pass}}
 </div>
 
 <script>

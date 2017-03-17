@@ -10,6 +10,11 @@ def validar_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
     total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[33:-2])
+    anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)).select(db.v_bitacora.ALL).first()
+    if anterior is None:
+        disponible = 0
+    else:
+        disponible = anterior.f_cantidad
 
     if form.vars.f_unidad == 'Kg':
         form.vars.f_cantidad = form.vars.f_cantidad*1000
@@ -35,25 +40,25 @@ def validar_bitacora(form):
 
             if proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
                 ingreso = float(str(actual.select(db.t_bitacora.f_ingreso))[22:-2])
-                delta = form.vars.f_cantidad - ingreso
+                #delta = form.vars.f_cantidad - ingreso
                 form.vars.f_ingreso = form.vars.f_cantidad
-                form.vars.f_cantidad = total + delta
+                #form.vars.f_cantidad = total + delta
             else:
                 consumo = float(str(actual.select(db.t_bitacora.f_consumo))[22:-2])
-                delta = form.vars.f_cantidad - consumo
+                #delta = form.vars.f_cantidad - consumo
                 form.vars.f_consumo = form.vars.f_cantidad
-                form.vars.f_cantidad = total - delta
+                #form.vars.f_cantidad = total - delta
 
         else:
             if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
                 form.vars.f_ingreso = form.vars.f_cantidad
-                form.vars.f_cantidad = form.vars.f_ingreso + total
+                #form.vars.f_cantidad = form.vars.f_ingreso + total
             else:
-                if form.vars.f_cantidad > total:
-                    form.errors.f_cantidad = T('No puede consumir más de la cantidad disponible')
+                if form.vars.f_cantidad > disponible:
+                    form.errors.f_cantidad = T('No puede consumir más de la cantidad disponible (%s)' ,disponible)
                 else:
                     form.vars.f_consumo = form.vars.f_cantidad
-                    form.vars.f_cantidad = total - form.vars.f_consumo
+                    #form.vars.f_cantidad = total - form.vars.f_consumo
 
 
 ###################################################
@@ -94,8 +99,25 @@ def view_compras():
 def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
-    new  = float(str(db((db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.f_cantidad).last())[20:-2])
+    num = db(db.v_bitacora.id == form.vars.id).select(db.v_bitacora.ALL).first().f_orden
     row = db((db.t_inventario.f_espaciofisico == espF)&(db.t_inventario.f_sustancia == sust)).select().first()
+
+    while num > 0:
+        value = db((db.v_bitacora.f_orden > num)&(db.t_bitacora.id == db.v_bitacora.id)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.ALL).first()
+        if value is None:
+            value = 0
+        else:
+            value = value.f_cantidad
+
+        r = db((db.v_bitacora.f_orden == num)&(db.t_bitacora.id == db.v_bitacora.id)).select(db.t_bitacora.ALL).first()
+        if r.f_consumo == 0:
+            r.update_record(f_cantidad = value + r.f_ingreso)
+        else:
+            r.update_record(f_cantidad = value - r.f_consumo)
+        num = num - 1
+
+
+    new  = float(str(db((db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.f_cantidad).last())[20:-2])
     row.update_record(f_cantidadusointerno=new)
     row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
     if form.vars.f_proceso == 'Compra':
@@ -121,7 +143,7 @@ def insert_inventario(form):
                                     f_ingreso=form.vars.f_cantidadusointerno,
                                     f_consumo=0,
                                     f_unidad = unidad,
-                                    f_cantidad=form.vars.f_cantidadusointerno,
+                                    f_cantidad=form.vars.f_cantidadusointerno + form.vars.f_cantidadonacion,
                                     f_espaciofisico = espF)
 
 
@@ -286,11 +308,11 @@ def inventario_manage():
         donac = inv.f_cantidadonacion
 
         form = SQLFORM.factory(Field('tipo','string',requires=IS_IN_SET(['Traslado de Donación a Uso Interno','Traslado de Uso Intero a Donación']),
-        label=T('Tipo de Transacción')),
+        label=T('Tipo de Transacción *')),
         Field('cantidad','float',requires= IS_NULL_OR(IS_FLOAT_IN_RANGE(0,donac,
         error_message='Por favor introduzca una cantidad menor o igual a su cantidad de donacion disponible (%s %s)' % (donac, unid) ) ) if request.post_vars.tipo == 'Traslado de Donación a Uso Interno' else IS_NULL_OR(IS_FLOAT_IN_RANGE(0,usoint,
         error_message='Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (%s %s)' % (usoint, unid) ) ),
-        default=0, label=T('Cantidad A Trasladar')))
+        default=0, label=T('Cantidad A Trasladar *')))
 
         if form.process().accepted:
 

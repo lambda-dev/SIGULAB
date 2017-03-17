@@ -593,5 +593,6 @@ def populate_db():
     if db(db.t_inventario).isempty():
         for i in range(1,25):
             db.t_inventario.insert(f_sustancia=2,f_espaciofisico=i,f_cantidadonacion=0,f_cantidadusointerno=0,f_total=0)
+            db.t_bitacora.insert(f_fechaingreso='2017-01-01',f_sustancia=2,f_proceso="Ingreso Inicial",f_ingreso=0,f_consumo=0,f_unidad='mL',f_cantidad=0,f_espaciofisico=i)
 
 populate_db()

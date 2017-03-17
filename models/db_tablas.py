@@ -219,7 +219,7 @@ db.define_table('t_inventario',
     Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_total','float',label=T('Cantidad Total'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_seccion','integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'),label=T('Sección'),
-    compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:]) ),
+    compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:-2]) ),
     Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'),readable=False,writable=False,
     compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),
     Field('f_unidad','string',requires=IS_IN_SET(['mL','L','g','Kg','cm'+chr(0x00B3)]),
@@ -259,6 +259,28 @@ db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra',
 db.t_bitacora._singular='Bitacora'
 db.t_bitacora._plural='Bitacora'
 
+########################################
+#vista ordenada para la bitacora
+db.executesql(
+  'create or replace view v_bitacora as\
+     select *,\
+            row_number() over(order by f_fechaingreso desc,f_fecha desc) as f_orden \
+     from t_bitacora')
+
+db.define_table('v_bitacora',
+  Field('f_fechaingreso'),
+  Field('f_sustancia'),
+  Field('f_proceso'),
+  Field('f_ingreso'),
+  Field('f_consumo'),
+  Field('f_unidad'),
+  Field('f_cantidad'),
+  Field('f_fecha'),
+  Field('f_espaciofisico'),
+  Field('f_descripcion'),
+  Field('f_orden'),
+  migrate=False
+)
 
 ########################################
 #vista para el inventario de Laboratorio, no ocupa espacio en la bd
@@ -384,7 +406,7 @@ db.define_table('t_solicitud_respuesta',
     Field('f_espacio_fisico_d', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
     str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
-    label=T('Espacio Fisico')),    
+    label=T('Espacio Fisico')),
     Field('f_solicitud', 'reference t_solicitud', label=T('Solicitud Asociada')),
     Field('f_entregado', 'integer', label=T('Entregado')),
     Field('f_recibido', 'integer', label=T('Recibido'))
