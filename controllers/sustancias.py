@@ -9,8 +9,9 @@ def validar_bitacora(form):
 
     espF = request.vars['esp']
     sust = request.vars['sust']
-    total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[33:-2])
+    total = float(str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_total))[22:-2])
     anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)).select(db.v_bitacora.ALL).first()
+
     if anterior is None:
         disponible = 0
     else:
@@ -34,31 +35,31 @@ def validar_bitacora(form):
     else:
 
         if 'edit' in request.args:
+            anterior_ = anterior.f_orden
+            anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)&(db.v_bitacora.f_orden > anterior_)).select(db.v_bitacora.ALL).first()
+            disponible = anterior.f_cantidad
             actual = db(db.t_bitacora.id == request.args[3])
             proceso = str(actual.select(db.t_bitacora.f_proceso))[22:-2]
             actual.select().first().update_record(f_fecha = request.now)
 
             if proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
-                ingreso = float(str(actual.select(db.t_bitacora.f_ingreso))[22:-2])
-                #delta = form.vars.f_cantidad - ingreso
                 form.vars.f_ingreso = form.vars.f_cantidad
-                #form.vars.f_cantidad = total + delta
+                form.vars.f_cantidad = disponible + form.vars.f_ingreso
+                session.flash = form.vars
             else:
-                consumo = float(str(actual.select(db.t_bitacora.f_consumo))[22:-2])
-                #delta = form.vars.f_cantidad - consumo
                 form.vars.f_consumo = form.vars.f_cantidad
-                #form.vars.f_cantidad = total - delta
+                form.vars.f_cantidad = disponible - form.vars.f_consumo
 
         else:
             if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
                 form.vars.f_ingreso = form.vars.f_cantidad
-                #form.vars.f_cantidad = form.vars.f_ingreso + total
+                form.vars.f_cantidad = disponible + form.vars.f_ingreso
             else:
                 if form.vars.f_cantidad > disponible:
                     form.errors.f_cantidad = T('No puede consumir más de la cantidad disponible (%s)' ,disponible)
                 else:
                     form.vars.f_consumo = form.vars.f_cantidad
-                    #form.vars.f_cantidad = total - form.vars.f_consumo
+                    form.vars.f_cantidad = disponible - form.vars.f_consumo
 
 
 ###################################################
@@ -100,26 +101,44 @@ def insert_bitacora(form):
     espF = request.vars['esp']
     sust = request.vars['sust']
     num = db(db.v_bitacora.id == form.vars.id).select(db.v_bitacora.ALL).first().f_orden
-    row = db((db.t_inventario.f_espaciofisico == espF)&(db.t_inventario.f_sustancia == sust)).select().first()
+    row = db(db.t_bitacora.id == form.vars.id).select(db.t_bitacora.ALL).first()
+    actual = db(db.t_bitacora.id == form.vars.id).select(db.t_bitacora.ALL).first()
+    actual_ = db(db.v_bitacora.id == form.vars.id).select(db.v_bitacora.ALL).first()
+    ultimo = db((db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.v_bitacora.ALL).first().f_orden
+    siguiente_ = db((db.v_bitacora.f_espaciofisico == espF)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_orden < actual_.f_orden)).select(db.v_bitacora.ALL).last()
 
-    while num > 0:
-        value = db((db.v_bitacora.f_orden > num)&(db.t_bitacora.id == db.v_bitacora.id)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.ALL).first()
-        if value is None:
-            value = 0
-        else:
-            value = value.f_cantidad
+    if siguiente_ is not None:
+        n_actual = actual_.f_orden
+        siguiente = db(db.t_bitacora.id == siguiente_.id).select(db.t_bitacora.ALL).first()
 
-        r = db((db.v_bitacora.f_orden == num)&(db.t_bitacora.id == db.v_bitacora.id)).select(db.t_bitacora.ALL).first()
-        if r.f_consumo == 0:
-            r.update_record(f_cantidad = value + r.f_ingreso)
-        else:
-            r.update_record(f_cantidad = value - r.f_consumo)
-        num = num - 1
+        while n_actual >= ultimo:
 
+            value = actual.f_cantidad
 
-    new  = float(str(db((db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_espaciofisico == espF)).select(db.t_bitacora.f_cantidad).last())[20:-2])
-    row.update_record(f_cantidadusointerno=new)
-    row.update_record(f_total = row.f_cantidadusointerno+row.f_cantidadonacion)
+            if siguiente.f_consumo == 0:
+                siguiente.update_record(f_cantidad = value + siguiente.f_ingreso)
+            else:
+                siguiente.update_record(f_cantidad = value - siguiente.f_consumo)
+
+            actual = siguiente
+            actual_ = siguiente_
+            siguiente_ = db((db.v_bitacora.f_espaciofisico == espF)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_orden < actual_.f_orden)).select(db.v_bitacora.ALL).last()
+
+            if siguiente_ is None:
+                break
+            else:
+                n_actual = siguiente_.f_orden
+                siguiente = db(db.t_bitacora.id == siguiente_.id).select(db.t_bitacora.ALL).first()
+
+    bit  = db((db.t_inventario.f_espaciofisico == espF)&(db.t_inventario.f_sustancia == sust)).select(db.t_inventario.ALL).first()
+
+    if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
+        bit.update_record(f_cantidadusointerno = bit.f_cantidadusointerno + form.vars.f_ingreso)
+    else:
+        bit.update_record(f_cantidadusointerno = bit.f_cantidadusointerno - form.vars.f_consumo)
+
+    bit.update_record(f_total = bit.f_cantidadonacion + bit.f_cantidadusointerno)
+
     if form.vars.f_proceso == 'Compra':
         redirect(URL('sustancias','select_facturas',vars=dict(sust=sust,esp=espF)))
 
@@ -383,7 +402,7 @@ def view_bitacora():
     espF = request.vars['esp']
     name = str(db(db.t_sustancias.id == sust).select(db.t_sustancias.f_nombre))[22:]
     espacio = str(db(db.t_espaciofisico.id == espF).select(db.t_espaciofisico.f_espacio))[27:]
-    total = str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_cantidadusointerno))[34:]
+    total = str(db((db.t_inventario.f_sustancia == sust)&(db.t_inventario.f_espaciofisico == espF)).select(db.t_inventario.f_total))[22:]
     db.t_bitacora.f_sustancia.default = sust
     db.t_bitacora.f_espaciofisico.default = espF
     db.t_bitacora.f_espaciofisico.readable = False
