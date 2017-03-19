@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 {
+'': '',
 '!=': '!=',
 '!langcode!': 'es',
 '!langname!': 'Español',
@@ -323,7 +324,7 @@
 'Listas de Usuarios': 'Listas de Usuarios',
 'Live Chat': 'Chat en vivo',
 'loading...': 'cargando...',
-'Log In': 'Entrar',
+'Log In': 'Iniciar Sesión',
 'Log Out': 'Salir',
 'Logged in': 'Sesión iniciada',
 'Logged out': 'Sesión finalizada',

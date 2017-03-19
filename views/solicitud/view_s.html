@@ -12,11 +12,11 @@
 {{if cantidad_total:}}
 <h3 style="color:#455A64">Cantidad prestada: {{=cantidad_total}}</h3>
 {{pass}}
-<!--
+
 {{if cantidad_recolectada:}}
 <h3 style="color:#455A64">Cantidad devuelta: {{=cantidad_recolectada}}</h3>
 {{pass}}
--->
+
 <p>{{=table}}</p>
 
 <a  href="{{=URL('solicitud','view_r', vars=dict(esp=request.vars['esp']))}}">

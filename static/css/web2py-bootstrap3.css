@@ -108,10 +108,18 @@ select.autocomplete {
     background: url(../images/logo-usb.png) no-repeat center center !important;
 }
 
+div#web2py_user_form{
+  margin-top: -2%;
+}
 
 body {
     padding-top: 60px;
     margin-bottom: 60px;
+    background: linear-gradient(to right,#F6F4F7,#EEECEF,#EEECEF);
+    background-image: url("../images/logo-usb.png"),linear-gradient(to right,#F6F4F7,#EEECEF,#EEECEF);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top right;
 }
 header {
     -webkit-box-shadow: 0 0 8px 2px #000;
@@ -130,6 +138,12 @@ html {
     height: 60px;
     background: #333;
     color: #aaa;
+}
+footer{
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
 }
 header h1 {
     color: #FFF!important;
@@ -316,4 +330,7 @@ td.w2p_fc,
 }
 input[type=checkbox], input[type=radio] {
     margin: 4px 4px 0 0;
+}
+label{
+  font-size: 150%;
 }

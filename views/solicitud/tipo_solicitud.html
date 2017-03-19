@@ -1,0 +1,57 @@
+{{extend 'layout.html'}}
+<div class="container">
+	<ol class="breadcrumb" style="background-color:#E0F2F1">
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud')}}">Solicitud</a></li>
+	  <li class="breadcrumb-item active">Espacios Físicos</li>
+	</ol>
+
+{{if labs:}}
+<h3 style="color:#455A64">{{=labs}}</h3>
+{{pass}}
+
+{{if seccion:}}
+<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
+{{pass}}
+
+{{if espFisico:}}
+<h2>Espacio Fisico: {{=espFisico}}</h2>
+{{pass}}
+
+{{if f=='1':}}
+<h2>Mis solicitudes</h2>
+{{elif f=='2':}}
+<h2>Solicitudes Recibidas</h2>
+{{elif f=='3':}}
+<h2>Préstamos</h2>
+{{elif f=='4':}}
+<h2>Deudas</h2>
+{{pass}}
+
+<p>{{=table}}</p>
+<a  href="{{=URL('solicitud','select_solicitud')}}">
+<button class="btn btn-default">Atras</button>
+</a>
+<script>
+a={{=f}}
+if (a==1){
+	js = {{=aux}};
+	i = 0;
+	$('.row_buttons').each(function(){
+		x = $(this).find('a');
+		x.find('span').first().hide();
+		y = x.first();
+		if (js[i]==1){
+			y.hide();
+		}
+		i +=1;
+	});
+}
+</script>
+
+<script>
+	$('.row_buttons').each(function(){
+		x = $(this).find('a');
+		x.find('span').first().hide();
+	});
+</script>

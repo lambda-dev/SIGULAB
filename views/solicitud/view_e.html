@@ -22,15 +22,15 @@
 <a  href="{{=URL('solicitud','view_a', vars=dict(esp=request.vars['esp']))}}">
 <button class="btn btn-default">Atras</button>
 </a>
-
 <script>
 	js = {{=aux}};
+	js1= {{=aux1}}
 	i = 0;
 	$('.row_buttons').each(function(){
 		x = $(this).find('a');
 		x.find('span').first().hide();
 		y = x.first();
-		if (js[i]==1){
+		if (js[i]==1 || js1[i]==0){
 			y.hide();
 			x.hide();
 		}
