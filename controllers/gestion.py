@@ -210,4 +210,7 @@ def espacios():
     else:
         form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'])
     return locals()
+<<<<<<< HEAD
+=======
 
+>>>>>>> Adolfo
