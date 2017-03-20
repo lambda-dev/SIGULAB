@@ -9,6 +9,9 @@ def index():
     pen = db(db.t_users_pendientes).count()
     return dict(users_pen=pen)
 
+@auth.requires(auth.has_membership('Director') \
+  or auth.has_membership('Administrador Personal') \
+  or auth.has_membership('WebMaster'))
 def index_e():
     return dict()
 
