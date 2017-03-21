@@ -1,0 +1,5 @@
+{{extend 'layout.html'}}
+<h3>No puedes recibir la solicitud pues supera la cantidad de sustancia prestada.</h3>
+<a  href="{{=URL('solicitud','view_t', vars=request.vars)}}">
+<button class="btn btn-default">Atras</button>
+</a>

@@ -1,0 +1,7 @@
+{{extend 'layout.html'}}
+{{if auth.is_logged_in():}}
+{{redirect(URL('front_page','index'))}}
+{{else:}}
+{{redirect(URL('default','login'))}}
+{{pass}}
+

@@ -1,0 +1,3 @@
+{{extend 'layout.html'}}
+<li><a href="{{=URL('front_page','sustancias')}}">Gestion de Sustancias</a></li>
+<li><a href="{{=URL('front_page','desechos')}}">Gestion de Desechos</a></li>

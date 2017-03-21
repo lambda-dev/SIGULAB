@@ -1,0 +1,16 @@
+{{extend 'layout.html'}}
+<div class="container style="background-color:#E0F2F1">
+	<ol class="breadcrumb">
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+	  <li class="breadcrumb-item active">Laboratorio</li>
+	</ol>
+<a  href="{{=URL('reportes','reporte_laboratorio',vars=dict(lab=request.vars['lab']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
+
+<h3 style="color:#455A64">{{=lab}}</h3>
+<p>{{=table}}</p>
+
+</div>

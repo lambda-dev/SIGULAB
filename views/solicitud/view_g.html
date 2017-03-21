@@ -1,0 +1,7 @@
+{{extend 'layout.html'}}
+{{for i in seccion:}}
+	<a = href="{{=URL('solicitud','view_f', vars=dict(secc=i.id))}}">
+	<h5>{{=i.f_seccion}}</h5></a>
+	{{pass}}
+
+
