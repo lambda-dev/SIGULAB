@@ -22,12 +22,20 @@ def usuarios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.auth_user)
 
-    query = db.auth_user.autorizado == True
+    query = (db.auth_user.autorizado == True and db.auth_user.email != "no_asig@usb.ve")
     if auth.has_membership('Director'):  
         form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=False, editable=False, deletable=False)
     else:
-        form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=False)
+        form = SQLFORM.smartgrid(db.auth_user,constraints=dict(auth_user=query),ondelete=trig_delete,csv=False,details=False,linked_tables=['auth_membership'], create=False)
     return locals()
+
+def trig_delete(table, rid):
+    # Limpiamos los laboratorios, secciones y espacios donde estaba asignado el usuario, se coloca al user No Asignado
+    db(db.t_laboratorio.f_jefe == rid).update(f_jefe = db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+
+    db(db.t_seccion.f_jefe == rid).update(f_jefe = db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first())
+
+    db(db.t_tecs_esp.f_tecnico == rid).delete()
 
 @auth.requires(auth.has_membership('Director') \
   or auth.has_membership('Administrador Personal') \
@@ -161,7 +169,7 @@ def eliminar_p():
 
     db(db.t_users_pendientes.f_email == user_email).delete()
     db(db.auth_user.email == user_email).delete()
-    session.flash = "Test"
+    session.flash = "El usuario ha sido eliminado"
     redirect(URL(c='gestion',f='pendientes'))
 
 @auth.requires(auth.has_membership('Director') \
@@ -171,18 +179,20 @@ def laboratorios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_laboratorio)
 
+    query = (db.t_laboratorio.f_nombre != "Ninguno")
     if auth.has_membership('Director'):
-        form = SQLFORM.smartgrid(db.t_laboratorio,onvalidation=validar_jefes,csv=False,details=False, linked_tables=['t_seccion'], deletable = False, editable=False, create=False)
+        form = SQLFORM.smartgrid(db.t_laboratorio,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False,details=False, linked_tables=['t_seccion'], deletable = False, editable=False, create=False)
     else:
-        form = SQLFORM.smartgrid(db.t_laboratorio,onvalidation=validar_jefes,csv=False,details=False, linked_tables=['t_seccion'], deletable = auth.has_membership('WebMaster'))
+        form = SQLFORM.smartgrid(db.t_laboratorio,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False, details=False,linked_tables=['t_seccion'], deletable = True, editable = True)
     return locals()
 
 def validar_jefes(form):
     if 'edit' in request.args:
-      if form.vars.f_jefe != db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first():
-          for lab in db(db.t_laboratorio.id > 0).select(db.t_laboratorio.f_jefe): 
-              if lab.f_jefe == form.vars.f_jefe:
-                  form.errors.f_jefe = T('No pueden haber Jefes que ocupen más de una Jefatura')
+        if form.vars.f_jefe != db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first():
+            for lab in db(db.t_laboratorio.id > 0).select(db.t_laboratorio.f_jefe, db.t_laboratorio.id): 
+                if (lab.f_jefe == form.vars.f_jefe):
+                    if (int(lab.id) != int(form.record_id)):
+                        form.errors.f_jefe = T('No pueden haber Jefes que ocupen más de una Jefatura')
 
 @auth.requires(auth.has_membership('Director') \
   or auth.has_membership('Administrador Personal') \
@@ -191,10 +201,12 @@ def secciones():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_seccion)
 
+
+    query = (db.t_seccion.f_seccion != "Ninguna")
     if auth.has_membership('Director'):
-        form = SQLFORM.smartgrid(db.t_seccion, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = False, editable=False, create=False)
+        form = SQLFORM.smartgrid(db.t_seccion, constraints=dict(t_seccion=query), csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = False, editable=False, create=False)
     else:
-        form = SQLFORM.smartgrid(db.t_seccion, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
+        form = SQLFORM.smartgrid(db.t_seccion, constraints=dict(t_seccion=query), csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
     return locals()
 
 @auth.requires(auth.has_membership('Director') \
@@ -210,7 +222,4 @@ def espacios():
     else:
         form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'])
     return locals()
-<<<<<<< HEAD
-=======
 
->>>>>>> Adolfo

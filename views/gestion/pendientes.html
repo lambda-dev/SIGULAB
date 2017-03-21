@@ -10,4 +10,8 @@
 <h2>Gestión de Usuarios Pendientes</h2>
 <p>Desde aquí se pueden confirmar los usuarios que pidieron registro pero no estaban en la lista de autorización previa.</p>
 <p>{{=form}}</p>
+
+{{if 'new' in request.args or 'edit' in request.args:}}
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+{{pass}}
 </div>

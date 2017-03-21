@@ -32,8 +32,7 @@ db.define_table('t_laboratorio',
 db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
-db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
-
+db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else 'Vacio'
 
 ########################################
 db.define_table('t_seccion',
@@ -112,8 +111,8 @@ db.define_table('t_users_autorizados',
     migrate=settings.migrate)
 
 
-db.t_users_pendientes.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else 'Vacio'
-db.t_users_pendientes.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else 'Vacio'
+db.t_users_autorizados.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else 'Vacio'
+db.t_users_autorizados.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else 'Vacio'
 
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
