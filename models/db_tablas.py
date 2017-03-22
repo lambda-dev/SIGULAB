@@ -380,6 +380,9 @@ db.define_table('t_solicitud',
     Field('f_cantidad_devuelta', 'float', label=T('Cantidad Recolectada')),
     Field('f_responsable', 'string', label=T('Responsable'), requires=IS_NOT_EMPTY(error_message='Debe introducir un responsable de buscar la sustancia.')),
     Field('f_Tipo', 'string', label=T('Tipo de Solicitud'), requires=IS_IN_SET(['Donación','Préstamo'], error_message='Debe identificar el tipo de solicitud que desea realizar.'), notnull=True),
+    Field('f_cantidad_respuestas', 'integer', label=T('Cantidad de respuestas'), readable=False, writable=False, default=0),
+    Field('f_aprobado', 'integer', label=T('Aprobado'), readable=False, writable=False, default=0),
+    Field('f_satisfecho', 'integer', label=T('Satisfecho'), readable=False, writable=False, default=0),
     )
 db.t_solicitud.id.readable=False
 db.t_solicitud.f_fecha_solicitud.readable=False
@@ -388,21 +391,19 @@ db.t_solicitud.f_espacio_fisico.readable=False
 db.t_solicitud.f_espacio_fisico.writable=False
 db.t_solicitud.f_responsable.readable=False
 db.t_solicitud.f_cantidad_devuelta.writable=False
-db.t_solicitud._singular='Solicitudes'
-db.t_solicitud._plural='Solicitudes'
 
 
 ########################################
 db.define_table('t_solicitud_respuesta',
     Field('f_sustancia', 'integer', label=T('Sustancia'),requires=IS_IN_DB(db,db.t_sustancias.id,'%(f_nombre)s')\
     ,represent= lambda value,row: db(db.t_sustancias.id == value).select().first()['f_nombre']),
-    Field('f_fecha_aceptado','date',label=T('Fecha Aceptado'),notnull=True),
+    Field('f_fecha_aceptado','date',label=T('Fecha Aceptado'),notnull=True, writable=False),
     Field('f_cantidad', 'float', label=T('Cantidad'), requires=IS_FLOAT_IN_RANGE(0.1,1e1000, error_message='Debe introducir una cantidad positiva.')),
-    Field('f_fecha_entregado','date',label=T('Fecha Entregado')),
-    Field('f_fecha_recibido','date',label=T('Fecha Recibido')),
+    Field('f_fecha_entregado','date',label=T('Fecha Entregado'), readable=False, writable=False),
+    Field('f_fecha_recibido','date',label=T('Fecha Recibido'), readable=False, writable=False),
     Field('f_tipo', 'string', label=T('Tipo de Solicitud'), requires=IS_IN_SET(['Donación','Préstamo']), notnull=True),
-    Field('f_fecha_devolucion','date',label=T('Fecha Devolución'), requires=IS_DATE_IN_RANGE(minimum=request.now.date(),error_message='Debe introducir una fecha mayor o igual a la actual.')),
-    Field('f_cantidad_devuelta', 'float', label=T('Cantidad Devuelta')),
+    Field('f_fecha_devolucion','date',label=T('Fecha Devolución'), readable=False, writable=False, requires=IS_DATE_IN_RANGE(minimum=request.now.date(),error_message='Debe introducir una fecha mayor o igual a la actual.')),
+    Field('f_cantidad_devuelta', 'float', label=T('Cantidad Recibida'), readable=False, writable=False),
     Field('f_espacio_fisico_s', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
     str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
@@ -412,34 +413,34 @@ db.define_table('t_solicitud_respuesta',
     str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
 
     label=T('Espacio Fisico')),
-
-    Field('f_solicitud', 'reference t_solicitud', label=T('Solicitud Asociada')),
-    Field('f_entregado', 'integer', label=T('Entregado')),
-    Field('f_recibido', 'integer', label=T('Recibido'))
+    Field('f_solicitud', 'reference t_solicitud', label=T('Solicitud Asociada'), readable=False, writable=False),
+    Field('f_entregado', 'integer', label=T('Entregado'), readable=False, writable=False),
+    Field('f_recibido', 'integer', label=T('Recibido'), readable=False, writable=False),
+    Field('f_estado','text',label=T('Estado'),writable=False, default='Listo para entregar'),
+    Field('f_cantidad_devuelta_prestamo', 'float', label=T('Cantidad Devuelta'), default=0, writable=False),
     )
 
 #Field('f_espacio_fisico_s', 'reference t_espaciofisico', label=T('Espacio Físico Solicitante'), represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']),
 #Field('f_espacio_fisico_d', 'reference t_espaciofisico', label=T('Espacio Físico Donante'), represent= lambda value,row: db(db.t_espaciofisico.id == value).select().first()['f_direccion']),
 db.t_solicitud_respuesta.id.readable=False
-db.t_solicitud_respuesta.f_recibido.readable=False
-db.t_solicitud_respuesta.f_entregado.readable=False
-db.t_solicitud_respuesta._singular='Prestamos'
-db.t_solicitud_respuesta._plural='Prestamos'
+#db.t_solicitud_respuesta.f_fecha_solicitud.readable=False
+#db.t_solicitud_respuesta.f_fecha_solicitud.writable=False
+
+#db.t_solicitud_respuesta.f_recibido.readable=False
+#db.t_solicitud_respuesta.f_entregado.readable=False
 
 ########################################
 db.define_table('t_solicitud_prestamo',
     Field('f_sustancia', 'integer', label=T('Sustancia'),requires=IS_IN_DB(db,db.t_sustancias.id,'%(f_nombre)s')\
     ,represent= lambda value,row: db(db.t_sustancias.id == value).select().first()['f_nombre']),
     Field('f_solicitud', 'reference t_solicitud_respuesta', label=T('Solicitud Asociada')),
-    Field('f_fecha_aceptado','date',label=T('Fecha Aceptado'),notnull=True),
+    Field('f_fecha_aceptado','date',label=T('Fecha'),notnull=True),
     Field('f_fecha_recibido','date',label=T('Fecha Recibido')),
     Field('f_cantidad', 'float', label=T('Cantidad'), requires=IS_FLOAT_IN_RANGE(0.1,1e1000, error_message='Debe introducir una cantidad positiva.')),
     Field('f_recibido', 'integer', label=T('Recibido'))
     )
 
 db.t_solicitud_prestamo.id.readable=False
-db.t_solicitud_prestamo._singular='Prestamos'
-db.t_solicitud_prestamo._plural='Prestamos'
 
 
 ########################################
@@ -451,7 +452,9 @@ db.executesql(
       s.f_espacio_fisico as f_espacio_fisico, \
       s.f_Tipo as f_Tipo,\
       s.id as f_id,\
-      i.f_espaciofisico as f_espaciofisico\
+      i.f_espaciofisico as f_espaciofisico,\
+      s.f_aprobado as f_aprobado,\
+      s.f_satisfecho as f_satisfecho\
   from t_inventario i inner join t_solicitud s on (i.f_sustancia = s.f_sustancia)\
   order by f_espaciofisico;')
 
@@ -463,6 +466,8 @@ db.define_table('v_solicitud',
     Field('f_Tipo',label=T('Tipo')),
     Field('f_id',label=T('ids')),
     Field('f_espaciofisico',label=T('Espacio Físico Donante')),
+    Field('f_aprobado',label=T('Aprobado'), readable=False, writable=False),
+    Field('f_satisfecho',label=T('Satisfecho'), readable=False, writable=False),
     migrate=False
     )
 
@@ -471,7 +476,7 @@ db.v_solicitud.f_id.readable=False
 db.v_solicitud.f_sustancia.represent=  lambda value,row: db(db.t_sustancias.id == value).select().first()['f_nombre']
 db.v_solicitud.f_espaciofisico.represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2]
 db.v_solicitud.f_espacio_fisico.represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2]
-db.v_solicitud._singular='Solicitudes'
-db.v_solicitud._plural='Solicitudes'
 
+
+########################################
 

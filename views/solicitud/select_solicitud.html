@@ -1,62 +1,27 @@
 {{extend 'layout.html'}}
 
 <div class="container">
-	<ol class="breadcrumb" style="background-color:#E0F2F1">
+	<ol class="breadcrumb">
 	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
 	  <li class="breadcrumb-item active">Solicitud</li>
 	</ol>
 
-<h1 align="center" style="color:#455A64">MIS SOLICITUDES</h1>
+{{if funcion=='1':}}
+<h2>Mis solicitudes</h2>
+{{elif funcion=='2':}}
+<h2>Solicitudes Recibidas</h2>
+{{elif funcion=='3':}}
+<h2>Préstamos</h2>
+{{elif funcion=='4':}}
+<h2>Deudas</h2>
+{{pass}}
 
 <p>{{str(auth.has_membership('Técnico'))}}</p>
 {{if espacios:}}
   <br>
-  <div class="row">
-    <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:#E0F2F1">
-		    <h4><i class="fa fa-stethoscope fa-5x" aria-hidden="true"></i></h4>
-			<div class="card-block">
-			    <h4>Laboratorios</h4>
-			</div>
-		</div>
-		{{if labs:}}
-
-		{{for lab in labs:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('solicitud','view_g',vars=dict(lab=lab.id))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            {{=lab.f_nombre}}
-		        </h5>
-            </a>
-		</div>
-		{{pass}}
-		<br>
-		{{pass}}
-    </div>
 
     <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:#E0F2F1">
-			<h4><i class="fa fa-sliders fa-5x" aria-hidden="true"></i></h4>
-			<div class="card-block">
-			    <h4>Secciones</h4>
-			</div>
-		</div>
-		{{if secciones:}}
-		{{for seccion in secciones:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('solicitud','view_f',vars=dict(secc=seccion.id))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            {{=str(db(db.t_laboratorio.id == seccion.f_laboratorio).select(db.t_laboratorio.f_nombre))[22:-2]}}, {{=seccion.f_seccion}}
-		        </h5>
-            </a>
-		</div>
-		{{pass}}
-		<br>
-		{{pass}}
-    </div>
-
-    <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:#E0F2F1">
+		<div class="breadcrumb">
 			<h4><i class="fa fa-industry fa-5x" aria-hidden="true"></i></h4>
 			<div class="card-block">
 			    <h4>Espacios Fisicos</h4>
@@ -66,7 +31,7 @@
 
 		{{for espacio in espacios:}}
 		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('solicitud','view_a', vars=dict(esp=espacio.id))}}" class="btn btn-lg btn-block" role="button">
+		    <a href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=espacio.id, f=request.vars['f']))}}" class="btn btn-lg btn-block" role="button">
 	            <h5>
 		            Seccion: {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}}, {{=espacio.f_espacio}}
 		        </h5>
@@ -85,4 +50,3 @@
 <br>
 <br>
 </div>
-
