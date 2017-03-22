@@ -1,7 +1,7 @@
-a.btn:link{
+/*a.btn:link{
     color:gray;
     text-decoration:none;
-    background-color:#E0F2F1;
+    background-color:#e4e5e7;
     white-space: normal;
 }
 a.btn:hover{
@@ -13,10 +13,26 @@ a.btn:focus{
     color: white;
     background-color:gray;
     box-shadow: none;
+}*/
+a.btn{
+  background-color: #e4e5e7;
+  color: gray;
+}
+a.btn:hover{
+  color: white;
+  background-color: #393A35;
+}
+.web2py_console a.btn:hover{
+  color: white;
+  background-color: #003089;
+}
+div.panel{
+  background-color: transparent;
 }
 a{
     text-decoration:none;
-    color:black;}
+    color:black;
+}
 .remember{
     text-align:right;
     padding-right:5px;

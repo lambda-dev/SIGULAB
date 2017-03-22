@@ -6,7 +6,7 @@
     font-size: 20px;
 }
 </style>
-<h2>
+<h2 class='text-center' style="margin-bottom:20px;">
 {{
 =T('Sign Up')
 if request.args(0) == 'register'
@@ -21,7 +21,7 @@ else T('')
 
       <div class="col-lg-7">
         <div class="container-fluid">
-          <img class="img img-responsive"src="{{=URL('static','images/login_copy__.png')}}" alt="Beakers">
+          <img class="img img-responsive"src="{{=URL('static','images/login.png')}}" alt="Beakers" style="transform:translateX(-10%);border-radius:5px;" id="beaker-img">
         </div>
       </div>
 
@@ -41,17 +41,24 @@ else T('')
     </div>
 </div>
 
+<style>
 
+.btn:hover{
+  font-size: 155%;
+}
+</style>
 {{block page_js}}
 <script>
-    jQuery('#auth_user_email__label').attr('class','control-label col-sm-12 center');
-    jQuery('#auth_user_password__label').attr('class','control-label col-sm-12 center');
+    // jQuery('#auth_user_email__label').attr('class','control-label col-sm-12 center');
+    // jQuery('#auth_user_password__label').attr('class','control-label col-sm-12 center');
+    jQuery('.control-label').attr('class','control-label col-sm-12 center');
     jQuery('div[class=col-sm-9]').attr('class','control-label col-sm-12 center');
     jQuery('div.col-sm-9.col-sm-offset-3').attr('class','col-sm-12 center');
     jQuery('input[type=submit]').addClass('button btn-lg btn-block');
-    jQuery('.checkbox').css("text-align","center");
     jQuery("#web2py_user_form input:visible:enabled:first").focus();
+    jQuery('form.form-horizontal div').show();
 {{if request.args(0)=='register':}}
+    jQuery('#beaker-img').css('transform','translateY(15%)');
     web2py_validate_entropy(jQuery('#auth_user_password'),100);
 {{elif request.args(0)=='change_password':}}
     web2py_validate_entropy(jQuery('#no_table_new_password'),100);

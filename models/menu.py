@@ -4,6 +4,7 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
+response.logo = A(IMG(_src=URL('static', 'images/logo-ulab.png'), _href=URL('default', 'index'),_style='height:50px;width:auto;'),_class='navbar-brand',_style='transform:translateY(-10px);')
 pen = db(db.t_users_pendientes).count()
 
 # user basico
@@ -21,10 +22,10 @@ if (not auth.has_membership('Usuario Normal') and (not auth.has_membership('Admi
 if not auth.has_membership('Usuario Normal') and not auth.has_membership('Administrador Personal') and auth.is_logged_in():
     response.menu += [
     [T('Solicitudes'),False, None,[
-      [T('Mis Solicitudes'), False, URL('solicitud','select_solicitud')],
-      [T('Solicitudes Recibidas'), False, URL('solicitud','view_h')],
-      [T('Prestamos'), False, URL('solicitud','view_k')],
-      [T('Deudas'), False, URL('solicitud','view_o')]
+      [T('Mis Solicitudes'), False, URL('solicitud','select_solicitud', vars=dict(f=1))],
+      [T('Solicitudes Recibidas'), False, URL('solicitud','select_solicitud', vars=dict(f=2))],
+      [T('Prestamos'), False, URL('solicitud','select_solicitud', vars=dict(f=3))],
+      [T('Deudas'), False, URL('solicitud','select_solicitud',vars=dict(f=4))]
       ]]
       ]
 
