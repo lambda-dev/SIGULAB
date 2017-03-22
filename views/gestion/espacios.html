@@ -9,4 +9,10 @@
 <h2>Gestión de Espacios Físicos</h2>
 <p>Desde aquí se pueden editar los diferentes espacios físicos y sus Técnicos o Encargados.</p>
 <p>{{=form}}</p>
+
+
+{{if 'new' in request.args or 'edit' in request.args:}}
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+{{pass}}
 </div>
+

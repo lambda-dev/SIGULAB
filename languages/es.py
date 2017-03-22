@@ -196,7 +196,9 @@
 'Email inválido': 'Email inválido',
 'Email sent': 'Correo electrónico enviado',
 'Email verification': 'Email verification',
-'Email verified': 'Email verified',
+
+'Email verified': 'El Email ha sido verificado',
+
 'End of impersonation': 'Fin de suplantación',
 'enter a number between %(min)g and %(max)g': 'introduzca un número entre %(min)g y %(max)g',
 'Enter a number between %(min)g and %(max)g': 'Introduzca un número entre %(min)g y %(max)g',

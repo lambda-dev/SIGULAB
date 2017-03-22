@@ -12,6 +12,7 @@
 
 <p>{{=table}}</p>
 
+
 {{if 'new' in request.args or 'edit' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
 {{pass}}
@@ -19,6 +20,7 @@
 <p class="center">Cantidad Disponible: {{=total}}</p>
 
 {{if not('edit' in request.args or 'new' in request.args):}}
+
 <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
 <button class="btn btn-default">Atras</button>
 </a>

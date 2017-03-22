@@ -596,3 +596,4 @@ def populate_db():
             db.t_bitacora.insert(f_fechaingreso='2017-01-01',f_sustancia=2,f_proceso="Ingreso Inicial",f_ingreso=0,f_consumo=0,f_unidad='mL',f_cantidad=0,f_espaciofisico=i)
 
 populate_db()
+
