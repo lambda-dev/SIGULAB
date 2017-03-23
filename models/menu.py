@@ -4,7 +4,7 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
-response.logo = A(IMG(_src=URL('static', 'images/logo-ulab.png'), _href=URL('default', 'index'),_style='height:50px;width:auto;'),_class='navbar-brand',_style='transform:translateY(-10px);')
+response.logo = A(IMG(_src=URL('static', 'images/logo-ulab.png'), _href=URL('default', 'index'),_style='height:50px;width:auto;'),_class='navbar-brand',_style='transform:translateY(-12px);')
 pen = db(db.t_users_pendientes).count()
 
 # user basico
@@ -15,6 +15,8 @@ if (not auth.has_membership('Usuario Normal') and (not auth.has_membership('Admi
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
             (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
+            (T('Reportes Rl4'),URL(c='reportes',f='select_fecha'),URL(c='reportes',f='select_fecha')),
+            (T('Reportes Rl7'),URL(c='reportes',f='select_fecha7'),URL(c='reportes',f='select_fecha7')),
             ]],
     [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')]
     ]

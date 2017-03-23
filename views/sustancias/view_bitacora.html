@@ -22,6 +22,9 @@
 <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
 <button class="btn btn-default">Atras</button>
 </a>
+<a  href="{{=URL('reportes','reporte_bitacora',vars=dict(esp=request.vars['esp'],sust=request.vars['sust']))}}">
+<button class="btn btn-default">Generar reporte</button>
+</a>
 {{pass}}
 
 <script>

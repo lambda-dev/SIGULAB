@@ -166,5 +166,15 @@
       });
     </script>
     {{pass}}
+    <script type="text/javascript">
+      {{if 'view' in request.args:}}
+        jQuery('label').removeClass('col-sm-3').addClass('col-sm-6');
+        jQuery('div[class=col-sm-9]').removeClass('col-sm-9').addClass('col-sm-6 text-center');
+      {{pass}}
+      {{if 'edit' in request.args or 'new' in request.args:}}
+        jQuery('.col-sm-9').css('padding-right','40px');
+        jQuery('input.btn.btn-primary').addClass('btn-lg');
+      {{pass}}
+    </script>
   </body>
 </html>

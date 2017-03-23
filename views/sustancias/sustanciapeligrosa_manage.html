@@ -21,10 +21,12 @@
 
 <script>
 	{{if 'edit' in request.args:}}
+    jQuery('.col-sm-9.col-sm-offset-3').removeClass('col-sm-9').removeClass('col-sm-offset-3').addClass('col-sm-12').addClass('center');
+    jQuery('input.btn.btn-primary').addClass('btn-lg');
 		var r=false
 		var text = '\
 		<a href="{{=URL('sustancias','delete_sustancias',vars=dict(d=request.args[3]) ) }}">\
-			<button class="btn btn-danger" type="button">\
+			<button class="btn btn-danger btn-lg" type="button">\
 				<span class="icon trash icon-trash glyphicon glyphicon-trash"></span>\
 				 Eliminar\
 			</button>\

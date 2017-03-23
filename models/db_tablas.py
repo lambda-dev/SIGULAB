@@ -473,3 +473,75 @@ db.v_solicitud.f_espaciofisico.represent= lambda value,row: str(db(db.t_espaciof
 db.v_solicitud.f_espacio_fisico.represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2]
 
 ########################################
+
+db.executesql(
+    'create or replace view total as\
+     select SUM(t_bitacora.f_ingreso) as "Total Entradas",\
+        t_bitacora.f_sustancia,extract(year from t_bitacora.f_fechaingreso) as year,\
+        extract(month from t_bitacora.f_fechaingreso) as mes, \
+        SUM(t_bitacora.f_consumo) as "Total Salidas"\
+    from t_inventario,t_bitacora where t_inventario.id=t_bitacora.id \
+    group by t_bitacora.f_sustancia,year,mes;')
+
+
+db.executesql(
+'create or replace view v_reporte as \
+    Select distinct ROW_NUMBER() OVER(ORDER BY f_nombre) as id, \
+        t_sustancias.f_nombre,\
+        t_inventario.f_unidad,\
+        coalesce(SUM(t_inventario.f_total),0) as cantidad_total, \
+        coalesce(total."Total Salidas",0) as total_salidas,\
+        coalesce(total."Total Entradas",0) as total_entradas,\
+        total.mes as f_mes,total.year as f_year\
+    from t_sustancias inner join t_inventario \
+    on t_inventario.f_sustancia=t_sustancias.id \
+        inner join total on total.f_sustancia=t_sustancias.id \
+    where t_sustancias.f_control=1 or t_sustancias.f_control=3 \
+    group by t_sustancias.f_nombre,\
+        t_inventario.f_unidad,\
+        f_mes,f_year,\
+        total."Total Salidas",total."Total Entradas";')
+
+
+db.define_table('v_reporte',
+    Field('f_nombre',label=T('Nombre Sustancia')),
+    Field('id'),
+    Field('f_unidad',label=T('Unidad de medida')),
+    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('total_salidas',label=T('Total salidas')),
+    Field('total_entradas',label=T('Total Entradas')),
+    Field('f_mes',label=T('Mes')),
+    Field('f_year',label=T('Año')),
+    migrate=False)
+db.v_reporte.id.readable=False
+
+db.executesql(
+'create or replace view v_reporte_rl7 as \
+    Select distinct ROW_NUMBER() OVER(ORDER BY f_nombre) as id, \
+        t_sustancias.f_nombre,\
+        t_inventario.f_unidad,\
+        coalesce(SUM(t_inventario.f_total),0) as cantidad_total, \
+        coalesce(total."Total Salidas",0) as total_salidas,\
+        coalesce(total."Total Entradas",0) as total_entradas,\
+        total.mes as f_mes,total.year as f_year\
+    from t_sustancias inner join t_inventario \
+    on t_inventario.f_sustancia=t_sustancias.id \
+        inner join total on total.f_sustancia=t_sustancias.id \
+    where t_sustancias.f_control=2 or t_sustancias.f_control=3 \
+    group by t_sustancias.f_nombre,\
+        t_inventario.f_unidad,\
+        total.mes,total.year,\
+        total."Total Salidas",total."Total Entradas";')
+
+
+db.define_table('v_reporte_rl7',
+    Field('f_nombre',label=T('Nombre Sustancia')),
+    Field('id'),
+    Field('f_unidad',label=T('Unidad de medida')),
+    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('total_salidas',label=T('Total salidas')),
+    Field('total_entradas',label=T('Total Entradas')),
+    Field('f_mes',label=T('Mes')),
+    Field('f_year',label=T('Año')),
+    migrate=False)
+db.v_reporte.id.readable=False

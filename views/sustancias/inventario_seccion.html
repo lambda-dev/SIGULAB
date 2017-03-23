@@ -11,10 +11,16 @@
 
 {{if seccion:}}
 <h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
+<a  href="{{=URL('reportes','reporte_seccion',vars=dict(secc=request.vars['secc']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
 {{pass}}
 
 {{if sustancia:}}
 <h3 style="color:#455A64">Sustancia: {{=sustancia}}</h3>
+<a  href="{{=URL('reportes','reporte_lab',vars=dict(lab=request.vars['lab'],sust=request.vars['sust']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
 {{pass}}
 
 <p>{{=table}}</p>
