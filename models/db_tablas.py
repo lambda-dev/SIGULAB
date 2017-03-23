@@ -29,7 +29,6 @@ db.define_table('t_laboratorio',
     Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio')),
     migrate=settings.migrate)
 
-db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
 db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else 'Vacio'
@@ -71,8 +70,8 @@ db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
-db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s')
-db.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s')
+db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s',zero=None)
+db.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s',zero=None)
 
 ###############################################
 
