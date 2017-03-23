@@ -280,7 +280,7 @@ def generar_reporte():
 		if y<13:
 			ayuda=0;
 			print("Hice el query")
-			query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fechaingreso)
+			query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
 			for t in query1:
 				ayuda=ayuda+1
 			print("PASE UNA VEZ")
@@ -320,7 +320,7 @@ def generar_reporte():
 
 		if y>=13:
 			print("Hice el query")
-			query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fechaingreso)
+			query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
 			for t in query1:
 				query2=db((t.f_fechaingreso.month<int(mes))&(t.f_fechaingreso.month==int(year))).select(db.t_bitacora.f_cantidad)
 				aux1=0
@@ -378,11 +378,10 @@ def generar_reporte():
 	x = ['H14','H15','H16','H17','H18','H19','H20','H21','H22','H23','H24','H25','H26']
 	y=0;
 	for i in ids:
-		query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fechaingreso)
+		query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
 		aux1=0
 		print("Estoy con",i)
 		for t in query1:
-			print("AQUI",i,t.f_fechaingreso)
 			if ((t.f_fechaingreso.month==int(mes))&(t.f_fechaingreso.year==int(year))):
 				if aux1==0:
 					print("ENTRE AQUI")

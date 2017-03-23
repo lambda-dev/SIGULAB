@@ -478,8 +478,6 @@ db.v_solicitud.f_espaciofisico.represent= lambda value,row: str(db(db.t_espaciof
 db.v_solicitud.f_espacio_fisico.represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2]
 
 ########################################
-########################################
-
 db.executesql(
     'create or replace view total as\
      select SUM(t_bitacora.f_ingreso) as "Total Entradas",\
@@ -551,3 +549,4 @@ db.define_table('v_reporte_rl7',
     Field('f_year',label=T('Año')),
     migrate=False)
 db.v_reporte.id.readable=False
+
