@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+<div class="container style="background-color:#E0F2F1">
+<a  href="{{=URL('reportes','generar_reporte',vars=dict(m=request.vars['m'],y=request.vars['y']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
+<p>{{=table}}</p>
+
+</div>

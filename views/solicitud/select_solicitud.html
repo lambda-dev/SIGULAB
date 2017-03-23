@@ -3,25 +3,24 @@
 <div class="container">
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item active">Solicitud</li>
+	{{if funcion=='1':}}
+	  <li class="breadcrumb-item active">Mis Solicitudes</li>
+	{{elif funcion=='2':}}
+	  <li class="breadcrumb-item active">Solicitudes Recibidas</li>
+	{{elif funcion=='3':}}
+	  <li class="breadcrumb-item active">Préstamos</li>
+	{{elif funcion=='4':}}
+	  <li class="breadcrumb-item active">Deudas</li>
+	{{pass}}
 	</ol>
-
-{{if funcion=='1':}}
-<h2>Mis solicitudes</h2>
-{{elif funcion=='2':}}
-<h2>Solicitudes Recibidas</h2>
-{{elif funcion=='3':}}
-<h2>Préstamos</h2>
-{{elif funcion=='4':}}
-<h2>Deudas</h2>
-{{pass}}
+</div>
 
 <p>{{str(auth.has_membership('Técnico'))}}</p>
 {{if espacios:}}
   <br>
 
-    <div class="col-sm-4 text-center">
-		<div class="breadcrumb">
+    <div class="col-sm-4 text-center center" style="padding-right: 35%; padding-left: 35%;">
+		<div class="breadcrumb" style="background-color:transparent;">
 			<h4><i class="fa fa-industry fa-5x" aria-hidden="true"></i></h4>
 			<div class="card-block">
 			    <h4>Espacios Fisicos</h4>
@@ -50,3 +49,8 @@
 <br>
 <br>
 </div>
+
+<script>
+//jQuery(".col-md-4").addClass("center");
+</script>
+

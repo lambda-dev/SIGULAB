@@ -7,6 +7,9 @@
 	  <li class="breadcrumb-item active">Laboratorio</li>
 	</ol>
 
+  <a  href="{{=URL('reportes','reporte_laboratorio',vars=dict(lab=request.vars['lab']))}}">
+  <button class="btn btn-default">Generar Reporte</button>
+  </a>
 <h3 style="color:#455A64">{{=lab}}</h3>
 <p>{{=table}}</p>
 

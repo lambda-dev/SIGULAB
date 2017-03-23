@@ -17,10 +17,16 @@
 
 {{if sustancia:}}
 <h3 style="color:#455A64">Sustancia: {{=sustancia}}</h3>
+<a  href="{{=URL('reportes','reporte_sust',vars=dict(secc=request.vars['secc'],sust=request.vars['sust']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
 {{pass}}
 
 {{if espFisico:}}
 <h2>Espacio Fisico: {{=espFisico}}</h2>
+<a  href="{{=URL('reportes','reporte_esp',vars=dict(esp=request.vars['esp']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
 {{pass}}
 
 {{if 'edit' in request.args:}}
@@ -37,7 +43,6 @@
 {{if 'new' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
 {{pass}}
-
 
 {{pass}}
 

@@ -16,6 +16,8 @@ if (auth.has_membership('Técnico') or auth.has_membership('Jefe de Sección') o
     [T('SMyDP'),False,None,[
             (T('Inventario'),URL('sustancias','select_inventario'),URL('sustancias','select_inventario')),
             (T('Listado de Sustancias'),URL('sustancias','sustanciapeligrosa_manage'),URL('sustancias','sustanciapeligrosa_manage')),
+            (T('Reportes Rl4'),URL(c='reportes',f='select_fecha'),URL(c='reportes',f='select_fecha')),
+            (T('Reportes Rl7'),URL(c='reportes',f='select_fecha7'),URL(c='reportes',f='select_fecha7')),
             ]],
     [T('Facturación'),URL('sustancias','view_compras'),URL('sustancias','view_compras')],
     [T('Solicitudes'),False, None,[

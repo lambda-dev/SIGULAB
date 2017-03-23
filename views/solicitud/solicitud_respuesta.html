@@ -2,10 +2,11 @@
 <div class="container">
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud')}}">Solicitud</a></li>
-	  <li class="breadcrumb-item active">Espacios Físicos</li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=1))}}">Mis Solicitudes</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=request.vars['esp'], f=1))}}">Espacio Físico</a></li>
+	  <li class="breadcrumb-item active">Respuesta</li>
 	</ol>
-
+</div>
 {{if sust:}}
 <h3 style="color:#455A64">Sustancia solicitada: {{=sust}}</h3>
 {{pass}}
@@ -19,7 +20,7 @@
 <p>{{=table}}</p>
 
 
-<a  href="{{=URL('solicitud','view_a', vars=dict(esp=request.vars['esp']))}}">
+<a  href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=request.vars['esp'], f=1))}}">
 <button class="btn btn-default">Atras</button>
 </a>
 <script>
@@ -31,8 +32,8 @@
 		x.find('span').first().hide();
 		y = x.first();
 		if (js[i]==1 || js1[i]==0){
-			y.hide();
-			x.hide();
+			y.css('visibility','hidden');
+			x.css('visibility','hidden');
 		}
 		i +=1;
 	});
