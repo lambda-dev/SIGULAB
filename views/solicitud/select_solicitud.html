@@ -13,34 +13,46 @@
 	  <li class="breadcrumb-item active">Deudas</li>
 	{{pass}}
 	</ol>
-</div>
+
+{{if table:}}
+{{=table}}
+{{pass}}
+
 
 <p>{{str(auth.has_membership('Técnico'))}}</p>
 {{if espacios:}}
   <br>
 
-    <div class="col-sm-4 text-center center" style="padding-right: 35%; padding-left: 35%;">
-		<div class="breadcrumb" style="background-color:transparent;">
-			<h4><i class="fa fa-industry fa-5x" aria-hidden="true"></i></h4>
-			<div class="card-block">
-			    <h4>Espacios Fisicos</h4>
-			</div>
-		</div>
-		{{if espacios:}}
 
+  {{if espacios:}}
+
+  <div class="row">
+    <div class="col-sm-12 text-center">
+		    <div class="breadcrumb" style="background-color:transparent;">
+
+			       <h4><i class="fa fa-industry fa-5x" aria-hidden="true"></i></h4>
+
+             <div class="card-block">
+			            <h4>Espacios Fisicos</h4>
+			       </div>
+        </div>
+		</div>
+  </div>
+
+    <div class="container">
 		{{for espacio in espacios:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=espacio.id, f=request.vars['f']))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            Seccion: {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}}, {{=espacio.f_espacio}}
-		        </h5>
-            </a>
-		</div>
-		{{pass}}
-
-
-		{{pass}}
+    <div class="col-sm-3">
+  		<div class="breadcrumb" style="padding:0px;border:none;">
+  		    <a href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=espacio.id, f=request.vars['f']))}}" class="btn btn-lg btn-block" role="button">
+  	        <h5>Seccion: {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}}, {{=espacio.f_espacio}}</h5>
+          </a>
+  		</div>
     </div>
+		{{pass}}
+  </div>
+
+
+		{{pass}}
 </div>
 
 {{else:}}

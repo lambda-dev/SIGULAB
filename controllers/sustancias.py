@@ -35,23 +35,52 @@ def validar_bitacora(form):
     else:
 
         if 'edit' in request.args:
-            anterior_ = anterior.f_orden
-            anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)&(db.v_bitacora.f_orden > anterior_)).select(db.v_bitacora.ALL).first()
-            disponible = anterior.f_cantidad
-            actual = db(db.t_bitacora.id == request.args[3])
-            proceso = str(actual.select(db.t_bitacora.f_proceso))[22:-2]
-            actual.select().first().update_record(f_fecha = request.now)
 
-            if proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
+            anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)).select(db.v_bitacora.ALL).first()
+            anterior = db((db.v_bitacora.f_orden > anterior.f_orden)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)).select(db.v_bitacora.ALL).first()
+
+            if anterior is None:
+                disponible = 0
+            else:
+                disponible = anterior.f_cantidad
+
+            if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Ingreso Inicial','Traslado Donación -> Uso Interno']:
                 form.vars.f_ingreso = form.vars.f_cantidad
                 form.vars.f_cantidad = disponible + form.vars.f_ingreso
-                session.flash = form.vars
             else:
-                form.vars.f_consumo = form.vars.f_cantidad
-                form.vars.f_cantidad = disponible - form.vars.f_consumo
+                if form.vars.f_cantidad > disponible:
+                    form.errors.f_cantidad = T('No puede consumir más de la cantidad disponible (%s)' ,disponible)
+                else:
+                    form.vars.f_consumo = form.vars.f_cantidad
+                    form.vars.f_cantidad = disponible - form.vars.f_consumo
+
+            # anterior_ = anterior.f_orden
+            # anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)&(db.v_bitacora.f_orden > anterior_)).select(db.v_bitacora.ALL).first()
+            # if anterior is None:
+            #     disponible = 0
+            # else:
+            #     disponible = anterior.f_cantidad
+            # actual = db(db.t_bitacora.id == request.args[3])
+            # proceso = str(actual.select(db.t_bitacora.f_proceso))[22:-2]
+            # actual.select().first().update_record(f_fecha = request.now)
+            #
+            # if proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Ingreso Inicial','Traslado Donación -> Uso Interno']:
+            #     form.vars.f_ingreso = form.vars.f_cantidad
+            #     form.vars.f_cantidad = disponible + form.vars.f_ingreso
+            #
+            # # elif proceso in ['Traslado Uso Interno -> Donación','Traslado Donación -> Uso Interno']:
+            # #     pass
+            # # elif proceso == 'Ingreso Inicial':
+            # #     act = db((db.t_bitacora.f_espaciofisico == espF)&(db.t_bitacora.f_sustancia == sust)&(db.t_bitacora.f_proceso == 'Ingreso Inicial')).select(db.t_bitacora.ALL).first()
+            # #     act_= db(db.v_bitacora.id == act.id).select(db.v_bitacora.ALL).first()
+            # #     disponible = db((db.v_bitacora.f_orden > act_.f_orden)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.v_bitacora.ALL).first().f_cantidad
+            # #     act.update_record(f_cantidad = disponible)
+            # else:
+            #     form.vars.f_consumo = form.vars.f_cantidad
+            #     form.vars.f_cantidad = disponible - form.vars.f_consumo
 
         else:
-            if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
+            if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Ingreso Inicial','Traslado Donación -> Uso Interno']:
                 form.vars.f_ingreso = form.vars.f_cantidad
                 form.vars.f_cantidad = disponible + form.vars.f_ingreso
             else:
@@ -90,7 +119,7 @@ def view_compras():
     if 'view' in request.args:
         db.t_facturas.f_sustancia.readable=True
 
-    table = SQLFORM.smartgrid(db.t_facturas,csv=False,deletable=False)
+    table = SQLFORM.smartgrid(db.t_facturas,csv=False,deletable=False,paginate=10)
     return locals()
 
 
@@ -98,6 +127,9 @@ def view_compras():
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def insert_bitacora(form):
+
+    proceso = db(db.t_bitacora.id == form.vars.id).select(db.t_bitacora.ALL).first().f_proceso
+
     espF = request.vars['esp']
     sust = request.vars['sust']
     num = db(db.v_bitacora.id == form.vars.id).select(db.v_bitacora.ALL).first().f_orden
@@ -105,7 +137,14 @@ def insert_bitacora(form):
     actual = db(db.t_bitacora.id == form.vars.id).select(db.t_bitacora.ALL).first()
     actual_ = db(db.v_bitacora.id == form.vars.id).select(db.v_bitacora.ALL).first()
     ultimo = db((db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.v_bitacora.ALL).first().f_orden
+    ultimo_ = db((db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico == espF)).select(db.v_bitacora.ALL).first()
     siguiente_ = db((db.v_bitacora.f_espaciofisico == espF)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_orden < actual_.f_orden)).select(db.v_bitacora.ALL).last()
+    anterior = db((db.v_bitacora.f_fechaingreso <= form.vars.f_fechaingreso)&(db.v_bitacora.f_sustancia == sust)&(db.v_bitacora.f_espaciofisico ==espF)).select(db.v_bitacora.ALL).first()
+
+    if anterior is None:
+        disponible = 0
+    else:
+        disponible = anterior.f_cantidad
 
     if siguiente_ is not None:
         n_actual = actual_.f_orden
@@ -132,14 +171,14 @@ def insert_bitacora(form):
 
     bit  = db((db.t_inventario.f_espaciofisico == espF)&(db.t_inventario.f_sustancia == sust)).select(db.t_inventario.ALL).first()
 
-    if form.vars.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion']:
-        bit.update_record(f_cantidadusointerno = bit.f_cantidadusointerno + form.vars.f_ingreso)
+    x = db(db.t_bitacora.id == form.vars.id).select(db.t_bitacora.ALL).first()
+    if proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Traslado Donación -> Uso Interno','Ingreso Inicial']:
+        bit.update_record(f_cantidadusointerno = ultimo_.f_cantidad - bit.f_cantidadonacion)
     else:
-        bit.update_record(f_cantidadusointerno = bit.f_cantidadusointerno - form.vars.f_consumo)
-
+        bit.update_record(f_cantidadusointerno = ultimo_.f_cantidad - bit.f_cantidadonacion)
     bit.update_record(f_total = bit.f_cantidadonacion + bit.f_cantidadusointerno)
 
-    if form.vars.f_proceso == 'Compra':
+    if proceso == 'Compra':
         redirect(URL('sustancias','select_facturas',vars=dict(sust=sust,esp=espF)))
 
 
@@ -179,9 +218,9 @@ def sustanciapeligrosa_manage():
 
     if(auth.has_membership('Gestor de Sustancias') or \
     auth.has_membership('WebMaster')):
-        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True)
+        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True,paginate=10)
     else:
-        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
+        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False,paginate=10)
     return locals()
 
 
@@ -215,9 +254,17 @@ def select_inventario():
 @auth.requires_login()
 def inventario_lab():
 
+    # if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
+    #     espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+    #     secciones = db(db.t_inventario.f_seccion == db.t_seccion.id).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
+    # elif (auth.has_membership('Jefe de Laboratorio') ):
+    #     espacios = db( (db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico) ).select(db.t_espaciofisico.ALL,distinct=db.t_espaciofisico.id)
+    #     secciones = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion) ).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
+
+    secciones = db((db.t_laboratorio.id == request.vars['lab'])&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion)).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
     lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     query = db.v_laboratorio.f_laboratorio == str(request.vars['lab'])
-    table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False)
+    table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
     return locals()
 
 
@@ -225,6 +272,20 @@ def inventario_lab():
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def inventario_seccion():
+    #
+    # if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
+    #     espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+    #     secciones = db(db.t_inventario.f_seccion == db.t_seccion.id).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
+    #     labs = db(db.t_inventario.f_laboratorio == db.t_laboratorio.id).select(db.t_laboratorio.ALL,distinct=db.t_laboratorio.id)
+    # elif (auth.has_membership('Jefe de Laboratorio') ):
+    #     espacios = db( (db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico) ).select(db.t_espaciofisico.ALL,distinct=db.t_espaciofisico.id)
+    #     secciones = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion) ).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
+    #     labs = db(db.t_laboratorio.f_jefe == auth.user.id).select(db.t_laboratorio.ALL)
+    # elif (auth.has_membership('Jefe de Sección') ):
+    #     espacios = db((db.t_espaciofisico.f_seccion == request.vars['secc'])&(db.t_seccion.f_jefe == auth.user.id)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+    #     secciones = db(db.t_seccion.f_jefe == auth.user.id ).select(db.t_seccion.ALL)
+    # else:
+    #     espacios = db((db.t_tecs_esp.f_tecnico == auth.user.id)&(db.t_espaciofisico.id == db.t_tecs_esp.f_espaciofisico)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
 
     if request.vars['secc'] == 't':
         db.v_seccion.f_seccion.readable = True
@@ -232,10 +293,13 @@ def inventario_seccion():
         lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
         sust = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:-2]
         query = (db.v_seccion.f_laboratorio == request.vars['lab'])&(db.v_seccion.f_sustancia == sust)
-        table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
+        table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
         seccion = False
         sustancia = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:]
+        espacios = False
         return locals()
+    else:
+        espacios = db((db.t_espaciofisico.f_seccion == request.vars['secc'])).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
 
     sustancia = False
     secc = request.vars['secc']
@@ -243,7 +307,7 @@ def inventario_seccion():
     lab = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_laboratorio))[25:-2]
     query = (db.v_seccion.f_laboratorio == lab)&(db.v_seccion.f_seccion == secc)
     lab = str(db( db.t_laboratorio.id == lab ).select(db.t_laboratorio.f_nombre))[24:-2]
-    table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
+    table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
     return locals()
 
 
@@ -346,7 +410,7 @@ def inventario_manage():
                                     f_proceso = "Traslado Donación -> Uso Interno",
                                     f_ingreso = form.vars.cantidad,
                                     f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
-                                    f_cantidad = upd.f_cantidadusointerno,
+                                    f_cantidad = upd.f_total,
                                     f_espaciofisico = request.vars['esp'],
                                     )
 
@@ -359,7 +423,7 @@ def inventario_manage():
                                     f_proceso = "Traslado Uso Interno -> Donación",
                                     f_consumo = form.vars.cantidad,
                                     f_unidad = row.select(db.t_inventario.ALL).first().f_unidad,
-                                    f_cantidad = upd.f_cantidadusointerno,
+                                    f_cantidad = upd.f_total,
                                     f_espaciofisico = request.vars['esp'],
                                     )
             redirect(URL('inventario_manage',vars=dict(esp=request.vars['esp'])))
@@ -384,13 +448,13 @@ def inventario_manage():
             js = XML(json.dumps(js))
         else:
             query = (db.t_inventario.f_seccion == request.vars['secc'])
-        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),
-        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
+        table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=auth.has_membership('WebMaster'),
+        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False,paginate=10)
 
         return locals()
 
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,deletable=False,oncreate=insert_inventario,
-    onvalidation=validar_inventario,editable=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')))
+    onvalidation=validar_inventario,editable=auth.has_membership('WebMaster'),paginate=10)
     return locals()
 
 
@@ -435,11 +499,12 @@ def view_bitacora():
         db.t_bitacora.f_ingreso.readable = False
         db.t_bitacora.f_ingreso.writable = False
         db.t_bitacora.f_cantidad.writable = True
-        db.t_bitacora.f_proceso.writable = False
+        db.t_bitacora.f_proceso.writable = True
         db.t_bitacora.f_unidad.readable = True
-        db.t_bitacora.f_unidad.writable = False
+        # db.t_bitacora.f_unidad.writable = False
         if not row.f_proceso in ['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio']:
-            db.t_bitacora.f_cantidad.writable = False
+            #db.t_bitacora.f_cantidad.writable = False
+            pass
         mark_not_empty(db.t_bitacora)
         row = db(db.t_bitacora.id == request.args[3]).select().first()
         if row.f_ingreso == 0:
@@ -449,7 +514,7 @@ def view_bitacora():
 
     table = SQLFORM.smartgrid(db.t_bitacora,constraints=dict(t_bitacora=query),oncreate=insert_bitacora,
     orderby=[~db.t_bitacora.f_fechaingreso,~db.t_bitacora.f_fecha],csv=False,links_in_grid=False,deletable=False,
-    user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=insert_bitacora)
+    user_signature=True,onvalidation=validar_bitacora,paginate=10,onupdate=insert_bitacora,editable=auth.has_membership('WebMaster'))
 
     return locals()
 

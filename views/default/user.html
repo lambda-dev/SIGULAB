@@ -60,6 +60,18 @@ else T('')
 {{if request.args(0)=='register':}}
     jQuery('#beaker-img').css('transform','translateY(15%)');
     web2py_validate_entropy(jQuery('#auth_user_password'),100);
+    jQuery('#auth_user_cargo option[value=1]').hide().prop('disabled',true);
+    jQuery('#auth_user_cargo option[value=3]').hide().prop('disabled',true);
+    jQuery('#auth_user_cargo option[value=2]').hide().prop('disabled',true);
+    jQuery('#auth_user_cargo option[value=4]').hide().prop('disabled',true);
+    jQuery('#auth_user_cargo option[value=8]').hide().prop('disabled',true);
+    jQuery('#auth_user_cargo option[value=7]').prop('selected',true);
+    jQuery('#auth_user_f_seccion option[value=114]').prop('selected',true);
+    jQuery('#auth_user_f_laboratorio option[value=8]').prop('selected',true);
+    jQuery('#auth_user_cargo').change(function(){
+      if (jQuery('#auth_user_cargo :selected').text() == "Jefe de Laboratorio") jQuery('#auth_user_f_seccion__row').slideUp();
+      else jQuery('#auth_user_f_seccion__row').slideDown();
+    });
 {{elif request.args(0)=='change_password':}}
     web2py_validate_entropy(jQuery('#no_table_new_password'),100);
 {{pass}}

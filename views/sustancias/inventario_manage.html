@@ -8,26 +8,23 @@
 	</ol>
 
 {{if labs:}}
-<h3 style="color:#455A64">{{=labs}}</h3>
+<h1 style="color:#455A64" class="text-center">{{=labs}}</h1>
 {{pass}}
 
 {{if seccion:}}
-<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
-{{pass}}
-
-{{if sustancia:}}
-<h3 style="color:#455A64">Sustancia: {{=sustancia}}</h3>
-<a  href="{{=URL('reportes','reporte_sust',vars=dict(secc=request.vars['secc'],sust=request.vars['sust']))}}">
-<button class="btn btn-default">Generar Reporte</button>
-</a>
+<h3 style="color:#455A64" class="text-center">Seccion: {{=seccion}}</h3>
 {{pass}}
 
 {{if espFisico:}}
-<h2>Espacio Fisico: {{=espFisico}}</h2>
-<a  href="{{=URL('reportes','reporte_esp',vars=dict(esp=request.vars['esp']))}}">
-<button class="btn btn-default">Generar Reporte</button>
-</a>
+<h3 style="color:#455A64" class="text-center">Espacio Fisico: {{=espFisico}}</h3>
 {{pass}}
+
+{{if sustancia:}}
+<h3 style="color:#455A64" class="text-center">Sustancia: {{=sustancia}}</h3>
+
+{{pass}}
+
+<hr style="border-width:thick;border-color:#455A64;">
 
 {{if 'edit' in request.args:}}
 <p>{{=table[1]}}</p>
@@ -40,6 +37,7 @@
 {{else:}}
 
 <p>{{=table}}</p>
+
 {{if 'new' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
 {{pass}}
@@ -51,6 +49,19 @@
 <button class="btn btn-default">Atras</button>
 </a>
 {{pass}}
+
+{{if espFisico:}}
+<a  href="{{=URL('reportes','reporte_esp',vars=dict(esp=request.vars['esp']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
+{{pass}}
+
+{{if sustancia:}}
+<a  href="{{=URL('reportes','reporte_sust',vars=dict(secc=request.vars['secc'],sust=request.vars['sust']))}}">
+<button class="btn btn-default">Generar Reporte</button>
+</a>
+{{pass}}
+
 </div>
 
 <script>

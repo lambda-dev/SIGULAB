@@ -6,15 +6,22 @@ import json
 @auth.requires_login()
 def select_solicitud(): #vista general para escoger el espacio físico desde donde se desea realizar la operacion
     espacios=False
+    table=False
     funcion=request.vars['f']
     if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
-        espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+        table=SQLFORM.smartgrid(db.s_espaciofisico, csv=False, deletable=False, editable=False, details=False, create=False, paginate=15)
     elif (auth.has_membership('Jefe de Laboratorio') ):
-        espacios = db( (db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico) ).select(db.t_espaciofisico.ALL,distinct=db.t_espaciofisico.id)#,orderby=db.t_espaciofisico.f_seccion)
+        query=db.s_espaciofisico.f_jefe_laboratorio==auth.user.id
+        table=SQLFORM.smartgrid(db.s_espaciofisico, constraints=dict(s_espaciofisico=query), csv=False, deletable=False, editable=False, details=False, create=False, paginate=15)
+        return locals()
     elif (auth.has_membership('Jefe de Sección') ):
-        espacios = db((db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_seccion.f_jefe == auth.user.id)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+        query=db.s_espaciofisico.f_jefe_seccion==auth.user.id
+        table=SQLFORM.smartgrid(db.s_espaciofisico, constraints=dict(s_espaciofisico=query), csv=False, deletable=False, editable=False, details=False, create=False, paginate=15)
+        return locals()
     else:
         espacios = db((db.t_tecs_esp.f_tecnico == auth.user.id)&(db.t_espaciofisico.id == db.t_tecs_esp.f_espaciofisico)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
+#9751371
+
     return locals()
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()

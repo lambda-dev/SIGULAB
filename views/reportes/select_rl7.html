@@ -1,8 +1,18 @@
 {{extend 'layout.html'}}
-<div class="container style="background-color:#E0F2F1">
-<a  href="{{=URL('reportes','generar_reporte_rl7',vars=dict(m=request.vars['m'],y=request.vars['y']))}}">
-<button class="btn btn-default">Generar Reporte</button>
-</a>
-<p>{{=table}}</p>
+<div class="container">
+  <h1 style="color:#455A64" class="text-center">Reporte RL7</h1>
+
+  <h3 style="color:#455A64" class="text-center">Mes: {{=request.vars['m']}}</h3>
+
+  <h3 style="color:#455A64" class="text-center">Año: {{=request.vars['y']}}</h3>
+
+  <hr style="border-width:thick;border-color:#455A64;">
+
+  <p>{{=table}}</p>
+
+  <a  href="{{=URL('reportes','generar_reporte_rl7',vars=dict(m=request.vars['m'],y=request.vars['y']))}}">
+  <button class="btn btn-default">Generar Reporte</button>
+  </a>
 
 </div>
+

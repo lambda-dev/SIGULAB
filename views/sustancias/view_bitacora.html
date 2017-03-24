@@ -1,32 +1,38 @@
 {{extend 'layout.html'}}
+<<<<<<< HEAD
+<div class="container">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+    <li class="breadcrumb-item active">Bitacora</li>
+  </ol>
 
-<h1>Bitacora</h1>
+  <h1 style="color:#455A64" class="text-center">Bitácora espacio fisico: {{=espacio}}</h1>
 
-<h2>Sustancia: {{=name}}</h2>
+  <h2 style="color:#455A64" class="text-center">Sustancia: {{=name}}</h2>
 
-<h2>Espacio Fisico: {{=espacio}}</h2>
+  {{if not 'new' in request.args:}}
+  <h3 style="color:#455A64" class="text-center">Unidades: {{=unid}}</h3>
+  {{pass}}
 
-{{if not 'new' in request.args:}}
-<h3>Unidades: {{=unid}}</h3>
-{{pass}}
+  <hr style="border-width:thick;border-color:#455A64;">
 
-<p>{{=table}}</p>
+  <p>{{=table}}</p>
 
-{{if 'new' in request.args or 'edit' in request.args:}}
-<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
-{{pass}}
+  {{if 'new' in request.args or 'edit' in request.args:}}
+  <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+  {{pass}}
 
-<p class="center">Cantidad Disponible: {{=total}}</p>
-
-{{if not('edit' in request.args or 'new' in request.args):}}
-<a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
-<button class="btn btn-default">Atras</button>
-</a>
-<a  href="{{=URL('reportes','reporte_bitacora',vars=dict(esp=request.vars['esp'],sust=request.vars['sust']))}}">
-<button class="btn btn-default">Generar reporte</button>
-</a>
-{{pass}}
-
+  {{if not('edit' in request.args or 'new' in request.args):}}
+  <a  href="{{=URL('sustancias','inventario_manage',vars=dict(esp=request.vars['esp']))}}">
+  <button class="btn btn-default">Atras</button>
+  </a>
+  <a  href="{{=URL('reportes','reporte_bitacora',vars=dict(esp=request.vars['esp'],sust=request.vars['sust']))}}">
+  <button class="btn btn-default">Generar reporte</button>
+  </a>
+  {{pass}}
+</div>
 <script>
 jQuery('#t_bitacora_f_proceso').change(function(){
     if (jQuery('#t_bitacora_f_proceso :selected').text() == "Compra") jQuery('#t_bitacora_f_descripcion__row').slideUp();

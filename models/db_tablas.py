@@ -257,7 +257,7 @@ db.define_table('t_bitacora',
     migrate=settings.migrate)
 
 db.t_bitacora.id.readable = False
-db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
+db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 db.t_bitacora._singular='Bitacora'
 db.t_bitacora._plural='Bitacora'
 
@@ -484,7 +484,7 @@ db.executesql(
         t_bitacora.f_sustancia,extract(year from t_bitacora.f_fechaingreso) as year,\
         extract(month from t_bitacora.f_fechaingreso) as mes, \
         SUM(t_bitacora.f_consumo) as "Total Salidas"\
-    from t_bitacora  \
+    from t_bitacora\
     group by t_bitacora.f_sustancia,year,mes;')
 
 
@@ -511,7 +511,7 @@ db.define_table('v_reporte',
     Field('f_nombre',label=T('Nombre Sustancia')),
     Field('id'),
     Field('f_unidad',label=T('Unidad de medida')),
-    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('cantidad_total',label=T('Saldo fisico final'),readable=False),
     Field('total_salidas',label=T('Total salidas')),
     Field('total_entradas',label=T('Total Entradas')),
     Field('f_mes',label=T('Mes')),
@@ -542,11 +542,43 @@ db.define_table('v_reporte_rl7',
     Field('f_nombre',label=T('Nombre Sustancia')),
     Field('id'),
     Field('f_unidad',label=T('Unidad de medida')),
-    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('cantidad_total',label=T('Saldo fisico final'),readable=False),
     Field('total_salidas',label=T('Total salidas')),
     Field('total_entradas',label=T('Total Entradas')),
     Field('f_mes',label=T('Mes')),
     Field('f_year',label=T('Año')),
     migrate=False)
 db.v_reporte.id.readable=False
+
+db.executesql(
+'create or replace view s_espaciofisico as\
+  select ROW_NUMBER() OVER(order by f_laboratorio, f_direccion) as id,\
+      e.f_espacio as f_espacio, \
+      e.f_direccion as f_direccion, \
+      e.f_seccion as f_seccion, \
+      s.f_jefe as f_jefe_seccion,\
+      s.f_laboratorio as f_laboratorio,\
+      l.f_jefe as f_jefe_laboratorio,\
+      e.id as f_id\
+  from t_espaciofisico e inner join t_seccion s on (e.f_seccion = s.id)\
+  inner join t_laboratorio l on (s.f_laboratorio=l.id)\
+  order by f_laboratorio;')
+
+db.define_table('s_espaciofisico',
+    Field('f_direccion',label = T('Espacio Físico')),
+    Field('f_espacio',label=T('Uso')),
+    Field('id'),
+    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Sección')),
+    Field('f_jefe_seccion','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Sección'), readable=False),
+    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Laboratorio')),
+    Field('f_jefe_laboratorio','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio'), readable=False),
+    Field('f_id',label=T('Id Asociado'), readable=False),
+    migrate=False
+    )
+db.s_espaciofisico.f_direccion. represent= lambda v,r: A(v,_href=URL('solicitud', 'tipo_solicitud', vars=dict(esp=r.f_id, f=request.vars['f'])))
+db.s_espaciofisico.f_jefe_laboratorio.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
+db.s_espaciofisico.f_jefe_seccion.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
+db.s_espaciofisico.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
+db.s_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
+db.s_espaciofisico.id.readable=False
 

@@ -4,7 +4,7 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
-response.logo = A(IMG(_src=URL('static', 'images/logo-ulab.png'), _href=URL('default', 'index'),_style='height:50px;width:auto;'),_class='navbar-brand',_style='transform:translateY(-10px);')
+response.logo = A(IMG(_src=URL('static', 'images/logo-ulab.png'), _href=URL('default', 'index'),_style='height:50px;width:auto;'),_class='navbar-brand',_style='transform:translateY(-12px);')
 pen = db(db.t_users_pendientes).count()
 
 # user basico

@@ -1,16 +1,54 @@
 {{extend 'layout.html'}}
+
 <div class="container">
-	<ol class="breadcrumb">
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
-	  <li class="breadcrumb-item active">Laboratorio</li>
-	</ol>
+
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+    <li class="breadcrumb-item active">Laboratorio</li>
+  </ol>
+
+  <h1 style="color:#455A64" class="text-center">{{=lab}}</h1>
+
+
+  {{if secciones:}}
+  
+  <hr style="border-width:thick;border-color:#455A64;">
+
+  <div class="col-sm-12 text-center">
+    <div class="breadcrumb" style="background-color:transparent">
+      <h4><i class="fa fa-flask fa-5x" aria-hidden="true"></i></h4>
+      <div class="card-block">
+          <h4>Secciones</h4>
+      </div>
+    </div>
+  </div>
+
+    <div class='container'>
+    {{for seccion in secciones:}}
+    <div class="col-sm-3">
+    <div class="breadcrumb" style="padding:0px;border:none;">
+        <a href="{{=URL('sustancias','inventario_seccion',vars=dict(secc=seccion.id))}}" class="btn btn-lg btn-block" role="button" style="min-height:121.6px;">
+          <h5>
+            {{=seccion.f_seccion}}
+          </h5>
+        </a>
+    </div>
+    </div>
+    {{pass}}
+  </div>
+
+  <br>
+  {{pass}}
+
+  <hr style="border-width:thick;border-color:#455A64;">
+
+  <p>{{=table}}</p>
 
   <a  href="{{=URL('reportes','reporte_laboratorio',vars=dict(lab=request.vars['lab']))}}">
-  <button class="btn btn-default">Generar Reporte</button>
+    <button class="btn btn-default">Generar Reporte</button>
   </a>
-<h3 style="color:#455A64">{{=lab}}</h3>
-<p>{{=table}}</p>
+
 
 </div>

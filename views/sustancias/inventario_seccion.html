@@ -1,28 +1,64 @@
 {{extend 'layout.html'}}
 <div class="container">
-	<ol class="breadcrumb">
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
-	  <li class="breadcrumb-item active">Sección</li>
-	</ol>
 
-<h3 style="color:#455A64">{{=lab}}</h3>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+    <li class="breadcrumb-item active">Sección</li>
+  </ol>
 
-{{if seccion:}}
-<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
-<a  href="{{=URL('reportes','reporte_seccion',vars=dict(secc=request.vars['secc']))}}">
-<button class="btn btn-default">Generar Reporte</button>
-</a>
-{{pass}}
+<<<<<<< HEAD
+  <h1 style="color:#455A64" class="text-center">{{=lab}}</h1>
 
-{{if sustancia:}}
-<h3 style="color:#455A64">Sustancia: {{=sustancia}}</h3>
-<a  href="{{=URL('reportes','reporte_lab',vars=dict(lab=request.vars['lab'],sust=request.vars['sust']))}}">
-<button class="btn btn-default">Generar Reporte</button>
-</a>
-{{pass}}
+  {{if seccion:}}
+  <h3 style="color:#455A64" class="text-center">Seccion: {{=seccion}}</h3>
+  {{pass}}
 
-<p>{{=table}}</p>
+  {{if sustancia:}}
+  <h3 style="color:#455A64" class="text-center">Sustancia: {{=sustancia}}</h3>
+
+  {{pass}}
+
+  {{if espacios:}}
+  <hr style="border-width:thick;border-color:#455A64;">
+
+  <div class="col-sm-12 text-center">
+    <div class="breadcrumb" style="background-color:transparent">
+      <h4><i class="fa fa-building fa-5x" aria-hidden="true"></i></h4>
+      <div class="card-block">
+          <h4>Espacios Fisicos</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    {{for espacio in espacios:}}
+    <div class="col-sm-3">
+    <div class="breadcrumb" style="padding:0px;border:none;">
+        <a href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}" class="btn btn-lg btn-block" role="button" style="min-height:121.6px;">
+          <h5>
+            {{=espacio.f_espacio}}
+          </h5>
+        </a>
+    </div>
+  </div>
+    {{pass}}
+  </div>
+  {{pass}}
+
+<hr style="border-width:thick;border-color:#455A64;">
+
+  <p>{{=table}}</p>
+
+  {{if sustancia:}}
+  <a  href="{{=URL('reportes','reporte_lab',vars=dict(lab=request.vars['lab'],sust=request.vars['sust']))}}">
+    <button class="btn btn-default">Generar Reporte</button>
+  </a>
+  {{else:}}
+  <a  href="{{=URL('reportes','reporte_seccion',vars=dict(secc=request.vars['secc']))}}">
+    <button class="btn btn-default">Generar Reporte</button>
+  </a>
+  {{pass}}
 
 </div>

@@ -261,6 +261,7 @@ div.error_wrapper {
     padding: 6px 12px;
 }
 .web2py_counter {
+    visibility: hidden;
     margin-top: 5px;
     margin-right: 2px;
     width: 35%;
@@ -444,10 +445,24 @@ div.navbar-collapse{
     }
 }
 
+
+form.form-horizontal.web2py_form .form-group label{
+  padding-left: 30px;
+}
+
+
 form.form-horizontal.web2py_form .form-group div{
   transform: translateY(12px);
   font-size: 150%;
 }
+
+
+form.form-horizontal.web2py_form .form-group div.col-sm-9{
+  transform: translateY(12px);
+  font-size: 120%;
+}
+
+
 form.form-horizontal.web2py_form .form-group div.error{
   transform: none;
   font-size: 50%;
@@ -480,7 +495,12 @@ input{
 .btn-danger{
   font-size: 50%;
 }
-input.btn.btn-primary.btn-lg{
+
+div.col-sm-9 input.btn.btn-primary.btn-lg{
   font-size: 80%;
   margin-bottom: 20px;
+}
+.navbar-default{
+  border-bottom: solid thick #455A64
+
 }
