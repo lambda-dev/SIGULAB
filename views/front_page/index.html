@@ -25,25 +25,25 @@
           or auth.has_membership('Técnico')\
           or auth.has_membership('Gestor de Sustancias'):}}
         <div class="panel col-md-6 text-center">
-	        <a href="{{=URL('front_page','sustancias')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-flask fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Sustancias
-		        </h4>
-	        </a>
+
+          <div class="card card-4" onclick="window.location.href = '{{=URL('front_page','sustancias')}}'">
+              <h4><i class="fa fa-flask fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Sustancias
+            </div>
+          </div>
+
         </div>
 
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('front_page','desechos')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-trash-o fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Desechos
-		        </h4>
-	        </a>
+
+          <div class="card card-4" onclick="window.location.href = '{{=URL('front_page','desechos')}}'">
+              <h4><i class="fa fa-trash-o fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Desechos
+            </div>
+          </div>
+
         </div>
         {{pass}}
 
@@ -51,25 +51,25 @@
             or auth.has_membership('WebMaster')\
             or auth.has_membership('Director'): }}
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('gestion','index')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-user-o fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Personal
-		        </h4>
-	        </a>
+
+          <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','index')}}'">
+              <h4><i class="fa fa-user-o fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Personal
+            </div>
+          </div>
         </div>
 
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('gestion','index_e')}}" class="btn btn-lg btn-block" role="button">
-            <h4>
-                <i class="fa fa-building-o fa-3x" aria-hidden="true"></i>
-            </h4>
-            <h4>
+
+          <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','index_e')}}'">
+              <h4><i class="fa fa-building-o fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
                 Espacios
-            </h4>
-          </a>
+            </div>
+          </div>
+
+  
         </div>
         {{pass}}
     </div>

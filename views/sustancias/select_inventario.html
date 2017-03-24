@@ -9,71 +9,68 @@
 <p>{{str(auth.has_membership('Técnico'))}}</p>
 {{if espacios:}}
   <br>
-  <div class="row">
+  <div class="row sigulab-botones">
     <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:transparent;">
+		<div class="card card-2">
 		    <h4><i class="fa fa-stethoscope fa-5x" aria-hidden="true"></i></h4>
 			<div class="card-block">
-			    <h4>Laboratorios</h4>
+			    Laboratorios
 			</div>
 		</div>
 		{{if labs:}}
-
-		{{for lab in labs:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('sustancias','inventario_lab',vars=dict(lab=lab.id))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            {{=lab.f_nombre}}
-		        </h5>
-            </a>
-		</div>
-		{{pass}}
-		<br>
+			<div class="card card-3">
+				{{for lab in labs:}}
+				<div class="card card-1" onclick="window.location.href = '{{=URL('sustancias','inventario_lab',vars=dict(lab=lab.id))}}'">
+				    {{=lab.f_nombre}}
+				</div>
+				{{pass}}
+				<br>
+			</div>
 		{{pass}}
     </div>
 
     <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:transparent">
+		<div class="card card-2">
 			<h4><i class="fa fa-flask fa-5x" aria-hidden="true"></i></h4>
 			<div class="card-block">
-			    <h4>Secciones</h4>
+			    Secciones
 			</div>
 		</div>
 		{{if secciones:}}
-		{{for seccion in secciones:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('sustancias','inventario_seccion',vars=dict(secc=seccion.id))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            {{=str(db(db.t_laboratorio.id == seccion.f_laboratorio).select(db.t_laboratorio.f_nombre))[22:-2]}}, {{=seccion.f_seccion}}
-		        </h5>
-            </a>
-		</div>
-		{{pass}}
-		<br>
+			<div class="card card-3">
+				{{for seccion in secciones:}}
+				<div class="card card-1" onclick="window.location.href = '{{=URL('sustancias','inventario_seccion',vars=dict(secc=seccion.id))}}'">
+				    {{=str(db(db.t_laboratorio.id == seccion.f_laboratorio).select(db.t_laboratorio.f_nombre))[22:-2]}} - {{=seccion.f_seccion}}
+				</div>
+			
+				{{pass}}
+				<br>
+			</div>
 		{{pass}}
     </div>
 
     <div class="col-sm-4 text-center">
-		<div class="breadcrumb" style="background-color:transparent">
+		<div class="card card-2">
 			<h4><i class="fa fa-building fa-5x" aria-hidden="true"></i></h4>
 			<div class="card-block">
-			    <h4>Espacios Fisicos</h4>
+			    Espacios Fisicos
 			</div>
 		</div>
-		{{if espacios:}}
 
-		{{for espacio in espacios:}}
-		<div class="breadcrumb" style="padding:0px;border:none;">
-		    <a href="{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}" class="btn btn-lg btn-block" role="button">
-	            <h5>
-		            Seccion: {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}}, {{=espacio.f_espacio}}
-		        </h5>
-            </a>
+		
+		{{if espacios:}}
+		<div class="card card-3">
+
+			{{for espacio in espacios:}}
+			<div class="card card-1" onclick="window.location.href = '{{=URL('sustancias','inventario_manage',vars=dict(esp=espacio.id))}}'">
+			    {{=str(db(db.t_seccion.id == espacio.f_seccion).select(db.t_seccion.f_seccion))[19:-2]}} - {{=espacio.f_espacio}}
+			</div>
+			{{pass}}
+
+
 		</div>
 		{{pass}}
 
-
-		{{pass}}
     </div>
 </div>
 

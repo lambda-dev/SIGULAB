@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400, 500, 700');
+
+.navbar-default {
+  background-color: #CFD8DC !important;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.navbar-default *
+{
+  color: #455A64 !important;
+  font-family: 'Quicksand', sans-serif !important;
+  text-transform: capitalize !important;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    background-color: #607D8B;
+    color: #ffffff !important;
+}
+
+.navbar-default .navbar-nav > .open .caret
+{
+  color: #ffffff !important;
+}
+
+.navbar .nav > li > a {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 500;
+}
+
+.dropdown-toggle {
+    margin: 0% !important;
+}
+
+.dropdown-menu
+{
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    text-decoration: none;
+    color: #ffffff !important;
+    background-color: #607D8B;
+}
+
+.caret {
+    margin-left: 10px;
+}
+
+
+
+
+
+
+
+td, th, h1, h2, h3, h4, h5, p {
+  font-family: 'Quicksand', sans-serif !important;
+}
+
+th > a
+{
+  font-weight: 700 !important;
+  font-size: 18px;
+}
+
+td 
+{
+  font-size: 18px;
+}
+
+thead {
+    border-top: solid  10px #607D8B;
+}
+
+.web2py_grid thead th, .web2py_grid tfoot td {
+    background-color: #CFD8DC;
+    padding: 10px 5px;
+}
+
+.web2py_paginator {
+    text-align: right;
+    background-color: #CFD8DC;
+    padding: 5px;
+    border-bottom: solid  10px #607D8B;
+    color: #455A64;
+}
+
+thead tr th a, .web2py_paginator ul li a {
+    color: #455A64;
+    font-family: 'Quicksand', sans-serif !important;
+    font-size: ;
+}
+
+thead tr th a, .web2py_paginator ul li a:hover {
+    text-decoration: none;
+    font-weight: 700;
+    color: #455A64;
+}
+
+/*Button colors*/
+
+.web2py_console a.btn:hover {
+    color: white;
+    background-color: #455A64;
+}
+
+a.btn, .btn-default {
+    background-color: #607D8B;
+    color: white;
+    font-family: 'Quicksand', sans-serif !important;
+    letter-spacing: 1px;
+}
+
+a.btn:hover, .btn-default:hover {
+    color: white;
+    background-color: #455A64;
+}
+
+/* Breadcrum */
+
+.breadcrumb
+{
+  background-color: #CFD8DC !important;
+}
+
+.breadcrumb *
+{
+  color: #455A64 !important;
+  text-transform: capitalize;
+  font-size: 17px;
+  font-family: 'Quicksand', sans-serif !important;
+}
+
+.breadcrumb > li + li::before {
+    content: "/\00a0";
+    padding: 0 5px;
+    color: #455A64 !important;
+}
+
+/* Botones vista rama */
+
+.card {
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 10px 0px;
+  position: relative;
+  width: 100%;
+  padding: 20px 10px;
+  font-family: 'Quicksand', sans-serif !important;
+  font-size: 18px;
+  color: #455A64;
+  cursor: pointer;
+}
+
+.card-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.card-1:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 8px 8px rgba(0,0,0,0.22);
+  background-color: #607D8B;
+  color: white;
+}
+
+.card-2 {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.card-3 {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background-color: rgba(128,128,128,0.1);
+  max-height: 720px;
+  overflow-y: scroll;
+}
+
+.card-4 {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background-color: #FAFAFA;
+  
+}
+
+.card-4 div
+{
+  font-size: 22px;
+}
+
+.card-4:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25), 0 8px 8px rgba(0,0,0,0.22);
+  background-color: #607D8B;
+  color: white;
+}

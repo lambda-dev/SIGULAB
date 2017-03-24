@@ -8,47 +8,45 @@
     <br>
     <div class="row">
         <div class="panel col-md-6 text-center">
-	        <a href="{{=URL('gestion','usuarios')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-address-book fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Gestion de Usuarios Registrados
-		        </h4>
-	        </a>
+          
+          <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','usuarios')}}'">
+            <h4><i class="fa fa-address-book fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Gestion de Usuarios Registrados
+            </div>
+          </div>
+
         </div>
 
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('gestion','autorizados')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-users fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Gestion de Usuarios Autorizados
-		        </h4>
-	        </a>
+
+          <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','autorizados')}}'">
+            <h4><i class="fa fa-users fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Gestion de Usuarios Autorizados
+            </div>
+          </div>
+
+
         </div>
 
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('gestion','privilegios')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-certificate fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Gestión de Privilegios
-		        </h4>
-	        </a>
+		  <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','privilegios')}}'">
+            <h4><i class="fa fa-certificate fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Gestión de Privilegios
+            </div>
+          </div>
         </div>
 
         <div class="panel col-md-6 text-center">
-            <a href="{{=URL('gestion','pendientes')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-user-plus fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Lista de Usuario por Confirmar ({{=users_pen}})
-		        </h4>
-	        </a>
+          <div class="card card-4" onclick="window.location.href = '{{=URL('gestion','pendientes')}}'">
+            <h4><i class="fa fa-user-plus fa-5x" aria-hidden="true"></i></h4>
+            <div class="card-block">
+                Lista de Usuario por Confirmar ({{=users_pen}})
+            </div>
+          </div>
+
         </div>
     </div>
 </div>
