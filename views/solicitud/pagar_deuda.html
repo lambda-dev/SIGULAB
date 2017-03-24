@@ -2,36 +2,25 @@
 <div class="container">
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','view_k')}}">Préstamo</a></li>
-	  <li class="breadcrumb-item active">Espacio Físico</li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=4))}}">Deudas</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=request.vars['esp'], f=4))}}">Espacio Físico</a></li>
+	  <li class="breadcrumb-item active">Pagar</li>
 	</ol>
+</div>
+
 {{if sust:}}
 <h3 style="color:#455A64">Sustancia prestada: {{=sust}}</h3>
 {{pass}}
 {{if cantidad_total:}}
 <h3 style="color:#455A64">Cantidad prestada: {{=cantidad_total}}</h3>
 {{pass}}
+
 {{if cantidad_recolectada:}}
 <h3 style="color:#455A64">Cantidad devuelta: {{=cantidad_recolectada}}</h3>
 {{pass}}
+
 <p>{{=table}}</p>
 
-
-<a  href="{{=URL('solicitud','view_n', vars=dict(esp=request.vars['esp']))}}">
+<a  href="{{=URL('solicitud','tipo_solicitud', vars=dict(esp=request.vars['esp'], f=4))}}">
 <button class="btn btn-default">Atras</button>
 </a>
-
-<script>
-	js = {{=aux}};
-	i = 0;
-	$('.row_buttons').each(function(){
-		x = $(this).find('a');
-		x.find('span').first().hide();
-		y = x.first();
-		if (js[i]==1){
-			y.hide();
-			x.hide();
-		}
-		i +=1;
-	});
-</script>

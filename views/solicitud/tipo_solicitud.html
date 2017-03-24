@@ -2,34 +2,32 @@
 <div class="container">
 	<ol class="breadcrumb">
 	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud')}}">Solicitud</a></li>
-	  <li class="breadcrumb-item active">Espacios Físicos</li>
+	{{if f=='1':}}
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">Mis Solicitudes</a></li>
+	{{elif f=='2':}}
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">Solicitudes Recibidas</a></li>
+	{{elif f=='3':}}
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">Préstamos</a></li>
+	{{elif f=='4':}}
+	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">Deudas</a></li>
+	{{pass}}
+	  <li class="breadcrumb-item active">Espacio Físico</li>
 	</ol>
-
+</div>
 {{if labs:}}
-<h3 style="color:#455A64">{{=labs}}</h3>
+<h3>{{=labs}}</h3>
 {{pass}}
 
 {{if seccion:}}
-<h3 style="color:#455A64">Seccion: {{=seccion}}</h3>
+<h3>Seccion: {{=seccion}}</h3>
 {{pass}}
 
 {{if espFisico:}}
 <h2>Espacio Fisico: {{=espFisico}}</h2>
 {{pass}}
 
-{{if f=='1':}}
-<h2>Mis solicitudes</h2>
-{{elif f=='2':}}
-<h2>Solicitudes Recibidas</h2>
-{{elif f=='3':}}
-<h2>Préstamos</h2>
-{{elif f=='4':}}
-<h2>Deudas</h2>
-{{pass}}
-
 <p>{{=table}}</p>
-<a  href="{{=URL('solicitud','select_solicitud')}}">
+<a  href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">
 <button class="btn btn-default">Atras</button>
 </a>
 <script>

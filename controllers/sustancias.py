@@ -119,7 +119,7 @@ def view_compras():
     if 'view' in request.args:
         db.t_facturas.f_sustancia.readable=True
 
-    table = SQLFORM.smartgrid(db.t_facturas,csv=False,deletable=False)
+    table = SQLFORM.smartgrid(db.t_facturas,csv=False,deletable=False,paginate=10)
     return locals()
 
 
@@ -218,9 +218,9 @@ def sustanciapeligrosa_manage():
 
     if(auth.has_membership('Gestor de Sustancias') or \
     auth.has_membership('WebMaster')):
-        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True)
+        table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True,paginate=10)
     else:
-        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False)
+        table = SQLFORM.smartgrid(db.t_sustancias,editable=False,deletable=False,csv=False,links_in_grid=False,create=False,paginate=10)
     return locals()
 
 
@@ -264,7 +264,7 @@ def inventario_lab():
     secciones = db((db.t_laboratorio.id == request.vars['lab'])&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion)).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
     lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     query = db.v_laboratorio.f_laboratorio == str(request.vars['lab'])
-    table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False)
+    table = SQLFORM.smartgrid(db.v_laboratorio,constraints=dict(v_laboratorio=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
     return locals()
 
 
@@ -293,7 +293,7 @@ def inventario_seccion():
         lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
         sust = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:-2]
         query = (db.v_seccion.f_laboratorio == request.vars['lab'])&(db.v_seccion.f_sustancia == sust)
-        table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
+        table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
         seccion = False
         sustancia = str(db(db.t_sustancias.id == request.vars['sust']).select(db.t_sustancias.f_nombre))[23:]
         espacios = False
@@ -307,7 +307,7 @@ def inventario_seccion():
     lab = str(db(db.t_seccion.id == secc).select(db.t_seccion.f_laboratorio))[25:-2]
     query = (db.v_seccion.f_laboratorio == lab)&(db.v_seccion.f_seccion == secc)
     lab = str(db( db.t_laboratorio.id == lab ).select(db.t_laboratorio.f_nombre))[24:-2]
-    table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False)
+    table = SQLFORM.smartgrid(db.v_seccion,constraints=dict(v_seccion=query),csv=False,editable=False,deletable=False,create=False,paginate=10)
     return locals()
 
 
@@ -449,12 +449,12 @@ def inventario_manage():
         else:
             query = (db.t_inventario.f_seccion == request.vars['secc'])
         table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),onupdate=auth.archive,editable=auth.has_membership('WebMaster'),
-        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False)
+        orderby=[db.t_inventario.f_espaciofisico,db.t_inventario.f_sustancia],create=False,csv=False,deletable=False,links_in_grid=False,paginate=10)
 
         return locals()
 
     table = SQLFORM.smartgrid(db.t_inventario,constraints=dict(t_inventario=query),create=(not auth.has_membership('Técnico') and not auth.has_membership('Usuario Normal')),links_in_grid=False,csv=False,deletable=False,oncreate=insert_inventario,
-    onvalidation=validar_inventario,editable=auth.has_membership('WebMaster'))
+    onvalidation=validar_inventario,editable=auth.has_membership('WebMaster'),paginate=10)
     return locals()
 
 
