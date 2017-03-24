@@ -130,3 +130,6 @@ a{
 #auth_user_f_seccion__row {
     display: none;
 }
+a.dropdown-toggle{
+    white-space: nowrap;
+}

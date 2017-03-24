@@ -29,11 +29,9 @@ db.define_table('t_laboratorio',
     Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio')),
     migrate=settings.migrate)
 
-db.define_table('t_laboratorio_archive',db.t_laboratorio,Field('current_record','reference t_laboratorio',readable=False,writable=False))
 db.t_laboratorio._plural = 'Laboratorios'
 db.t_laboratorio._singular = 'Laboratorio'
-db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
-
+db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else 'Vacio'
 
 ########################################
 db.define_table('t_seccion',
@@ -72,8 +70,8 @@ db.t_tecs_esp.f_tecnico.represent= lambda value,row: db(db.auth_user.id == value
 db.t_tecs_esp._plural = 'Técnicos'
 db.t_tecs_esp._singular = 'Técnicos'
 
-db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s')
-db.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s')
+db.auth_user.f_seccion.requires = IS_IN_DB(db, db.t_seccion.id, '%(f_seccion)s',zero=None)
+db.auth_user.f_laboratorio.requires = IS_IN_DB(db, db.t_laboratorio.id, '%(f_nombre)s',zero=None)
 
 ###############################################
 
@@ -111,8 +109,10 @@ db.define_table('t_users_autorizados',
     Field('f_seccion', 'integer', label=T('Sección'), requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s', zero=None)),
     migrate=settings.migrate)
 
-#db.t_users_pendientes.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
-#db.t_users_pendientes.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
+
+db.t_users_autorizados.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else 'Vacio'
+db.t_users_autorizados.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else 'Vacio'
+
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
 db.t_users_autorizados._singular = 'Usuario Autorizado'
@@ -219,7 +219,9 @@ db.define_table('t_inventario',
     Field('f_cantidadusointerno', 'float',default=0,label=T('Cantidad Uso Interno'),requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_total','float',label=T('Cantidad Total'),writable=False,compute=lambda r:r.f_cantidadonacion+r.f_cantidadusointerno,requires=IS_FLOAT_IN_RANGE(0,1e1000)),
     Field('f_seccion','integer',readable=False,writable=False,requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s'),label=T('Sección'),
+
     compute = lambda r: long(str(db(db.t_espaciofisico.id == r.f_espaciofisico).select(db.t_espaciofisico.f_seccion))[26:-2]) ),
+
     Field('f_laboratorio','string',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s'),readable=False,writable=False,
     compute = lambda r: str( db((db.t_seccion.id == r.f_seccion)).select(db.t_seccion.f_laboratorio) )[25:-2] ),
     Field('f_unidad','string',requires=IS_IN_SET(['mL','L','g','Kg','cm'+chr(0x00B3)]),
@@ -258,6 +260,7 @@ db.t_bitacora.id.readable = False
 db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 db.t_bitacora._singular='Bitacora'
 db.t_bitacora._plural='Bitacora'
+
 
 ########################################
 #vista ordenada para la bitacora
@@ -407,7 +410,7 @@ db.define_table('t_solicitud_respuesta',
     Field('f_espacio_fisico_d', 'integer',readable=False,writable=False ,requires=IS_IN_DB(db,db.t_espaciofisico.id,'%(f_espacio)s') ,
     represent= lambda value,row: #str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_espacio))[27:-2] + " - " +
     str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2],
-    label=T('Espacio Fisico')),
+    label=T('Espacio Fisico')),    
     Field('f_solicitud', 'reference t_solicitud', label=T('Solicitud Asociada'), readable=False, writable=False),
     Field('f_entregado', 'integer', label=T('Entregado'), readable=False, writable=False),
     Field('f_recibido', 'integer', label=T('Recibido'), readable=False, writable=False),
@@ -446,6 +449,7 @@ db.executesql(
       s.f_cantidad as f_cantidad, \
       s.f_espacio_fisico as f_espacio_fisico, \
       s.f_Tipo as f_Tipo,\
+      s.f_fecha_tope as f_fecha_tope,\
       s.id as f_id,\
       i.f_espaciofisico as f_espaciofisico,\
       s.f_aprobado as f_aprobado,\
@@ -459,6 +463,7 @@ db.define_table('v_solicitud',
     Field('f_cantidad',label = T('Cantidad')),
     Field('f_espacio_fisico',label=T('Espacio Físico')),
     Field('f_Tipo',label=T('Tipo')),
+    Field('f_fecha_tope',label=T('Fecha Tope')),
     Field('f_id',label=T('ids')),
     Field('f_espaciofisico',label=T('Espacio Físico Donante')),
     Field('f_aprobado',label=T('Aprobado'), readable=False, writable=False),
@@ -473,7 +478,6 @@ db.v_solicitud.f_espaciofisico.represent= lambda value,row: str(db(db.t_espaciof
 db.v_solicitud.f_espacio_fisico.represent= lambda value,row: str(db(db.t_espaciofisico.id == value).select(db.t_espaciofisico.f_direccion))[29:-2]
 
 ########################################
-
 db.executesql(
     'create or replace view total as\
      select SUM(t_bitacora.f_ingreso) as "Total Entradas",\
@@ -577,3 +581,4 @@ db.s_espaciofisico.f_jefe_seccion.represent = lambda value,row: db(db.auth_user.
 db.s_espaciofisico.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
 db.s_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
 db.s_espaciofisico.id.readable=False
+

@@ -6,6 +6,17 @@
     <br>
     <br>
     <div class="row">
+        <!-- Evitar que usuarios eliminados se queden loggeados -->
+        {{if not auth.has_membership('Director') \
+          and not auth.has_membership('WebMaster')\
+          and not auth.has_membership('Jefe de Laboratorio') \
+          and not auth.has_membership('Jefe de Sección') \
+          and not auth.has_membership('Técnico')\
+          and not auth.has_membership('Gestor de Sustancias')\
+          and not auth.has_membership('Administrador Personal')\
+          and not auth.has_membership('Usuario Normal'):}}
+        {% session.clear() %}
+        {{pass}}
 
         {{if auth.has_membership('Director') \
           or auth.has_membership('WebMaster')\

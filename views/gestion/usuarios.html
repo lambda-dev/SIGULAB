@@ -9,4 +9,10 @@
 <h2>Gestión de Usuarios Registrados</h2>
 <p>Desde aquí se pueden consultar, editar y eliminar los usuarios que tienen acceso al sistema.</p>
 <p>{{=form}}</p>
+
+
+{{if 'new' in request.args or 'edit' in request.args:}}
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+{{pass}}
 </div>
+

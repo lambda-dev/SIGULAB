@@ -21,6 +21,7 @@ def select_solicitud(): #vista general para escoger el espacio físico desde don
     else:
         espacios = db((db.t_tecs_esp.f_tecnico == auth.user.id)&(db.t_espaciofisico.id == db.t_tecs_esp.f_espaciofisico)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
 #9751371
+
     return locals()
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()

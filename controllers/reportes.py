@@ -17,15 +17,13 @@ import calendar
 def select_rl4():
 	#lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     #query = (db.t_sustancias.f_control == 3) |  (db.t_sustancias.f_control == 1)
-    db.v_reporte.f_mes.readable = False
-    db.v_reporte.f_year.readable = False
     mes = request.vars['m']
     year= request.vars['y']
     query=(db.v_reporte.f_mes==mes)&(db.v_reporte.f_year==year)
     query2=db(db.t_bitacora.f_sustancia==2).select()
     for i in query2:
     	print (i.f_fechaingreso)
-    table = SQLFORM.smartgrid(db.v_reporte,constraints=dict(v_reporte=query),csv=False,editable=False,deletable=False,create=False,details=False)
+    table = SQLFORM.smartgrid(db.v_reporte,constraints=dict(v_reporte=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
 def select_fecha():
@@ -640,13 +638,11 @@ def generar_reporte():
 def select_rl7():
 	#lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     #query = (db.t_sustancias.f_control == 3) |  (db.t_sustancias.f_control == 1)
-    db.v_reporte_rl7.f_mes.readable = False
-    db.v_reporte_rl7.f_year.readable = False
     mes = request.vars['m']
     year= request.vars['y']
     query=(db.v_reporte_rl7.f_mes==mes)&(db.v_reporte_rl7.f_year==year)
 
-    table = SQLFORM.smartgrid(db.v_reporte_rl7,constraints=dict(v_reporte_rl7=query),csv=False,editable=False,deletable=False,create=False,details=False)
+    table = SQLFORM.smartgrid(db.v_reporte_rl7,constraints=dict(v_reporte_rl7=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
 
@@ -812,11 +808,11 @@ def generar_reporte_rl7():
 					l.f_unidad="Kg"
 				if l.f_unidad==None:
 					l.f_unidad="Nada"
-
-			ws2['C12']=l.f_unidad
+			
+			ws2['C12']=l.f_unidad 
 			ws2['C12'].font = ft2
-			ws2['C12'].alignment = cen
-
+			ws2['C12'].alignment = cen 			
+			
 			ws2['A14'] = 'N°'
 
 			ws2['B14'] = 'Fecha'
@@ -902,7 +898,7 @@ def generar_reporte_rl7():
 
 			#Pie de Pagina
 			ws2['A39'] = '1. Los saldos serán reportados en:'
-			ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+			ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
@@ -1014,10 +1010,10 @@ def reporte_bitacora():
 		ws2['C11'] = name.upper()
 		query4=db((db.t_bitacora.f_sustancia==int(sust))).select(db.t_bitacora.f_unidad)
 		for l in query4:
-			ws2['C12']=l.f_unidad
+			ws2['C12']=l.f_unidad 
 		ws2['C12'].font = ft2
-		ws2['C12'].alignment = cen
-
+		ws2['C12'].alignment = cen 			
+		
 		ws2['A14'] = 'N°'
 
 		ws2['B14'] = 'Fecha'
@@ -1103,11 +1099,11 @@ def reporte_bitacora():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
-		wb.remove_sheet(std)
+		wb.remove_sheet(std)	
 	wb.save('Reporte Bitacora.xlsx')
 	response.stream('Reporte Bitacora.xlsx',attachment=True, filename='Reporte Bitacora.xlsx')
 	return locals()
@@ -1183,7 +1179,7 @@ def reporte_seccion():
 		for i in range(5):
 		    ws2[z[i]].font = ft1
 		    ws2[z[i]].alignment = cen
-
+	    
 		ws2['B10'] = 'SECCION:'
 		ws2['B11'] = 'LABORATORIO:'
 
@@ -1286,11 +1282,11 @@ def reporte_seccion():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
-		wb.remove_sheet(std)
+		wb.remove_sheet(std)	
 	wb.save('Reporte Seccion.xlsx')
 	response.stream('Reporte Seccion.xlsx',attachment=True, filename='Reporte Seccion.xlsx')
 	return locals()
@@ -1367,7 +1363,7 @@ def reporte_sust():
 		for i in range(5):
 		    ws2[z[i]].font = ft1
 		    ws2[z[i]].alignment = cen
-
+	    
 		ws2['B10'] = 'SECCION:'
 		ws2['B11'] = 'LABORATORIO:'
 		ws2['B12'] = 'SUSTANCIA:'
@@ -1476,11 +1472,11 @@ def reporte_sust():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
-		wb.remove_sheet(std)
+		wb.remove_sheet(std)	
 	wb.save('Reporte Seccion2.xlsx')
 	response.stream('Reporte Seccion2.xlsx',attachment=True, filename='Reporte Seccion2.xlsx')
 	return locals()
@@ -1561,7 +1557,7 @@ def reporte_esp():
 		for i in range(5):
 		    ws2[z[i]].font = ft1
 		    ws2[z[i]].alignment = cen
-
+	    
 		ws2['B10'] = 'SECCION:'
 		ws2['B11'] = 'LABORATORIO:'
 		ws2['B12'] = 'ESPACIO FISICO:'
@@ -1586,7 +1582,7 @@ def reporte_esp():
 		ws2['C7'] = 'UNIVERSIDAD SIMON BOLIVAR'
 		ws2['C12'] = espf.upper()
 		query8=db((db.t_seccion.id==secc)).select(db.t_sustancias.f_nombre)
-
+		
 		for z in query8:
 			ws2['C10'] = v.f_nombre
 
@@ -1671,11 +1667,11 @@ def reporte_esp():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
-		wb.remove_sheet(std)
+		wb.remove_sheet(std)	
 	wb.save('Reporte Seccion3.xlsx')
 	response.stream('Reporte Seccion3.xlsx',attachment=True, filename='Reporte Seccion3.xlsx')
 	return locals()
@@ -1751,7 +1747,7 @@ def reporte_lab():
 		for i in range(5):
 		    ws2[z[i]].font = ft1
 		    ws2[z[i]].alignment = cen
-
+	    
 		ws2['B11'] = 'LABORATORIO:'
 		ws2['B12'] = 'SUSTANCIA:'
 
@@ -1798,7 +1794,7 @@ def reporte_lab():
 
 		x = ['B15','B16','B17','B18','B19','B20','B21','B22','B23','B24','B25','B26','B27','B28','B29','B30','B31','B32','B33','B34','B35','B36','B37','B38']
 		if bitacora!=0:
-			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_seccion)
+			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_seccion)	
 			y=0;
 			for i in query:
 				if y<24:
@@ -1812,7 +1808,7 @@ def reporte_lab():
 
 		x = ['C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25','C26','C27','C28','C29','C30','C31','C32','C33','C34','AC5','C36','C37','C38']
 		if bitacora!=0:
-			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_cantidadonacion)
+			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_cantidadonacion)	
 			y=0;
 			for i in query:
 				if y<24:
@@ -1822,7 +1818,7 @@ def reporte_lab():
 					y=y+1
 		x = ['D15','D16','D17','D18','D19','D20','D21','D22','D23','D24','D25','D26','D27','D28','D29','D30','D31','D32','D33','D34','D35','D36','D37','D38']
 		if bitacora!=0:
-			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_cantidadusointerno)
+			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_cantidadusointerno)	
 			y=0;
 			for i in query:
 				if y<24:
@@ -1832,7 +1828,7 @@ def reporte_lab():
 					y=y+1
 		x = ['E15','E16','E17','E18','E19','E20','E21','E22','E23','E24','E25','E26','E27','E28','E29','E30','E31','E32','E33','E34','E35','E36','E37','E38']
 		if bitacora!=0:
-			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_total)
+			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_total)	
 			y=0;
 			for i in query:
 				if y<24:
@@ -1842,7 +1838,7 @@ def reporte_lab():
 					y=y+1
 		x = ['F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36','F37','F38']
 		if bitacora!=0:
-			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_unidad)
+			query=db((db.v_seccion.f_laboratorio == int(lab))&(db.v_seccion.f_sustancia == sust)).select(db.v_seccion.f_unidad)	
 			y=0;
 			for i in query:
 				if y<24:
@@ -1855,7 +1851,7 @@ def reporte_lab():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
@@ -1931,7 +1927,7 @@ def reporte_laboratorio():
 		for i in range(5):
 		    ws2[z[i]].font = ft1
 		    ws2[z[i]].alignment = cen
-
+	    
 		ws2['B11'] = 'LABORATORIO:'
 
 
@@ -2030,7 +2026,7 @@ def reporte_laboratorio():
 
 		#Pie de Pagina
 		ws2['A39'] = '1. Los saldos serán reportados en:'
-		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'
+		ws2['A40'] = 'Kgs. Para sustancias en estado sólido ó Lts. Para sustancias en estado líquido, especificando la densidad de la sustancia en el último caso.'		
 	j = wb.get_sheet_names()
 	if len(j)>1:
 		std = wb.get_sheet_by_name('Sheet')
