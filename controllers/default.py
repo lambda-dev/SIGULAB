@@ -4,14 +4,6 @@ def user(): return dict(form=auth())
 def login():
      return dict(form=auth.login())
 
-def register():
-    auth.settings.register_onvalidation.append(onvalidation)
-    auth.settings.register_onaccept.append(onaccept)
-    form = auth.register()
-    #if not form.vars: # form not sumitted
-        #response.flash = 'Please fill in the registration form'
-    return dict(form=form)
-
 def reset():
      return dict(form=auth.request_reset_password())
 def download(): return response.download(request,db)
@@ -47,10 +39,7 @@ def onaccept(form): # form accepted
             lab = db(db.t_laboratorio.id==form.vars.f_laboratorio).select().first()
             lab.update_record(f_jefe=user.id)
 
-        # Si es jefe secc    
+        # Si es jefe secc
         elif form.vars.cargo == jefesec.id:
             sec = db(db.t_seccion.id==form.vars.f_seccion).select().first()
             sec.update_record(f_jefe=user.id)
-
-    
-

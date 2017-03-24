@@ -113,7 +113,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 # configure auth policy
 # -------------------------------------------------------------------------
-auth.settings.registration_requires_verification = False #True cuando hagamos deploy o al final de todo
+auth.settings.registration_requires_verification = False#True 
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
 

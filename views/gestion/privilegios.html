@@ -1,5 +1,5 @@
 {{extend 'layout.html'}}
-<div class="container style="background-color:#E0F2F1">
+<div class="container">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index')}}">Gestión</a></li>
@@ -9,4 +9,10 @@
 <h2>Gestión de Privilegios</h2>
 <p>Desde aquí se pueden consultar los privilegios disponibles en el sistema y quienes están asociados.</p>
 <p>{{=form}}</p>
+
+
+{{if 'new' in request.args or 'edit' in request.args:}}
+<p class="help-block center">Los campos marcados con (*) son obligatorios</p>
+{{pass}}
 </div>
+

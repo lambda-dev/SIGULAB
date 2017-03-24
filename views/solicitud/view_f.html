@@ -1,7 +1,0 @@
-{{extend 'layout.html'}}
-{{for i in espacios:}}
-	<a = href="{{=URL('solicitud','view_a', vars=dict(esp=i.id))}}">
-	<h5>{{=i.f_direccion+' '+i.f_espacio}}</h5></a>
-	{{pass}}
-
-
