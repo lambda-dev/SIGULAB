@@ -367,7 +367,7 @@ input#auth_user_remember_me.boolean{
   transform: translateY(3px);
 }
 .dropdown-toggle{
-  border-radius: 5px;
+  /*border-radius: 5px;*/
   margin: 1%;
   color: blue;
 }

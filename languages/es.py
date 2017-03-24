@@ -378,6 +378,7 @@
 'next 100 rows': '100 filas siguientes',
 'NO': 'NO',
 'No databases in this application': 'No hay bases de datos en esta aplicación',
+'No posees privilegios suficientes para realizar esta operación.': 'No posees privilegios suficientes para realizar esta operación.',
 'No puede consumir más de la cantidad disponible': 'No puede consumir más de la cantidad disponible',
 'No puede consumir más de la cantidad disponible (%s)': 'No puede consumir más de la cantidad disponible (%s)',
 'No puede estar vacio si elegiste una sección': 'No puede estar vacio si elegiste una sección',
@@ -433,18 +434,16 @@
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (125.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (125.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (1410.0 g)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (1410.0 g)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (190.0 g)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (190.0 g)',
+'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (200.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (200.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (25.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (25.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (300.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (300.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (3380.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (3380.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (3480.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (3480.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (360.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (360.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (90.0 g)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (90.0 g)',
+'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (9700.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (9700.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (980.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (980.0 mL)',
 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (990.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (990.0 mL)',
-
-'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (200.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (200.0 mL)',
-'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (9700.0 mL)': 'Por favor introduzca una cantidad menor o igual a su cantidad de uso interno disponible (9700.0 mL)',
-
 'Por recibir': 'Por recibir',
 'Powered by': 'Este sitio usa',
 'Preface': 'Prefacio',
@@ -500,9 +499,7 @@
 'Role': 'Rol',
 'Rows in Table': 'Filas en la tabla',
 'Rows selected': 'Filas seleccionadas',
-
 'S espaciofisicos': 'Espacios Fisicos',
-
 'Saldo fisico final': 'Saldo fisico final',
 'Salida': 'Salida',
 'save': 'guardar',

@@ -21,7 +21,7 @@ else T('')
 
       <div class="col-lg-7">
         <div class="container-fluid">
-          <img class="img img-responsive"src="https://i.imgsafe.org/5619c55ecf.png" alt="Beakers" style="transform:translateX(-10%);border-radius:5px;" id="beaker-img">
+          <img class="img img-responsive"src="{{=URL('static','images/login.png')}}" alt="Beakers" style="transform:translateX(-10%);border-radius:5px;" id="beaker-img">
         </div>
       </div>
 

@@ -245,13 +245,14 @@ def validar_jefes_sec(form):
   or auth.has_membership('Administrador Personal') \
   or auth.has_membership('WebMaster'))
 def espacios():
+    inventario = lambda row: A('Inventario', _href=URL(c='sustancias', f='inventario_manage',vars=dict(esp = row.id) ) )
+    links = [inventario]
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_espaciofisico)
     db.t_tecs_esp.f_espaciofisico.writable = False
 
     if auth.has_membership('Director'):
-        form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'], editable=False, create=False, deletable=False)
+        form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'], editable=False, create=False, deletable=False,links = links)
     else:
-        form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'])
+        form = SQLFORM.smartgrid(db.t_espaciofisico,csv=False,details=False, linked_tables=['t_tecs_esp'],links=links)
     return locals()
-
