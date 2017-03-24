@@ -255,7 +255,7 @@ db.define_table('t_bitacora',
     migrate=settings.migrate)
 
 db.t_bitacora.id.readable = False
-db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Prestamo','Donacion','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
+db.t_bitacora.f_proceso.requires = IS_IN_SET(['Suministro del Almacen','Compra','Practica de Laboratorio','Tesis','Proyecto de Investigacion','Servicio de Laboratorio'])
 db.t_bitacora._singular='Bitacora'
 db.t_bitacora._plural='Bitacora'
 
@@ -480,7 +480,7 @@ db.executesql(
         t_bitacora.f_sustancia,extract(year from t_bitacora.f_fechaingreso) as year,\
         extract(month from t_bitacora.f_fechaingreso) as mes, \
         SUM(t_bitacora.f_consumo) as "Total Salidas"\
-    from t_inventario,t_bitacora where t_inventario.id=t_bitacora.id \
+    from t_bitacora\
     group by t_bitacora.f_sustancia,year,mes;')
 
 
@@ -507,7 +507,7 @@ db.define_table('v_reporte',
     Field('f_nombre',label=T('Nombre Sustancia')),
     Field('id'),
     Field('f_unidad',label=T('Unidad de medida')),
-    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('cantidad_total',label=T('Saldo fisico final'),readable=False),
     Field('total_salidas',label=T('Total salidas')),
     Field('total_entradas',label=T('Total Entradas')),
     Field('f_mes',label=T('Mes')),
@@ -538,7 +538,7 @@ db.define_table('v_reporte_rl7',
     Field('f_nombre',label=T('Nombre Sustancia')),
     Field('id'),
     Field('f_unidad',label=T('Unidad de medida')),
-    Field('cantidad_total',label=T('Saldo fisico final')),
+    Field('cantidad_total',label=T('Saldo fisico final'),readable=False),
     Field('total_salidas',label=T('Total salidas')),
     Field('total_entradas',label=T('Total Entradas')),
     Field('f_mes',label=T('Mes')),
