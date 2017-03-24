@@ -480,7 +480,7 @@
 'Registration key': 'Llave de registro',
 'Registration successful': 'Registro con éxito',
 'reload': 'recargar',
-'Remember me (for 30 days)': 'Recuérdame (durante 30 días)',
+'Remember me (for 30 days)': 'Recordar mis datos',
 'remove compiled': 'eliminar compiladas',
 'Renew': 'Renew',
 'Reporte': 'Reporte',
