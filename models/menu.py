@@ -31,15 +31,15 @@ if (auth.has_membership('Técnico') or auth.has_membership('Jefe de Sección') o
 #dir o admin user
 if (auth.has_membership('Director') or auth.has_membership('WebMaster') or auth.has_membership('Administrador Personal')) and (not auth.has_membership('Usuario Normal')):
     response.menu += [
-    [T('Gestión Usuarios'),False, None,[
+    [T('Usuarios'),False, None,[
       [T('Pendientes de confirmación ('+str(pen)+')'), False, URL('gestion','pendientes')],
       [T('Usuarios Autorizados'), False, URL('gestion','autorizados')],
       [T('Usuarios Registrados'), False, URL('gestion','usuarios')],
       [T('Privilegios'), False, URL('gestion','privilegios')]
       ]],
-    [T('Gestión Espacios'), False, None, [
-      [T('Laboratorios'), False, URL('gestion','laboratorios')],
-      [T('Secciones'), False, URL('gestion','secciones')],
+    [T('Dependencias'), False, None, [
+      [T('Unidades'), False, URL('gestion','laboratorios')],
+      [T('Dependencias'), False, URL('gestion','secciones')],
       [T('Espacios Físicos'), False, URL('gestion','espacios')]
     ]]
     ]

@@ -25,8 +25,8 @@ if db(db.auth_permission).isempty():
 
 #############################################
 db.define_table('t_laboratorio',
-    Field('f_nombre', 'string', notnull=True, label=T('Nombre'), requires=IS_NOT_EMPTY()),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio')),
+    Field('f_nombre', 'string', notnull=True, label=T('Unidad de Adscripción'), requires=IS_NOT_EMPTY()),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Responsable')),
     migrate=settings.migrate)
 
 db.t_laboratorio._plural = 'Laboratorios'
@@ -37,7 +37,7 @@ db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == valu
 db.define_table('t_seccion',
     Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
     Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Laboratorio')),
-    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Sección')),
+    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Responsable')),
     migrate=settings.migrate)
 
 db.t_seccion._plural = 'Secciones'

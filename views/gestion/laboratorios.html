@@ -1,13 +1,23 @@
 {{extend 'layout.html'}}
 <div class="container">
+{{if lab_id:}}
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index_e')}}">Gestión</a></li>
-    <li class="breadcrumb-item active">Laboratorios</li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('gestion','laboratorios')}}">Unidades de Adscripción</a></li>    
+    <li class="breadcrumb-item active">Dependencias</li>
   </ol>
-
-<h2>Gestión de Laboratorios</h2>
-<p>Desde aquí se pueden editar los diferentes laboratorios y sus jefes.</p>
+<h2>Gestión de Dependencias</h2>
+<h3>Unidad de Adscripción: {{=lab.f_nombre}}</h3>
+<p>Permite añadir, buscar, editar y eliminar las Dependencias de la ULAB y sus Responsables.</p>
+{{else:}}
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+    <li class="breadcrumb-item active">Unidades de Adscripción</li>
+  </ol>
+<h2>Gestión de Unidades de Adscripción</h2>
+<p>Permite añadir, buscar, editar
+y eliminar las diferentes Unidades de Adscripción de la ULAB y sus Responsables.</p>
+{{pass}}
 <p>{{=form}}</p>
 
 
