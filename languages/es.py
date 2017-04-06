@@ -229,6 +229,7 @@
 'exposes': 'expone',
 'extends': 'extiende',
 'F Laboratorio': 'Unidad de Adscripción',
+'F Responsable': 'F Responsable',
 'F Seccion': 'Dependencia',
 'Facturación': 'Facturación',
 'Facturas': 'Facturas',

@@ -5,23 +5,11 @@ if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
     db.auth_group.insert(role='Administrador Personal',description='Administrador de Personal')
-    db.auth_group.insert(role='Gestor de Sustancias',description='Gestor de Sustancias')
+    db.auth_group.insert(role='Gestor de SMyDP',description='Gestor de Sustancias')
     db.auth_group.insert(role='Jefe de Laboratorio',description='Jefe de Laboratorio')
     db.auth_group.insert(role='Jefe de Sección',description='Jefe de Sección')
     db.auth_group.insert(role='Técnico',description='Técnico de Laboratorio')
     db.auth_group.insert(role='Usuario Normal',description='Usuario recien registrado')
-
-if db(db.auth_permission).isempty():
-    db.auth_permission.insert(name='director',table_name='t_sustancias',
-                            group_id=(db(db.auth_group.role == "Director").select(db.auth_group.id).first()))
-    db.auth_permission.insert(name='gestor',table_name='t_sustancias',
-                            group_id=db(db.auth_group.role == "Gestor de Sustancias").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='tecnico',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Técnico").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='jefeseccion',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Jefe de Sección").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='jefelab',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
 
 #############################################
 db.define_table('t_laboratorio',
@@ -51,9 +39,12 @@ db.define_table('t_espaciofisico',
     Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
     Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Dirección')),
     Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Sección')),
+    Field('f_uso', 'string', label=T('Uso')),
+    Field('f_responsable', 'integer', label=T("Responsable"), requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s', zero=None), default = db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first()),
     format='%(f_espacio)s',
     migrate=settings.migrate)
 
+db.t_espaciofisico.f_responsable.represent = lambda v,r: db(db.auth_user.id == v).select().first()['first_name']+" "+db(db.auth_user.id == v).select().first()['last_name'] if v is not None else 'Vacio'
 db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
 db.t_espaciofisico._plural = 'Espacios Físicos'
 db.t_espaciofisico._singular = 'Espacio Físico'

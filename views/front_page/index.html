@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 <div class="container">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item active">Home</li>
+      <li class="breadcrumb-item active">Inicio</li>
     </ol>
     <br>
     <br>
@@ -12,7 +12,7 @@
           and not auth.has_membership('Jefe de Laboratorio') \
           and not auth.has_membership('Jefe de Sección') \
           and not auth.has_membership('Técnico')\
-          and not auth.has_membership('Gestor de Sustancias')\
+          and not auth.has_membership('Gestor de SMyDP')\
           and not auth.has_membership('Administrador Personal')\
           and not auth.has_membership('Usuario Normal'):}}
         {% session.clear() %}
@@ -23,7 +23,7 @@
           or auth.has_membership('Jefe de Laboratorio') \
           or auth.has_membership('Jefe de Sección') \
           or auth.has_membership('Técnico')\
-          or auth.has_membership('Gestor de Sustancias'):}}
+          or auth.has_membership('Gestor de SMyDP'):}}
         <div class="panel col-md-6 text-center">
 	        <a href="{{=URL('front_page','sustancias')}}" class="btn btn-lg btn-block" role="button">
 		        <h4>
@@ -56,7 +56,7 @@
 		            <i class="fa fa-user-o fa-3x" aria-hidden="true"></i>
 		        </h4>
 		        <h4>
-		            Personal
+		            Usuarios
 		        </h4>
 	        </a>
         </div>
@@ -67,7 +67,7 @@
                 <i class="fa fa-building-o fa-3x" aria-hidden="true"></i>
             </h4>
             <h4>
-                Espacios
+                Dependencias
             </h4>
           </a>
         </div>

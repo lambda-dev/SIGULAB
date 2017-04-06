@@ -1,3 +1,4 @@
+
 #!usr/bin/env python27
 # -*- coding: utf-8 -*-
 from plugin_notemptymarker import mark_not_empty
@@ -10,7 +11,7 @@ import calendar
 
 
 @auth.requires(auth.has_membership('Director') \
-  or auth.has_membership('Gestor de Sustancias') \
+  or auth.has_membership('Gestor de SMyDP') \
   or auth.has_membership('WebMaster'))
 @auth.requires_login()
 

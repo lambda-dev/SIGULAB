@@ -49,8 +49,6 @@ else T('')
 </style>
 {{block page_js}}
 <script>
-    // jQuery('#auth_user_email__label').attr('class','control-label col-sm-12 center');
-    // jQuery('#auth_user_password__label').attr('class','control-label col-sm-12 center');
     jQuery('.control-label').attr('class','control-label col-sm-12 center');
     jQuery('div[class=col-sm-9]').attr('class','control-label col-sm-12 center');
     jQuery('div.col-sm-9.col-sm-offset-3').attr('class','col-sm-12 center');
@@ -61,9 +59,6 @@ else T('')
     jQuery('#beaker-img').css('transform','translateY(15%)');
     web2py_validate_entropy(jQuery('#auth_user_password'),100);
     jQuery('#auth_user_cargo option[value=1]').hide().prop('disabled',true);
-    jQuery('#auth_user_cargo option[value=3]').hide().prop('disabled',true);
-    jQuery('#auth_user_cargo option[value=2]').hide().prop('disabled',true);
-    jQuery('#auth_user_cargo option[value=4]').hide().prop('disabled',true);
     jQuery('#auth_user_cargo option[value=8]').hide().prop('disabled',true);
     jQuery('#auth_user_cargo option[value=7]').prop('selected',true);
     jQuery('#auth_user_f_seccion option[value=114]').prop('selected',true);

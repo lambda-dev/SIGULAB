@@ -216,7 +216,7 @@ def sustanciapeligrosa_manage():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_sustancias)
 
-    if(auth.has_membership('Gestor de Sustancias') or \
+    if(auth.has_membership('Gestor de SMyDP') or \
     auth.has_membership('WebMaster')):
         table = SQLFORM.smartgrid(db.t_sustancias,onupdate=auth.archive,links_in_grid=False,csv=False,user_signature=True,paginate=10)
     else:
@@ -232,7 +232,7 @@ def select_inventario():
     labs=False
     secciones=False
 
-    if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
+    if (auth.has_membership('Gestor de SMyDP') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
         espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
         secciones = db(db.t_inventario.f_seccion == db.t_seccion.id).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
         labs = db(db.t_inventario.f_laboratorio == db.t_laboratorio.id).select(db.t_laboratorio.ALL,distinct=db.t_laboratorio.id)
@@ -254,13 +254,6 @@ def select_inventario():
 @auth.requires_login()
 def inventario_lab():
 
-    # if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
-    #     espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
-    #     secciones = db(db.t_inventario.f_seccion == db.t_seccion.id).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
-    # elif (auth.has_membership('Jefe de Laboratorio') ):
-    #     espacios = db( (db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico) ).select(db.t_espaciofisico.ALL,distinct=db.t_espaciofisico.id)
-    #     secciones = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion) ).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
-
     secciones = db((db.t_laboratorio.id == request.vars['lab'])&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion)).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
     lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     query = db.v_laboratorio.f_laboratorio == str(request.vars['lab'])
@@ -272,20 +265,6 @@ def inventario_lab():
 @auth.requires(not auth.has_membership('Usuario Normal'))
 @auth.requires_login()
 def inventario_seccion():
-    #
-    # if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
-    #     espacios = db(db.t_inventario.f_espaciofisico == db.t_espaciofisico.id).select(db.t_espaciofisico.ALL,groupby=db.t_espaciofisico.id,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
-    #     secciones = db(db.t_inventario.f_seccion == db.t_seccion.id).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
-    #     labs = db(db.t_inventario.f_laboratorio == db.t_laboratorio.id).select(db.t_laboratorio.ALL,distinct=db.t_laboratorio.id)
-    # elif (auth.has_membership('Jefe de Laboratorio') ):
-    #     espacios = db( (db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_espaciofisico.f_seccion == db.t_seccion.id)&(db.t_espaciofisico.id == db.t_inventario.f_espaciofisico) ).select(db.t_espaciofisico.ALL,distinct=db.t_espaciofisico.id)
-    #     secciones = db((db.t_laboratorio.f_jefe == auth.user.id)&(db.t_seccion.f_laboratorio == db.t_laboratorio.id)&(db.t_seccion.id == db.t_inventario.f_seccion) ).select(db.t_seccion.ALL,distinct=db.t_seccion.id)
-    #     labs = db(db.t_laboratorio.f_jefe == auth.user.id).select(db.t_laboratorio.ALL)
-    # elif (auth.has_membership('Jefe de Sección') ):
-    #     espacios = db((db.t_espaciofisico.f_seccion == request.vars['secc'])&(db.t_seccion.f_jefe == auth.user.id)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
-    #     secciones = db(db.t_seccion.f_jefe == auth.user.id ).select(db.t_seccion.ALL)
-    # else:
-    #     espacios = db((db.t_tecs_esp.f_tecnico == auth.user.id)&(db.t_espaciofisico.id == db.t_tecs_esp.f_espaciofisico)).select(db.t_espaciofisico.ALL,orderby=[db.t_espaciofisico.f_seccion,db.t_espaciofisico.f_espacio])
 
     if request.vars['secc'] == 't':
         db.v_seccion.f_seccion.readable = True
@@ -490,7 +469,7 @@ def view_bitacora():
     if ('view' in request.args):
         db.t_bitacora.f_descripcion.readable = True
         db.t_bitacora.f_cantidad.readable = False
-        db.t_bitacora.f_fecha.readable = auth.has_membership('Gestor de Sustancias') or auth.has_membership('WebMaster')
+        db.t_bitacora.f_fecha.readable = auth.has_membership('Gestor de SMyDP') or auth.has_membership('WebMaster')
 
     if 'edit' in request.args:
         row = db(db.t_bitacora.id == request.args[3]).select().first()
