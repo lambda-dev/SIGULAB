@@ -153,6 +153,17 @@ def actualizar_privilegio(f, uid):
 db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
 db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
 
+
+def check_multiple(f):
+    uid = f['user_id']
+    num_priv = db(db.auth_membership.user_id == uid).count()
+    if num_priv > 0:
+        session.flash = "Error. No puede haber más de un privilegio asociado al usuario."
+        return True
+    return False
+
+db.auth_membership._before_insert.append(lambda f: check_multiple(f))
+
 ########################################
 db.define_table('t_regimenes',
     Field('f_nombre','string',label=T('Nombre')),

@@ -9,7 +9,11 @@
 <h2>Gestión de Privilegios</h2>
 <p>Desde aquí se pueden consultar los privilegios disponibles en el sistema y quienes están asociados.</p>
 <p>{{=form}}</p>
-
+{{ if "auth_membership.group_id" in request.args:}}
+<a href="{{=URL('gestion','privilegios')}}">
+  <button class="btn btn-default"><span class="icon leftarrow icon-arrow-left glyphicon glyphicon-arrow-left"></span> Atrás</button>
+</a>
+{{pass}}
 
 {{if 'new' in request.args or 'edit' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>

@@ -53,16 +53,23 @@ def privilegios():
     return locals()
 
 def validar_roles(form):
-    if 'edit' in request.args:
-      if form.vars.group_id == 2:
-        if db(db.auth_membership.group_id == 2).count() >= 1:
-          form.errors.group_id = T('No puede haber más de un Director')
+    print(request.args)
+    if ('edit' in request.args) or ('new' in request.args):
+        num_priv = db(db.auth_membership.user_id == form.vars.user_id).count()
+        if num_priv > 0:
+            form.errors.user_id = "Error. No puede haber más de un privilegio asociado al usuario."
 
-      elif form.vars.group_id == 5:
-        n_jefes = db(db.auth_membership.group_id == 5).count()
-        n_labs = db(db.t_laboratorio.id>0).count()
-        if n_jefes >= n_labs:
-          form.errors.group_id = T('No pueden haber más Jefes que Laboratorios')
+        if form.vars.group_id == 2:
+            if db(db.auth_membership.group_id == 2).count() >= 1:
+                form.errors.group_id = T('No puede haber más de un Director')
+        elif form.vars.group_id == 5:
+            n_jefes = db(db.auth_membership.group_id == 5).count()
+            n_labs = db(db.t_laboratorio.id>0).count()
+            if n_jefes >= n_labs:
+                form.errors.group_id = T('No pueden haber más Jefes que Laboratorios')
+
+
+
 
 @auth.requires(auth.has_membership('Director') \
   or auth.has_membership('Administrador Personal') \
