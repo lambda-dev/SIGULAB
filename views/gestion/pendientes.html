@@ -1,14 +1,14 @@
 {{extend 'layout.html'}}
 <div class="container">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index')}}">Gestión</a></li>
-    <li class="breadcrumb-item active">Usuarios Pendientes</li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index')}}">Usuarios</a></li>
+    <li class="breadcrumb-item active">Pendientes</li>
   </ol>
 
 
-<h2>Gestión de Usuarios Pendientes</h2>
-<p>Desde aquí se pueden confirmar los usuarios que pidieron registro pero no estaban en la lista de autorización previa.</p>
+<h2>Gestión de Usuarios Registrados Pendientes por Confirmación</h2>
+<p>Permite confirmar el registro y datos de usuarios que se registraron en el sistema sin estar en la Lista de Usuarios Autorizados.</p>
 <p>{{=form}}</p>
 
 

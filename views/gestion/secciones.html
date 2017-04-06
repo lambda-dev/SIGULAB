@@ -1,15 +1,29 @@
 {{extend 'layout.html'}}
 <div class="container">
+{{if secc_id:}}
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index_e')}}">Gestión</a></li>
-    <li class="breadcrumb-item active">Secciones</li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>  
+    <li class="breadcrumb-item"><a href="{{=URL('gestion','secciones')}}">Dependencias</a></li>
+    <li class="breadcrumb-item active">Espacios Físicos</li>
+  </ol>
+<h2>Gestión de Espacios Físicos</h2>
+<h3>Dependencia: {{=secc.f_seccion}}</h3>
+<p>Permite añadir, buscar, editar y eliminar los Espacios Físicos bajo la custodia de las Dependencias de la ULAB y sus Responsables.</p>
+<p>{{=form}}</p>
+<a href="{{=URL('gestion','secciones')}}">
+  <button class="btn btn-default"><span class="icon leftarrow icon-arrow-left glyphicon glyphicon-arrow-left"></span> Atrás</button>
+</a>
+{{else:}}
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('gestion','laboratorios')}}">Unidades de Adscripción</a></li>    
+    <li class="breadcrumb-item active">Dependencias</li>
   </ol>
 
-<h2>Gestión de Secciones</h2>
-<p>Desde aquí se pueden editar los diferentes secciones y sus jefes.</p>
+<h2>Gestión de Dependencias</h2>
+<p>Permite añadir, buscar, editar y eliminar las Dependencias de la ULAB y sus Responsables.</p>
 <p>{{=form}}</p>
-
+{{pass}}
 
 {{if 'new' in request.args or 'edit' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>

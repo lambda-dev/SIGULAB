@@ -5,55 +5,46 @@ if db(db.auth_group).isempty():
     db.auth_group.insert(role='WebMaster',description='Super Usuario')
     db.auth_group.insert(role='Director',description='Director de la Unidad de Laboratorio')
     db.auth_group.insert(role='Administrador Personal',description='Administrador de Personal')
-    db.auth_group.insert(role='Gestor de Sustancias',description='Gestor de Sustancias')
+    db.auth_group.insert(role='Gestor de SMyDP',description='Gestor de Sustancias')
     db.auth_group.insert(role='Jefe de Laboratorio',description='Jefe de Laboratorio')
     db.auth_group.insert(role='Jefe de Sección',description='Jefe de Sección')
     db.auth_group.insert(role='Técnico',description='Técnico de Laboratorio')
     db.auth_group.insert(role='Usuario Normal',description='Usuario recien registrado')
 
-if db(db.auth_permission).isempty():
-    db.auth_permission.insert(name='director',table_name='t_sustancias',
-                            group_id=(db(db.auth_group.role == "Director").select(db.auth_group.id).first()))
-    db.auth_permission.insert(name='gestor',table_name='t_sustancias',
-                            group_id=db(db.auth_group.role == "Gestor de Sustancias").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='tecnico',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Técnico").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='jefeseccion',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Jefe de Sección").select(db.auth_group.id).first())
-    db.auth_permission.insert(name='jefelab',table_name='t_inventario',
-                            group_id=db(db.auth_group.role == "Jefe de Laboratorio").select(db.auth_group.id).first())
-
 #############################################
 db.define_table('t_laboratorio',
-    Field('f_nombre', 'string', notnull=True, label=T('Nombre'), requires=IS_NOT_EMPTY()),
-    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio')),
+    Field('f_nombre', 'string', notnull=True, label=T('Unidad de Adscripción'), requires=IS_NOT_EMPTY()),
+    Field('f_jefe','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Responsable')),
     migrate=settings.migrate)
 
-db.t_laboratorio._plural = 'Laboratorios'
-db.t_laboratorio._singular = 'Laboratorio'
+db.t_laboratorio._plural = 'Unidades de Adscripción'
+db.t_laboratorio._singular = 'Unidad de Adscripción'
 db.t_laboratorio.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else 'Vacio'
 
 ########################################
 db.define_table('t_seccion',
-    Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Sección')),
-    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Laboratorio')),
-    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Sección')),
+    Field('f_seccion','string',requires=IS_NOT_EMPTY(),label=T('Dependencia')),
+    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Unidad de Adscripción')),
+    Field('f_jefe','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Responsable')),
     migrate=settings.migrate)
 
-db.t_seccion._plural = 'Secciones'
-db.t_seccion._singular = 'Sección'
+db.t_seccion._plural = 'Dependencias'
+db.t_seccion._singular = 'Dependencia'
 db.t_seccion.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
 db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
 
 
 ########################################
 db.define_table('t_espaciofisico',
-    Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
-    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Dirección')),
-    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Sección')),
+    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
+    Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Uso')),
+    Field('f_responsable', 'integer', label=T("Responsable"), requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s', zero=None), default = db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first()),
+    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Dependencia')),
+  
     format='%(f_espacio)s',
     migrate=settings.migrate)
 
+db.t_espaciofisico.f_responsable.represent = lambda v,r: db(db.auth_user.id == v).select().first()['first_name']+" "+db(db.auth_user.id == v).select().first()['last_name'] if v is not None else 'Vacio'
 db.t_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
 db.t_espaciofisico._plural = 'Espacios Físicos'
 db.t_espaciofisico._singular = 'Espacio Físico'
@@ -139,7 +130,7 @@ def check_autorizado(f, uid):
         auth.add_membership(auth.id_group(role='Usuario Normal'), usuario.id)
         usuario.update_record(autorizado = False)
 
-        to = []
+        to = ['ulab-smdp@usb.ve']
         id_admin_u = auth.id_group(role='Administrador Personal')
         admins = db(db.auth_membership.group_id == id_admin_u).select(db.auth_user.email, \
         join=db.auth_user.on(db.auth_membership.user_id == db.auth_user.id))
@@ -147,7 +138,7 @@ def check_autorizado(f, uid):
         for admin in admins:
             to.append(admin['email'])
 
-        s = 'Nuevo usuario pendiente por confirmar'
+        s = '[SIGULAB] Nuevo Usuario Pendiente'
         m = 'Se ha registrado un nuevo usuario en SIGULAB, pero está pendiente de confirmación por un Administrador de Usuarios'
         mail.send(to=to, subject=s, message=m)
 
@@ -161,6 +152,17 @@ def actualizar_privilegio(f, uid):
 
 db.auth_user._after_insert.append(lambda f, uid: check_autorizado(f, uid))
 db.auth_membership._after_insert.append(lambda f, uid: actualizar_privilegio(f, uid))
+
+
+def check_multiple(f):
+    uid = f['user_id']
+    num_priv = db(db.auth_membership.user_id == uid).count()
+    if num_priv > 0:
+        session.flash = "Error. No puede haber más de un privilegio asociado al usuario."
+        return True
+    return False
+
+db.auth_membership._before_insert.append(lambda f: check_multiple(f))
 
 ########################################
 db.define_table('t_regimenes',

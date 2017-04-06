@@ -8,7 +8,7 @@ def select_solicitud(): #vista general para escoger el espacio físico desde don
     espacios=False
     table=False
     funcion=request.vars['f']
-    if (auth.has_membership('Gestor de Sustancias') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
+    if (auth.has_membership('Gestor de SMyDP') or auth.has_membership('Director') or auth.has_membership('WebMaster')):
         table=SQLFORM.smartgrid(db.s_espaciofisico, csv=False, deletable=False, editable=False, details=False, create=False, paginate=15)
     elif (auth.has_membership('Jefe de Laboratorio') ):
         query=db.s_espaciofisico.f_jefe_laboratorio==auth.user.id

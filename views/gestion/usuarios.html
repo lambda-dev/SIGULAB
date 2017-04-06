@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 <div class="container">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
     <li class="breadcrumb-item"><a href="{{=URL('gestion', 'index')}}">Gestión</a></li>
     <li class="breadcrumb-item active">Usuarios Registrados</li>
   </ol>
@@ -9,7 +9,11 @@
 <h2>Gestión de Usuarios Registrados</h2>
 <p>Desde aquí se pueden consultar, editar y eliminar los usuarios que tienen acceso al sistema.</p>
 <p>{{=form}}</p>
-
+{{ if "auth_membership.user_id" in request.args:}}
+<a href="{{=URL('gestion','usuarios')}}">
+  <button class="btn btn-default"><span class="icon leftarrow icon-arrow-left glyphicon glyphicon-arrow-left"></span> Atrás</button>
+</a>
+{{pass}}
 
 {{if 'new' in request.args or 'edit' in request.args:}}
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>
