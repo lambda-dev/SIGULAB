@@ -193,10 +193,11 @@ def laboratorios():
     db.t_laboratorio.id.readable=False
     db.t_seccion.f_laboratorio.readable=False
     query = (db.t_laboratorio.f_nombre != "Ninguno")
-    try:
+    
+    if 't_seccion.f_laboratorio' in request.args:
         lab_id = request.args[2]
         lab = db(db.t_laboratorio.id == lab_id).select(db.t_laboratorio.f_nombre).first()
-    except:
+    else:
         lab_id = None
 
     if auth.has_membership('Director'):
@@ -222,12 +223,13 @@ def secciones():
 
     db.t_seccion.id.readable=False
     db.t_espaciofisico.f_seccion.readable=False
+    db.t_espaciofisico.id.readable=False
     query = (db.t_seccion.f_seccion != "Ninguna")
 
-    try:
+    if 't_espaciofisico.f_seccion' in request.args:
         secc_id = request.args[2]
         secc = db(db.t_seccion.id == secc_id).select(db.t_seccion.f_seccion).first()
-    except:
+    else:
         secc_id = None
 
     if auth.has_membership('Director'):
