@@ -1,4 +1,3 @@
-
 #!usr/bin/env python27
 # -*- coding: utf-8 -*-
 from plugin_notemptymarker import mark_not_empty
@@ -18,15 +17,15 @@ import calendar
 def select_rl4():
     #lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     #query = (db.t_sustancias.f_control == 3) |  (db.t_sustancias.f_control == 1)
-    db.v_reporte.f_mes.readable = False
-    db.v_reporte.f_year.readable = False
     mes = request.vars['m']
     year= request.vars['y']
+    db.v_reporte.f_mes.readable = False
+    db.v_reporte.f_year.readable = False
     query=(db.v_reporte.f_mes==mes)&(db.v_reporte.f_year==year)
     query2=db(db.t_bitacora.f_sustancia==2).select()
     for i in query2:
         print (i.f_fechaingreso)
-    table = SQLFORM.smartgrid(db.v_reporte,constraints=dict(v_reporte=query),csv=False,editable=False,deletable=False,create=False,details=False)
+    table = SQLFORM.smartgrid(db.v_reporte,constraints=dict(v_reporte=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
 def select_fecha():
@@ -279,78 +278,62 @@ def generar_reporte():
     print(ids)
     y=0;
     z=0;
+    cantinicial=[]
+    nroid=0
     for i in ids:
         if y<13:
-            ayuda=0;
-            print("Hice el query")
-            query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
-            for t in query1:
-                ayuda=ayuda+1
-            print("PASE UNA VEZ")
-            ayuda=ayuda
-            aux1=0;
-            entro=0;
-            ayuda1=0
-            for t in query1:
-                ayuda1=ayuda1+1
-                if ((t.f_fechaingreso.month<int(mes))&(t.f_fechaingreso.year==int(year))):
-                    if aux1==0:
-                        print("Entra",i)
-                        ws[x[y]] = (t.f_cantidad/1000)
-                        ws[x[y]].font = ft3
-                        aux1=aux1+1
-                        entro=entro+1
-                        y=y+1
-                print (entro)
-                if entro==0:
-                    if ((t.f_fechaingreso.year<int(year))):
-                        if aux1==0:
-                            print("cambie")
-                            ws[x[y]] = (t.f_cantidad/1000)
-                            ws[x[y]].font = ft3
-                            aux1=aux1+1
-                            entro=entro+1
-                            y=y+1
-                print("AYUDA1",ayuda1==ayuda)
-                if ((entro==0) & (ayuda1==ayuda)) :
-                    print("cambie")
-                    ws[x[y]] = 0
-                    ws[x[y]].font = ft3
-                    y=y+1
-                print("AYUDA",ayuda1,ayuda)
+            query2=db((db.t_inventario.f_sustancia==i)).select(db.t_inventario.f_espaciofisico)
+            espacio=[]
+            monto=0
+            for g in query2:
+                espacio.append(g.f_espaciofisico)
+            print(espacio)
+            for k in espacio:
+                aux=0
+                query7=db((db.t_bitacora.f_sustancia==i)&(db.t_bitacora.f_espaciofisico==k)).select(orderby=[~db.t_bitacora.f_fechaingreso])
+                for d in query7:
+                    print("La fecha",d.f_fechaingreso,k,i)
+                    if((d.f_fechaingreso.month<int(mes))&(d.f_fechaingreso.year==int(year))):
+                        if aux==0:
+                            monto=monto+d.f_cantidad
+                            print("El monto",monto)
+                            aux=aux+1
+                    elif((d.f_fechaingreso.year<int(year))):
+                        if aux==0:
+                            monto=monto+d.f_cantidad
+                            aux=aux+1
 
-
+            cantinicial.append(monto)
+            ws[x[y]] = (monto/1000)
+            ws[x[y]].font = ft3
+            y=y+1
 
         if y>=13:
-            print("Hice el query")
-            query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
-            for t in query1:
-                query2=db((t.f_fechaingreso.month<int(mes))&(t.f_fechaingreso.month==int(year))).select(db.t_bitacora.f_cantidad)
-                aux1=0
-                entro=0
-                for p in query2:
-                    if aux1==0:
-                        print("ENTRE AQUI")
-                        ws[x[y]] = (p.f_cantidad/1000)
-                        ws[x[y]].font = ft3
-                        aux1=aux1+1
-                        entro=entro+1
-                        y=y+1
-                print (entro)
-                if entro==0:
-                    query2=db((t.f_fechaingreso.month<int(mes))).select(db.t_bitacora.f_cantidad)
-                    aux=0
-                    for u in query2:
+            query2=db((db.t_inventario.f_sustancia==i)).select(db.t_inventario.f_espaciofisico)
+            espacio=[]
+            monto=0
+            for g in query2:
+                espacio.append(g.f_espaciofisico)
+            print(espacio)
+            for k in espacio:
+                aux=0
+                query7=db((db.t_bitacora.f_sustancia==i)&(db.t_bitacora.f_espaciofisico==k)).select(orderby=[~db.t_bitacora.f_fechaingreso])
+                for d in query7:
+                    print("La fecha",d.f_fechaingreso,k,i)
+                    if((d.f_fechaingreso.month<int(mes))&(d.f_fechaingreso.year==int(year))):
                         if aux==0:
-                            ws[x[y]] = (u.f_cantidad/1000)
-                            ws[x[y]].font = ft3
+                            monto=monto+d.f_cantidad
+                            print("El monto",monto)
                             aux=aux+1
-                            entro=entro+1
-                            y=y+1
-                if entro==0:
-                    ws[x[y]] = 0
-                    ws[x[y]].font = ft3
-                    y=y+1
+                    elif((d.f_fechaingreso.year<int(year))):
+                        if aux==0:
+                            monto=monto+d.f_cantidad
+                            aux=aux+1
+
+            cantinicial.append(monto)
+            ws[x[y]] = (monto/1000)
+            ws[x[y]].font = ft3
+            y=y+1
 
     x = ['F14','F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26']
     query=db((db.v_reporte.f_mes==mes)&(db.v_reporte.f_year==year)).select(db.v_reporte.total_entradas)
@@ -380,20 +363,26 @@ def generar_reporte():
             z=z+1
     x = ['H14','H15','H16','H17','H18','H19','H20','H21','H22','H23','H24','H25','H26']
     y=0;
-    for i in ids:
-        query1=db((db.t_bitacora.f_sustancia==i)).select(orderby=~db.t_bitacora.f_fecha)
-        aux1=0
-        print("Estoy con",i)
-        for t in query1:
-            if ((t.f_fechaingreso.month==int(mes))&(t.f_fechaingreso.year==int(year))):
-                if aux1==0:
-                    print("ENTRE AQUI")
-                    print(t.f_cantidad)
-                    ws[x[y]] = (t.f_cantidad/1000)
-                    ws[x[y]].font = ft3
-                    aux1=aux1+1
-                    y=y+1
-        print (entro)
+    query=db((db.v_reporte.f_mes==mes)&(db.v_reporte.f_year==year)).select()
+    aux1=0
+    for t in query:
+        if y<13:
+            print(cantinicial)
+            inicial=(cantinicial[aux1]+t.total_entradas)-t.total_salidas
+            print("Inicial",inicial)
+            ws[x[y]] = (inicial/1000)
+            ws[x[y]].font = ft3
+            aux1=aux1+1
+            y=y+1
+        if y>=13:
+            inicial=t.total_entradas-t.total_salidas
+            inicial=(cantinicial[aux1]+t.total_entradas)-t.total_salidas
+            print("Inicial",inicial)
+            ws[x[z]] = (inicial/1000)
+            aux1=aux1+1
+            ws[x[z]].font = ft3
+            y=y+1
+            z=z+1
     x = ['I14','I15','I16','I17','I18','I19','I20','I21','I22','I23','I24','I25','I26']
     query=db((db.v_reporte.f_mes==mes)&(db.v_reporte.f_year==year)).select(db.v_reporte.f_unidad)
     y=0;
@@ -453,7 +442,7 @@ def generar_reporte():
         while hoja<=bitacora[contador-1]:
             try:
                 m=unicode(m,"utf-8")
-            except TypeError as e:
+            except:
                 pass
             ws2 = wb.create_sheet(m)
             #Encabezado
@@ -574,7 +563,8 @@ def generar_reporte():
 
             x = ['B15','B16','B17','B18','B19','B20','B21','B22','B23','B24','B25','B26','B27','B28','B29','B30','B31','B32','B33','B34']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
+                aux1=0
                 y=0;
                 for i in query:
                     if y<20:
@@ -586,7 +576,7 @@ def generar_reporte():
 
             x = ['C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25','C26','C27','C28','C29','C30','C31','C32','C33','C34']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<20:
@@ -597,7 +587,7 @@ def generar_reporte():
                             y=y+1
             x = ['D15','D16','D17','D18','D19','D20','D21','D22','D23','D24','D25','D26','D27','D28','D29','D30','D31','D32','D33','D34']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<20:
@@ -608,7 +598,7 @@ def generar_reporte():
                             y=y+1
             x = ['E15','E16','E17','E18','E19','E20','E21','E22','E23','E24','E25','E26','E27','E28','E29','E30','E31','E32','E33','E34']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<20:
@@ -619,7 +609,7 @@ def generar_reporte():
                             y=y+1
             x = ['F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<20:
@@ -644,13 +634,14 @@ def generar_reporte():
 def select_rl7():
     #lab = str(db(db.t_laboratorio.id == request.vars['lab']).select(db.t_laboratorio.f_nombre))[24:-2]
     #query = (db.t_sustancias.f_control == 3) |  (db.t_sustancias.f_control == 1)
-    db.v_reporte_rl7.f_mes.readable = False
-    db.v_reporte_rl7.f_year.readable = False
     mes = request.vars['m']
     year= request.vars['y']
+    db.v_reporte_rl7.f_mes.readable = False
+    db.v_reporte_rl7.f_year.readable = False
+    db.v_reporte_rl7.id.readable = False
     query=(db.v_reporte_rl7.f_mes==mes)&(db.v_reporte_rl7.f_year==year)
 
-    table = SQLFORM.smartgrid(db.v_reporte_rl7,constraints=dict(v_reporte_rl7=query),csv=False,editable=False,deletable=False,create=False,details=False)
+    table = SQLFORM.smartgrid(db.v_reporte_rl7,constraints=dict(v_reporte_rl7=query),csv=False,editable=False,deletable=False,create=False)
     return locals()
 
 
@@ -734,7 +725,7 @@ def generar_reporte_rl7():
         while hoja<=bitacora[contador-1]:
             try:
                 m=unicode(m,"utf-8")
-            except TypeError as e:
+            except:
                 pass
             ws2 = wb.create_sheet(m)
             #Encabezado
@@ -851,8 +842,7 @@ def generar_reporte_rl7():
 
             x = ['B15','B16','B17','B18','B19','B20','B21','B22','B23','B24','B25','B26','B27','B28','B29','B30','B31','B32','B33','B34','B35','B36','B37','B38']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
-                y=0;
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 for i in query:
                     if y<24:
                         if(i.f_fechaingreso.month==int(mes) and i.f_fechaingreso.year==int(year)):
@@ -863,7 +853,7 @@ def generar_reporte_rl7():
 
             x = ['C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25','C26','C27','C28','C29','C30','C31','C32','C33','C34','AC5','C36','C37','C38']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<24:
@@ -874,7 +864,7 @@ def generar_reporte_rl7():
                             y=y+1
             x = ['D15','D16','D17','D18','D19','D20','D21','D22','D23','D24','D25','D26','D27','D28','D29','D30','D31','D32','D33','D34','D35','D36','D37','D38']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<24:
@@ -885,7 +875,7 @@ def generar_reporte_rl7():
                             y=y+1
             x = ['E15','E16','E17','E18','E19','E20','E21','E22','E23','E24','E25','E26','E27','E28','E29','E30','E31','E32','E33','E34','E35','E36','E37','E38']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<24:
@@ -896,7 +886,7 @@ def generar_reporte_rl7():
                             y=y+1
             x = ['F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36','F37','F38']
             if bitacora[contador-1]!=0:
-                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=db.t_bitacora.f_fecha)
+                query=db(db.t_bitacora.f_sustancia==ids[contador-1]).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
                 y=0;
                 for i in query:
                     if y<24:
@@ -1052,7 +1042,7 @@ def reporte_bitacora():
 
         x = ['B15','B16','B17','B18','B19','B20','B21','B22','B23','B24','B25','B26','B27','B28','B29','B30','B31','B32','B33','B34','B35','B36','B37','B38']
         if bitacora!=0:
-            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=db.t_bitacora.f_fechaingreso)
+            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
             y=0;
             for i in query:
                 if y<24:
@@ -1064,7 +1054,7 @@ def reporte_bitacora():
 
         x = ['C15','C16','C17','C18','C19','C20','C21','C22','C23','C24','C25','C26','C27','C28','C29','C30','C31','C32','C33','C34','AC5','C36','C37','C38']
         if bitacora!=0:
-            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=db.t_bitacora.f_fechaingreso)
+            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
             y=0;
             for i in query:
                 if y<24:
@@ -1075,7 +1065,7 @@ def reporte_bitacora():
                     y=y+1
         x = ['D15','D16','D17','D18','D19','D20','D21','D22','D23','D24','D25','D26','D27','D28','D29','D30','D31','D32','D33','D34','D35','D36','D37','D38']
         if bitacora!=0:
-            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=db.t_bitacora.f_fechaingreso)
+            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
             y=0;
             for i in query:
                 if y<24:
@@ -1086,7 +1076,7 @@ def reporte_bitacora():
                     y=y+1
         x = ['E15','E16','E17','E18','E19','E20','E21','E22','E23','E24','E25','E26','E27','E28','E29','E30','E31','E32','E33','E34','E35','E36','E37','E38']
         if bitacora!=0:
-            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=db.t_bitacora.f_fechaingreso)
+            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
             y=0;
             for i in query:
                 if y<24:
@@ -1097,7 +1087,7 @@ def reporte_bitacora():
                     y=y+1
         x = ['F15','F16','F17','F18','F19','F20','F21','F22','F23','F24','F25','F26','F27','F28','F29','F30','F31','F32','F33','F34','F35','F36','F37','F38']
         if bitacora!=0:
-            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=db.t_bitacora.f_fechaingreso)
+            query=db((db.t_bitacora.f_sustancia==int(sust))&(db.t_bitacora.f_espaciofisico==esp)).select(orderby=[db.t_bitacora.f_fechaingreso,db.t_bitacora.f_fecha])
             y=0;
             for i in query:
                 if y<24:
@@ -1149,7 +1139,7 @@ def reporte_seccion():
     while hoja<bitacora:
         try:
             seccion=unicode(seccion,"utf-8")
-        except TypeError as e:
+        except:
             pass
         ws2 = wb.create_sheet(seccion)
         #Encabezado
@@ -1336,7 +1326,7 @@ def reporte_sust():
     while hoja<bitacora:
         try:
             seccion=unicode(seccion,"utf-8")
-        except TypeError as e:
+        except:
             pass
         ws2 = wb.create_sheet(seccion)
         #Encabezado
@@ -1533,7 +1523,7 @@ def reporte_esp():
     while hoja<bitacora:
         try:
             espf=unicode(espf,"utf-8")
-        except TypeError as e:
+        except:
             pass
         ws2 = wb.create_sheet(espf)
         #Encabezado

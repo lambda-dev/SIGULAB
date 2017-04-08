@@ -1,4 +1,0 @@
-{{extend 'layout.html'}}
-<li><a href="{{=URL('sustancias','sustanciapeligrosa_manage')}}">Listado</a></li>
-<li><a href="{{=URL('sustancias','inventario_manage')}}">Inventario</a></li>
-<li><a href="{{=URL('front_page','index')}}">Atras</a></li>

@@ -2,7 +2,46 @@
 <div class="container">
   <h1 style="color:#455A64" class="text-center">Reporte RL7</h1>
 
-  <h3 style="color:#455A64" class="text-center">Mes: {{=request.vars['m']}}</h3>
+
+  <h3 style="color:#455A64" class="text-center">Mes: 
+  {{if request.vars['m']=="1":}}
+  Enero
+  {{pass}}
+    {{if request.vars['m']=="2":}}
+  Febrero
+  {{pass}}
+   {{if request.vars['m']=="3":}}
+  Marzo
+  {{pass}}
+   {{if request.vars['m']=="4":}}
+  Abril
+  {{pass}}
+   {{if request.vars['m']=="5":}}
+  Mayo
+  {{pass}}
+   {{if request.vars['m']=="6":}}
+  Junio
+  {{pass}}
+   {{if request.vars['m']=="7":}}
+  Julio
+  {{pass}}
+   {{if request.vars['m']=="8":}}
+  Agosto
+  {{pass}}
+   {{if request.vars['m']=="9":}}
+  Septiembre
+  {{pass}}
+   {{if request.vars['m']=="10":}}
+  Octubre
+  {{pass}}
+   {{if request.vars['m']=="11":}}
+  Noviembre
+  {{pass}}
+   {{if request.vars['m']=="12":}}
+  Diciembre
+  {{pass}}
+
+  </h3>
 
   <h3 style="color:#455A64" class="text-center">Año: {{=request.vars['y']}}</h3>
 

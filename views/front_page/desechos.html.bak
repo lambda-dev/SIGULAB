@@ -1,2 +1,0 @@
-{{extend 'layout.html'}}
-<li><a href="{{=URL('front_page','index')}}">Atras</a></li>

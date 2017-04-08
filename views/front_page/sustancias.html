@@ -7,33 +7,48 @@
   or auth.has_membership('Gestor de SMyDP'):}}
 <div class="container">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-      <li class="breadcrumb-item active">Sustancias</li>
+      <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+      <li class="breadcrumb-item active">SMyDP</li>
     </ol>
-    <h1 align="center" style="color:#455A64">SUSTANCIAS</h1>
+    <h1 align="center" style="color:#455A64">Sustancias, Materiales y Desechos Peligrosos</h1>
     <div class="row">
 
-        <div class="col-sm-4 col-sm-offset-2 text-center">
-            <a href="{{=URL('sustancias','sustanciapeligrosa_manage')}}" class="btn btn-lg btn-block" role="button">
-			    <h4>
-			        <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
-			    </h4>
-			    <h4>
-			        Listado Sustancias
-			    </h4>
-		    </a>
-	    </div>
 
+            <div class="col-sm-4 col-sm-offset-2 text-center">
+            <a href="{{=URL('front_page','desechos')}}" class="btn btn-lg btn-block" role="button">
+          <h4>
+              <i class="fa fa-book fa-3x" aria-hidden="true"></i>
+          </h4>
+          <h4>
+             Desechos Peligrosos
+          </h4>
+        </a>
+        </div>
         <div class="col-sm-4 text-center">
             <a href="{{=URL('sustancias','select_inventario')}}" class="btn btn-lg btn-block" role="button">
-			    <h4>
-			        <i class="fa fa-book fa-3x" aria-hidden="true"></i>
-			    </h4>
-			    <h4>
-			        Inventario
-			    </h4>
-		    </a>
+          <h4>
+              <i class="fa fa-flask fa-3x" aria-hidden="true"></i>
+          </h4>
+          <h4>
+              Inventario de sustancias
+          </h4>
+        </a>
         </div>
+
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+            <a href="{{=URL('sustancias','sustanciapeligrosa_manage')}}" class="btn btn-lg btn-block" role="button">
+          <h4>
+              <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
+          </h4>
+          <h4>
+              Listado Sustancias
+          </h4>
+        </a>
+      </div>
+    
+    
+    
+    
     </div>
 </div>
 {{else:}}
