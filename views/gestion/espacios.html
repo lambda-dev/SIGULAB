@@ -7,6 +7,10 @@
   </ol>
 
 <h2>Gestión de Espacios Físicos</h2>
+{{if 't_tecs_esp.f_espaciofisico' in request.args:}}
+<h3>Dependencia: {{=secc.f_seccion}}</h3>
+<h3>Técnicos: {{=esp.f_espacio}}</h3>
+{{pass}}
 <p>Permite añadir, buscar, editar y eliminar los Espacios Físicos bajo la custodia de las Dependencias de la ULAB y sus Responsables.</p>
 <p>{{=form}}</p>
 {{ if "t_tecs_esp.f_espaciofisico" in request.args:}}

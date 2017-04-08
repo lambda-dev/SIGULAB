@@ -23,6 +23,7 @@ def usuarios():
         mark_not_empty(db.auth_user)
 
     db.auth_user.id.readable=False
+    db.auth_membership.id.readable=False
     query = (db.auth_user.autorizado == True and db.auth_user.email != "no_asig@usb.ve")
     if auth.has_membership('Director'):  
         form = SQLFORM.smartgrid(db.auth_user,maxtextlength=500,constraints=dict(auth_user=query),csv=False,details=False,linked_tables=['auth_membership'], create=False, editable=False, deletable=False)
@@ -46,6 +47,7 @@ def privilegios():
         mark_not_empty(db.auth_group)
 
     db.auth_group.id.readable=False
+    db.auth_membership.id.readable=False
     if auth.has_membership('Director'):
         form = SQLFORM.smartgrid(db.auth_group,maxtextlength=500,onvalidation=validar_roles,csv=False,details=False,linked_tables=['auth_membership'],create=False, editable=False, deletable=False, searchable=False)
     else:
@@ -192,6 +194,7 @@ def laboratorios():
 
     db.t_laboratorio.id.readable=False
     db.t_seccion.f_laboratorio.readable=False
+    db.t_seccion.id.readable=False
     query = (db.t_laboratorio.f_nombre != "Ninguno")
     
     if 't_seccion.f_laboratorio' in request.args:
@@ -200,10 +203,11 @@ def laboratorios():
     else:
         lab_id = None
 
+    links = {'t_seccion':[lambda row: A('Espacios Físicos', _href=URL(c='gestion',f='secciones', args=['t_seccion', 't_espaciofisico.f_seccion', row.id]))]}
     if auth.has_membership('Director'):
-        form = SQLFORM.smartgrid(db.t_laboratorio,maxtextlength=500,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False,details=False, linked_tables=['t_seccion'], deletable = False, editable=False, create=False)
+        form = SQLFORM.smartgrid(db.t_laboratorio,maxtextlength=500,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False,details=False, linked_tables=['t_seccion'], deletable = False, editable=False, create=False,links=links)
     else:
-        form = SQLFORM.smartgrid(db.t_laboratorio,maxtextlength=500,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False, details=False,linked_tables=['t_seccion'], deletable = True, editable = True,)
+        form = SQLFORM.smartgrid(db.t_laboratorio,maxtextlength=500,constraints=dict(t_laboratorio=query),onvalidation=validar_jefes,csv=False, details=False,linked_tables=['t_seccion'], deletable = True, editable = True,links=links)
     return locals()
 
 def validar_jefes(form):
@@ -232,10 +236,12 @@ def secciones():
     else:
         secc_id = None
 
+    links = {'t_espaciofisico': [lambda row: A('Inventario', _href=URL(c='sustancias', f='inventario_manage',vars=dict(esp = row.id))), lambda row: A('Técnicos', _href=URL(c='gestion',f='espacios', args=['t_espaciofisico', 't_tecs_esp.f_espaciofisico', row.id]))]}    
+
     if auth.has_membership('Director'):
-        form = SQLFORM.smartgrid(db.t_seccion,maxtextlength=500, constraints=dict(t_seccion=query), csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = False, editable=False, create=False)
+        form = SQLFORM.smartgrid(db.t_seccion,maxtextlength=500, constraints=dict(t_seccion=query), links=links, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = False, editable=False, create=False)
     else:
-        form = SQLFORM.smartgrid(db.t_seccion,maxtextlength=500, constraints=dict(t_seccion=query), csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
+        form = SQLFORM.smartgrid(db.t_seccion,maxtextlength=500, constraints=dict(t_seccion=query), links=links, csv=False, details=False, linked_tables=['t_espaciofisico'], deletable = auth.has_membership('WebMaster'))
     return locals()
 
 
@@ -248,8 +254,16 @@ def espacios():
     if 'edit' in request.args or 'new' in request.args:
         mark_not_empty(db.t_espaciofisico)
     db.t_tecs_esp.f_espaciofisico.writable = False
-
     db.t_espaciofisico.id.readable=False
+    db.t_tecs_esp.id.readable=False
+
+    if 't_tecs_esp.f_espaciofisico' in request.args:
+        esp_id = request.args[2]
+        esp = db(db.t_espaciofisico.id == esp_id).select().first()
+
+        secc_id = esp.f_seccion
+        secc = db(db.t_seccion.id == secc_id).select(db.t_seccion.f_seccion).first()
+
     if auth.has_membership('Director'):
         form = SQLFORM.smartgrid(db.t_espaciofisico,maxtextlength=500, csv=False,details=False, linked_tables=['t_tecs_esp'], editable=False, create=False, deletable=False,links = links)
     else:
