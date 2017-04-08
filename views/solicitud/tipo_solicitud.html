@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 <div class="container">
 	<ol class="breadcrumb">
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
+	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
 	{{if f=='1':}}
 	  <li class="breadcrumb-item"><a href="{{=URL('solicitud','select_solicitud', vars=dict(f=request.vars['f']))}}">Mis Solicitudes</a></li>
 	{{elif f=='2':}}
@@ -19,7 +19,7 @@
 {{pass}}
 
 {{if seccion:}}
-<h3>Seccion: {{=seccion}}</h3>
+<h3>{{=seccion}}</h3>
 {{pass}}
 
 {{if espFisico:}}

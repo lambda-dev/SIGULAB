@@ -36,8 +36,8 @@ db.t_seccion.f_jefe.represent = lambda value,row: db(db.auth_user.id == value).s
 
 ########################################
 db.define_table('t_espaciofisico',
-    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
-    Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Uso')),
+    Field('f_espacio', 'string', requires=IS_NOT_EMPTY(), label=T('Espacio')),
+    Field('f_direccion', 'string', requires=IS_NOT_EMPTY(), label=T('Uso')),
     Field('f_responsable', 'integer', label=T("Responsable"), requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s', zero=None), default = db(db.auth_user.email == 'no_asig@usb.ve').select(db.auth_user.id).first()),
     Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Dependencia')),
   
@@ -101,8 +101,8 @@ db.define_table('t_users_autorizados',
     migrate=settings.migrate)
 
 
-db.t_users_autorizados.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else 'Vacio'
-db.t_users_autorizados.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else 'Vacio'
+db.t_users_autorizados.f_laboratorio.represent = lambda value,row: (db(db.t_laboratorio.id == value).select().first().f_nombre) if value is not None else 'Vacio'
+db.t_users_autorizados.f_seccion.represent= lambda value,row: (db(db.t_seccion.id == value).select().first().f_seccion) if value is not None else 'Vacio'
 
 
 db.t_users_autorizados._plural = 'Usuarios Autorizados'
@@ -514,8 +514,8 @@ db.define_table('v_reporte',
     Field('id'),
     Field('f_unidad',label=T('Unidad de medida')),
     Field('cantidad_total',label=T('Saldo fisico final'),readable=False),
-    Field('total_salidas',label=T('Total salidas')),
     Field('total_entradas',label=T('Total Entradas')),
+    Field('total_salidas',label=T('Total salidas')),
     Field('f_mes',label=T('Mes')),
     Field('f_year',label=T('Año')),
     migrate=False)
@@ -567,20 +567,23 @@ db.executesql(
   order by f_laboratorio;')
 
 db.define_table('s_espaciofisico',
-    Field('f_direccion',label = T('Espacio Físico')),
-    Field('f_espacio',label=T('Uso')),
+    Field('f_direccion',readable=False,label = T('Espacio Físico')),
+    Field('f_espacio',label=T('Espacio Físico')),
     Field('id'),
-    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Sección')),
+    Field('f_seccion', 'reference t_seccion', requires=IS_IN_DB(db,db.t_seccion.id,'%(f_seccion)s',zero=None), label=T('Dependencia')),
     Field('f_jefe_seccion','integer', notnull=False, requires=IS_IN_DB(db,db.auth_user.id, '%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Sección'), readable=False),
-    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Laboratorio')),
+    Field('f_laboratorio','reference t_laboratorio',requires=IS_IN_DB(db,db.t_laboratorio.id,'%(f_nombre)s',zero=None), label=T('Unidad de Adscripción')),
     Field('f_jefe_laboratorio','integer', requires=IS_IN_DB(db,db.auth_user.id,'%(first_name)s %(last_name)s',zero=None), label=T('Jefe de Laboratorio'), readable=False),
     Field('f_id',label=T('Id Asociado'), readable=False),
     migrate=False
     )
-db.s_espaciofisico.f_direccion. represent= lambda v,r: A(v,_href=URL('solicitud', 'tipo_solicitud', vars=dict(esp=r.f_id, f=request.vars['f'])))
+db.s_espaciofisico.f_espacio. represent= lambda v,r: A(v,_href=URL('solicitud', 'tipo_solicitud', vars=dict(esp=r.f_id, f=request.vars['f'])))
 db.s_espaciofisico.f_jefe_laboratorio.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
 db.s_espaciofisico.f_jefe_seccion.represent = lambda value,row: db(db.auth_user.id == value).select().first()['first_name']+" "+db(db.auth_user.id == value).select().first()['last_name'] if value is not None else None
 db.s_espaciofisico.f_laboratorio.represent = lambda value,row: db(db.t_laboratorio.id == value).select().first()['f_nombre'] if value is not None else None
 db.s_espaciofisico.f_seccion.represent= lambda value,row: db(db.t_seccion.id == value).select().first()['f_seccion'] if value is not None else None
 db.s_espaciofisico.id.readable=False
+
+
+
 

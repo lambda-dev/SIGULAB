@@ -1,18 +1,18 @@
 {{extend 'layout.html'}}
 <div class="container">
-	<ol class="breadcrumb">
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Home</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">Sustancias</a></li>
-	  <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
-	  <li class="breadcrumb-item active">Espacios Físicos</li>
-	</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','index')}}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('front_page','sustancias')}}">SMyDP</a></li>
+    <li class="breadcrumb-item"><a href="{{=URL('sustancias','select_inventario')}}">Inventario</a></li>
+    <li class="breadcrumb-item active">Espacios Físicos</li>
+  </ol>
 
 {{if labs:}}
 <h1 style="color:#455A64" class="text-center">{{=labs}}</h1>
 {{pass}}
 
 {{if seccion:}}
-<h3 style="color:#455A64" class="text-center">Seccion: {{=seccion}}</h3>
+<h3 style="color:#455A64" class="text-center">Dependencia: {{=seccion}}</h3>
 {{pass}}
 
 {{if espFisico:}}
@@ -29,7 +29,7 @@
 {{if 'edit' in request.args:}}
 <p>{{=table[1]}}</p>
 <h2 class='text-center'>Sustancia: {{=str(sust)}}</h2>
-<h2 class='text-center'>Cantidad De Donación Disponible: {{=donac}} {{=unid}}</h2>
+<h2 class='text-center'>Cantidad Excedente Disponible: {{=donac}} {{=unid}}</h2>
 <h2 class='text-center'>Cantidad De Uso Interno Disponible: {{=usoint}} {{=unid}}</h2>
 <p>{{=form}}</p>
 <p class="help-block center">Los campos marcados con (*) son obligatorios</p>

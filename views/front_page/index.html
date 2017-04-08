@@ -24,27 +24,18 @@
           or auth.has_membership('Jefe de Sección') \
           or auth.has_membership('Técnico')\
           or auth.has_membership('Gestor de SMyDP'):}}
-        <div class="panel col-md-6 text-center">
-	        <a href="{{=URL('front_page','sustancias')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-flask fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Sustancias
-		        </h4>
-	        </a>
+        <div class="panel col-md-12 text-center">
+          <a href="{{=URL('front_page','sustancias')}}" class="btn btn-lg btn-block" role="button">
+            <h4>
+                <i class="fa fa-flask fa-3x" aria-hidden="true"></i>
+            </h4>
+            <h4>
+                Sustancias y Desechos Peligrosos
+            </h4>
+          </a>
         </div>
 
-        <div class="panel col-md-6 text-center">
-            <a href="{{=URL('front_page','desechos')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-trash-o fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Desechos
-		        </h4>
-	        </a>
-        </div>
+
         {{pass}}
 
         {{if auth.has_membership('Administrador Personal') \
@@ -52,13 +43,13 @@
             or auth.has_membership('Director'): }}
         <div class="panel col-md-6 text-center">
             <a href="{{=URL('gestion','index')}}" class="btn btn-lg btn-block" role="button">
-		        <h4>
-		            <i class="fa fa-user-o fa-3x" aria-hidden="true"></i>
-		        </h4>
-		        <h4>
-		            Usuarios
-		        </h4>
-	        </a>
+            <h4>
+                <i class="fa fa-user-o fa-3x" aria-hidden="true"></i>
+            </h4>
+            <h4>
+                Personal
+            </h4>
+          </a>
         </div>
 
         <div class="panel col-md-6 text-center">
@@ -67,7 +58,7 @@
                 <i class="fa fa-building-o fa-3x" aria-hidden="true"></i>
             </h4>
             <h4>
-                Dependencias
+                Dependencias y espacios físicos
             </h4>
           </a>
         </div>
